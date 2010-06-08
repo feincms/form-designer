@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-06-08 11:13+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: admin.py:39
+msgid "Configuration options"
+msgstr "Konfigurationsoptionen"
+
+#: admin.py:40
+msgid "Save and continue editing to configure options."
+msgstr "Speichern und weiter bearbeiten um die Optionen zu bearbeiten."
+
+#: admin.py:61
+#, python-format
+msgid "Form configuration: %s"
+msgstr "Formulareinstellungen: %s"
+
+#: admin.py:116
+msgid "Configuration"
+msgstr "Einstellungen"
+
+#: models.py:15
+msgid "E-mail"
+msgstr "E-Mail-Adresse"
+
+#: models.py:17 models.py:51
+msgid "e-mail address"
+msgstr "E-Mail-Adresse"
+
+#: models.py:22 models.py:60
+msgid "title"
+msgstr "Titel"
+
+#: models.py:24
+msgid "config"
+msgstr "Konfiguration"
+
+#: models.py:28 models.py:57 models.py:85
+msgid "form"
+msgstr "Formular"
+
+#: models.py:29
+msgid "forms"
+msgstr "Formulare"
+
+#: models.py:50
+msgid "text"
+msgstr "Text"
+
+#: models.py:52
+msgid "long text"
+msgstr "Langer Text"
+
+#: models.py:53
+msgid "checkbox"
+msgstr "Checkbox"
+
+#: models.py:58
+msgid "ordering"
+msgstr "Sortierung"
+
+#: models.py:61
+msgid "name"
+msgstr "Name"
+
+#: models.py:62
+msgid "type"
+msgstr "Typ"
+
+#: models.py:64
+msgid "is required"
+msgstr "Wird benötigt"
+
+#: models.py:69
+msgid "form field"
+msgstr "Formularfeld"
+
+#: models.py:70
+msgid "form fields"
+msgstr "Formularfelder"
+
+#: models.py:89
+msgid "form content"
+msgstr "Formular"
+
+#: models.py:90
+msgid "form contents"
+msgstr "Formulare"
+
+#: templates/content/form/form.html:7
+msgid "Submit"
+msgstr "Abschicken"
