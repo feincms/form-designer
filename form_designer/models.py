@@ -85,12 +85,17 @@ class FormContent(models.Model):
 
     def render(self, request, **kwargs):
         form_class = self.form.form()
+        prefix = 'fc%d' % self.id
 
         if request.method == 'POST':
-            pass
+            form_instance = form_class(request.POST, prefix=prefix)
+
+            if form_instance.is_valid():
+                return self.form.process(form_instance, request) or u''
         else:
-            form = form_class()
+            form_instance = form_class(prefix=prefix)
 
         return render_to_string('content/form/form.html', {
-            'form': form,
+            'content': self,
+            'form': form_instance,
             })
