@@ -44,7 +44,7 @@ class FormField(models.Model):
         ('text', _('text'), forms.CharField),
         ('email', _('e-mail address'), forms.EmailField),
         ('longtext', _('long text'), curry(forms.CharField, widget=forms.Textarea)),
-        ('checkbox', _('checkbox'), forms.BooleanField),
+        ('checkbox', _('checkbox'), curry(forms.BooleanField, required=False)),
     ]
 
     form = models.ForeignKey(Form, related_name='fields',
