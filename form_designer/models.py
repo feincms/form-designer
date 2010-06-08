@@ -1,4 +1,5 @@
 from django import forms
+from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
@@ -37,6 +38,11 @@ class Form(models.Model):
             field.add_formfield(fields, self)
 
         return type('Form%s' % self.pk, (forms.Form,), fields)
+
+    def process(self, form, request):
+        # Hardcoded e-mail sending action
+        send_mail(self.title, repr(form.cleaned_data), 'webmaster@feinheit.ch',
+            [self.config['email']['email']], fail_silently=True)
 
 
 class FormField(models.Model):
