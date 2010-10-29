@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.functional import curry
@@ -103,7 +104,6 @@ class FormContent(models.Model):
         else:
             form_instance = form_class(prefix=prefix)
 
-        return render_to_string('content/form/form.html', {
-            'content': self,
-            'form': form_instance,
-            })
+        context = RequestContext(
+            request, {'content': self, 'form': form_instance})
+        return render_to_string('content/form/form.html', context)
