@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
@@ -41,8 +42,9 @@ class Form(models.Model):
 
     def process(self, form, request):
         # Hardcoded e-mail sending action
-        send_mail(self.title, repr(form.cleaned_data), 'webmaster@feinheit.ch',
-            [self.config['email']['email']], fail_silently=True)
+        send_mail(self.title, repr(form.cleaned_data),
+                  settings.DEFAULT_FROM_EMAIL,
+                  [self.config['email']['email']], fail_silently=True)
 
 
 class FormField(models.Model):
