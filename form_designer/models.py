@@ -128,8 +128,14 @@ class FormSubmission(models.Model):
         """ Return SortedDict by field ordering and using titles as keys. """
         data_dict = eval(self.data)
         data = SortedDict()
+        field_names = []
         for field in self.form.fields.all():
-            data[field.title] = data_dict[field.name]
+            data[field.title] = data_dict.get(field.name)
+            field_names.append(field.name)
+        # append any extra data (form may have changed since submission, etc)
+        for field_name in data_dict:
+            if not field_name in field_names:
+                data[field_name] = data_dict[field_name]
         return data
         
     def formatted_data(self, html=False):
