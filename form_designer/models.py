@@ -124,9 +124,17 @@ class FormSubmission(models.Model):
     class Meta:
         ordering = ('-submitted',)
 
+    def sorted_data(self):
+        """ Return SortedDict by field ordering and using titles as keys. """
+        data_dict = eval(self.data)
+        data = SortedDict()
+        for field in self.form.fields.all():
+            data[field.title] = data_dict[field.name]
+        return data
+        
     def formatted_data(self, html=False):
         formatted = ""
-        for key, value in eval(self.data).items():
+        for key, value in self.sorted_data().items():
             if html:
                 formatted += "<dt>%s</dt><dd>%s</dd>\n" % (key, value)
             else:
