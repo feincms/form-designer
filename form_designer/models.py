@@ -2,8 +2,10 @@ from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.template.defaultfilters import slugify
 from django.utils.datastructures import SortedDict
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
@@ -56,8 +58,13 @@ class FormField(models.Model):
     FIELD_TYPES = [
         ('text', _('text'), forms.CharField),
         ('email', _('e-mail address'), forms.EmailField),
-        ('longtext', _('long text'), curry(forms.CharField, widget=forms.Textarea)),
+        ('longtext', _('long text'),
+         curry(forms.CharField, widget=forms.Textarea)),
         ('checkbox', _('checkbox'), curry(forms.BooleanField, required=False)),
+        ('select', _('select'), curry(forms.ChoiceField, required=False)),
+        ('radio', _('radio'),
+         curry(forms.ChoiceField, widget=forms.RadioSelect)),
+        ('multiple-select', _('multiple select'), forms.MultipleChoiceField),
     ]
 
     form = models.ForeignKey(Form, related_name='fields',
@@ -66,8 +73,11 @@ class FormField(models.Model):
 
     title = models.CharField(_('title'), max_length=100)
     name = models.CharField(_('name'), max_length=100)
-    type = models.CharField(_('type'), max_length=20, choices=[r[:2] for r in FIELD_TYPES])
-
+    type = models.CharField(
+        _('type'), max_length=20, choices=[r[:2] for r in FIELD_TYPES])
+    choices = models.CharField(
+        _('choices'), max_length=1024, blank=True, help_text='Comma-separated')
+    
     is_required = models.BooleanField(_('is required'), default=True)
 
     class Meta:
@@ -79,13 +89,30 @@ class FormField(models.Model):
     def __unicode__(self):
         return self.title
 
+    def clean(self):
+        if self.choices and not isinstance(self.get_type(), forms.ChoiceField):
+            raise forms.ValidationError(
+                _("You can't specify choices for %s fields") % self.type)
+    
+    def get_choices(self):
+        get_tuple = lambda value: (slugify(value.strip()), value.strip())
+        choices = [get_tuple(value) for value in self.choices.split(',')]
+        if not self.is_required and self.type=='select':
+            choices = BLANK_CHOICE_DASH + choices
+        return tuple(choices)
+
+    def get_type(self, **kwargs):
+        types = dict((r[0], r[2]) for r in self.FIELD_TYPES)
+        return types[self.type](**kwargs)
+    
     def add_formfield(self, fields, form):
         fields[self.name] = self.formfield()
 
     def formfield(self):
-        types = dict((r[0], r[2]) for r in self.FIELD_TYPES)
-
-        return types[self.type](label=self.title, required=self.is_required)
+        kwargs = dict(label=self.title, required=self.is_required)
+        if self.choices:
+            kwargs['choices'] = self.get_choices()
+        return self.get_type(**kwargs)
 
 
 class FormSubmission(models.Model):
