@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.functional import curry
@@ -41,11 +42,15 @@ class Form(models.Model):
         return type('Form%s' % self.pk, (forms.Form,), fields)
 
     def process(self, form, request):
-        # Hardcoded e-mail sending action
-        send_mail(self.title, repr(form.cleaned_data),
-                  settings.DEFAULT_FROM_EMAIL,
-                  [self.config['email']['email']], fail_silently=True)
-
+        submission = FormSubmission.objects.create(
+            form=self, data=repr(form.cleaned_data), path=request.path)
+        
+        if 'email' in self.config:
+            send_mail(self.title, submission.formatted_data(),
+                      settings.DEFAULT_FROM_EMAIL,
+                      [self.config['email']['email']], fail_silently=True)
+            return _('Thank you, your input has been received.')
+        
 
 class FormField(models.Model):
     FIELD_TYPES = [
@@ -83,6 +88,28 @@ class FormField(models.Model):
         return types[self.type](label=self.title, required=self.is_required)
 
 
+class FormSubmission(models.Model):
+    submitted = models.DateTimeField(auto_now_add=True)
+    form = models.ForeignKey(Form, verbose_name=_('form'))
+    data = models.TextField()
+    path = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ('-submitted',)
+
+    def formatted_data(self, html=False):
+        formatted = ""
+        for key, value in eval(self.data).items():
+            if html:
+                formatted += "<dt>%s</dt><dd>%s</dd>\n" % (key, value)
+            else:
+                formatted += "%s: %s\n" % (key, value)
+        return formatted if not html else "<dl>%s</dl>" % formatted
+
+    def formatted_data_html(self):
+        return self.formatted_data(html=True)
+        
+
 class FormContent(models.Model):
     form = models.ForeignKey(Form, verbose_name=_('form'))
 
@@ -103,7 +130,6 @@ class FormContent(models.Model):
         else:
             form_instance = form_class(prefix=prefix)
 
-        return render_to_string('content/form/form.html', {
-            'content': self,
-            'form': form_instance,
-            })
+        context = RequestContext(
+            request, {'content': self, 'form': form_instance})
+        return render_to_string('content/form/form.html', context)
