@@ -1,6 +1,6 @@
 {% load i18n %}
 <form method="post" action=".">{% csrf_token %}
-<h2>{{ content.form.title }}</h2>
+{% if content.show_form_title %}<h2>{{ content.form.title }}</h2>{% endif %}
 <table>
 {{ form }}
 <tr><td>&nbsp;</td>

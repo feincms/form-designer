@@ -139,12 +139,21 @@ class FormSubmission(models.Model):
 
 class FormContent(models.Model):
     form = models.ForeignKey(Form, verbose_name=_('form'))
+    show_form_title = models.BooleanField(_('show form title'), default=True)
+    success_message = models.TextField(
+        _('success message'), blank=True, help_text=
+        _("Optional custom message to display after valid form is submitted"))
 
     class Meta:
         abstract = True
         verbose_name = _('form content')
         verbose_name_plural = _('form contents')
 
+    def process_valid_form(self, request, form_instance, **kwargs):
+        """ Process form and return response (hook method). """
+        process_result = self.form.process(form_instance, request)
+        return self.success_message or process_result or u''
+        
     def render(self, request, **kwargs):
         form_class = self.form.form()
         prefix = 'fc%d' % self.id
@@ -153,7 +162,7 @@ class FormContent(models.Model):
             form_instance = form_class(request.POST, prefix=prefix)
 
             if form_instance.is_valid():
-                return self.form.process(form_instance, request) or u''
+                return self.process_valid_form(request, form_instance, **kwargs)
         else:
             form_instance = form_class(prefix=prefix)
 
