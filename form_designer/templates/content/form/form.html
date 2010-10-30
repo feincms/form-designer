@@ -1,10 +1,10 @@
 {% load i18n %}
 <div id="form{{ content.id }}">
+  {% if content.show_form_title %}
+    <h2>{{ content.form.title }}</h2>
+  {% endif %}
   {% if form %}
   <form method="post" action="#form{{ content.id }}">{% csrf_token %}
-    {% if content.show_form_title %}
-      <h2>{{ content.form.title }}</h2>
-    {% endif %}
     <table>
       {{ form }}
       <tr>
