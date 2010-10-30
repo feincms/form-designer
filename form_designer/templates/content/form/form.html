@@ -1,8 +1,19 @@
 {% load i18n %}
-<form method="post" action=".">{% csrf_token %}
-{% if content.show_form_title %}<h2>{{ content.form.title }}</h2>{% endif %}
-<table>
-{{ form }}
-<tr><td>&nbsp;</td>
-<td><input type="submit" value="{% trans "Submit" %}" /></td>
-</tr></table>
+<div id="form{{ content.id }}">
+  {% if form %}
+  <form method="post" action="#form{{ content.id }}">{% csrf_token %}
+    {% if content.show_form_title %}
+      <h2>{{ content.form.title }}</h2>
+    {% endif %}
+    <table>
+      {{ form }}
+      <tr>
+        <td>&nbsp;</td>
+        <td><input type="submit" value="{% trans "Submit" %}" /></td>
+      </tr>
+    </table>
+  </form>
+  {% else %}
+    {{ message|safe }}
+  {% endif %}
+</div>

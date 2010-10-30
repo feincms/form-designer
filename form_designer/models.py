@@ -144,6 +144,8 @@ class FormContent(models.Model):
         _('success message'), blank=True, help_text=
         _("Optional custom message to display after valid form is submitted"))
 
+    template = 'content/form/form.html'
+    
     class Meta:
         abstract = True
         verbose_name = _('form content')
@@ -152,7 +154,11 @@ class FormContent(models.Model):
     def process_valid_form(self, request, form_instance, **kwargs):
         """ Process form and return response (hook method). """
         process_result = self.form.process(form_instance, request)
-        return self.success_message or process_result or u''
+        context = RequestContext(
+            request, {
+                'content': self,
+                'message': self.success_message or process_result or u''})
+        return render_to_string(self.template, context)
         
     def render(self, request, **kwargs):
         form_class = self.form.form()
@@ -168,4 +174,4 @@ class FormContent(models.Model):
 
         context = RequestContext(
             request, {'content': self, 'form': form_instance})
-        return render_to_string('content/form/form.html', context)
+        return render_to_string(self.template, context)
