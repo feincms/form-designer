@@ -152,7 +152,8 @@ class FormSubmission(models.Model):
         
 
 class FormContent(models.Model):
-    form = models.ForeignKey(Form, verbose_name=_('form'))
+    form = models.ForeignKey(Form, verbose_name=_('form'),
+                             related_name='%(app_label)s_%(class)s_related')
     show_form_title = models.BooleanField(_('show form title'), default=True)
     success_message = models.TextField(
         _('success message'), blank=True, help_text=
