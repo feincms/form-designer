@@ -76,7 +76,11 @@ class FormField(models.Model):
     type = models.CharField(
         _('type'), max_length=20, choices=[r[:2] for r in FIELD_TYPES])
     choices = models.CharField(
-        _('choices'), max_length=1024, blank=True, help_text='Comma-separated')
+        _('choices'), max_length=1024, blank=True,
+        help_text=_('Comma-separated'))
+    help_text = models.CharField(
+        _('help text'), max_length=1024, blank=True,
+        help_text=_('Optional extra explanatory text beside the field'))
     
     is_required = models.BooleanField(_('is required'), default=True)
 
@@ -112,6 +116,8 @@ class FormField(models.Model):
         kwargs = dict(label=self.title, required=self.is_required)
         if self.choices:
             kwargs['choices'] = self.get_choices()
+        if self.help_text:
+            kwargs['help_text'] = self.help_text
         return self.get_type(**kwargs)
 
 
