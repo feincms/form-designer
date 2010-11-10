@@ -4,6 +4,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Model
 from django.utils import simplejson
+from django.utils.text import truncate_words
 from django.utils.translation import ugettext_lazy as _
 
 from . import models
@@ -122,4 +123,14 @@ class FormAdmin(admin.ModelAdmin):
 
         return fieldsets
 
+class FormSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('form', 'path', 'submitted', 'data_summary')
+    fields = ('form', 'path', 'submitted')
+    readonly_fields = fields
+    def data_summary(self, submission):
+        return truncate_words(submission.formatted_data(), 15)
+    def has_add_permission(self, request):
+        return False
+    
 admin.site.register(models.Form, FormAdmin)
+admin.site.register(models.FormSubmission, FormSubmissionAdmin)
