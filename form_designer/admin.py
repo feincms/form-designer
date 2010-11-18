@@ -135,7 +135,7 @@ class FormAdmin(admin.ModelAdmin):
             data = submission.sorted_data(include=('date','time','path'))
             if not rows:
                 rows.append(data.keys())
-            rows.append([data[field_name] for field_name in rows[0]])
+            rows.append([data.get(field_name) for field_name in rows[0]])
             # (fairly gracefully handles changes in form fields between
             #  submissions)
         
