@@ -1,7 +1,11 @@
+import csv
 from threading import currentThread
 
 from django import forms
 from django.contrib import admin
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.conf.urls.defaults import patterns, url
 from django.db.models import Model
 from django.utils import simplejson
 from django.utils.text import truncate_words
@@ -122,6 +126,31 @@ class FormAdmin(admin.ModelAdmin):
         del _formdesigner_admin_state[currentThread()]
 
         return fieldsets
+
+    def export_submissions(self, request, form_id):
+        form = get_object_or_404(models.Form, pk=form_id)
+
+        rows = []
+        for submission in form.submissions.all():
+            data = submission.sorted_data(include=('date','time','path'))
+            if not rows:
+                rows.append(data.keys())
+            rows.append(data.values())                
+        
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = \
+            'attachment; filename=form_submissions.csv'
+        writer = csv.writer(response)
+        writer.writerows(rows)
+        return response
+
+    def get_urls(self):
+        return patterns(
+            '',
+            url(r'(?P<form_id>\d+)/export_submissions/',
+                self.admin_site.admin_view(self.export_submissions))
+            ) + super(FormAdmin, self).get_urls()
+        
 
 class FormSubmissionAdmin(admin.ModelAdmin):
     list_display = ('form', 'path', 'submitted', 'data_summary')

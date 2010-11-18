@@ -123,15 +123,20 @@ class FormField(models.Model):
 
 class FormSubmission(models.Model):
     submitted = models.DateTimeField(auto_now_add=True)
-    form = models.ForeignKey(Form, verbose_name=_('form'))
+    form = models.ForeignKey(
+        Form, verbose_name=_('form'), related_name='submissions')
     data = models.TextField()
     path = models.CharField(max_length=255)
 
     class Meta:
         ordering = ('-submitted',)
 
-    def sorted_data(self):
-        """ Return SortedDict by field ordering and using titles as keys. """
+    def sorted_data(self, include=()):
+        """ Return SortedDict by field ordering and using titles as keys.
+
+        `include` can be a tuple containing any or all of 'date', 'time',
+        'datetime', or 'path' to include additional meta data.
+        """
         data_dict = eval(self.data)
         data = SortedDict()
         field_names = []
@@ -142,6 +147,14 @@ class FormSubmission(models.Model):
         for field_name in data_dict:
             if not field_name in field_names:
                 data[field_name] = data_dict[field_name]
+        if 'datetime' in include:
+            data['submitted'] = self.submitted
+        if 'date' in include:
+            data['date submitted'] = self.submitted.date()
+        if 'time' in include:
+            data['time submitted'] = self.submitted.time()
+        if 'path' in include:
+            data['form path'] = self.path
         return data
         
     def formatted_data(self, html=False):
