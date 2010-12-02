@@ -218,8 +218,8 @@ class FormContent(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = _('form content')
-        verbose_name_plural = _('form contents')
+        verbose_name = _('form')
+        verbose_name_plural = _('forms')
 
     def process_valid_form(self, request, form_instance, **kwargs):
         """ Process form and return response (hook method). """
