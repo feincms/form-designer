@@ -134,7 +134,7 @@ class FormAdminForm(forms.ModelForm):
 
 
 class FormFieldAdmin(admin.TabularInline):
-    extra = 1
+    extra = 0
     model = models.FormField
     prepopulated_fields = {'name': ('title',)}
 
