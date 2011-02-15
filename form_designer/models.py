@@ -13,13 +13,34 @@ from django.utils.translation import ugettext_lazy as _
 from form_designer.utils import JSONFieldDescriptor
 
 
+def create_form_submission(model_instance, form_instance, request, **kwargs):
+    return FormSubmission.objects.create(
+        form=model_instance,
+        data=repr(form.cleaned_data),
+        path=request.path)
+
+
+def send_as_mail(model_instance, form_instance, request, config, **kwargs):
+    submission = create_form_submission(model_instance, form_instance, request, **kwargs)
+
+    send_mail(model_instance.title, submission.formatted_data(),
+              settings.DEFAULT_FROM_EMAIL,
+              [config['email']], fail_silently=True)
+    return _('Thank you, your input has been received.')
+
+
 class Form(models.Model):
     CONFIG_OPTIONS = [
+        ('save_fs', {
+            'title': _('Save form submission'),
+            'process': create_form_submission,
+        }),
         ('email', {
             'title': _('E-mail'),
             'form_fields': [
                 ('email', forms.EmailField(_('e-mail address'))),
             ],
+            'process': send_as_mail,
         }),
     ]
 
@@ -47,15 +68,16 @@ class Form(models.Model):
         return type('Form%s' % self.pk, (forms.Form,), fields)
 
     def process(self, form, request):
-        submission = FormSubmission.objects.create(
-            form=self, data=repr(form.cleaned_data), path=request.path)
-        
-        if 'email' in self.config:
-            send_mail(self.title, submission.formatted_data(),
-                      settings.DEFAULT_FROM_EMAIL,
-                      [self.config['email']['email']], fail_silently=True)
-            return _('Thank you, your input has been received.')
-        
+        ret = []
+        for key, config in self.config.items():
+            ret[key] = config['process'](
+                model_instance=self,
+                form_instance=form,
+                request=request,
+                config=config)
+
+        return ret
+
 
 class FormField(models.Model):
     FIELD_TYPES = [
@@ -84,7 +106,7 @@ class FormField(models.Model):
     help_text = models.CharField(
         _('help text'), max_length=1024, blank=True,
         help_text=_('Optional extra explanatory text beside the field'))
-    
+
     is_required = models.BooleanField(_('is required'), default=True)
 
     class Meta:
@@ -100,7 +122,7 @@ class FormField(models.Model):
         if self.choices and not isinstance(self.get_type(), forms.ChoiceField):
             raise forms.ValidationError(
                 _("You can't specify choices for %s fields") % self.type)
-    
+
     def get_choices(self):
         get_tuple = lambda value: (slugify(value.strip()), value.strip())
         choices = [get_tuple(value) for value in self.choices.split(',')]
@@ -111,7 +133,7 @@ class FormField(models.Model):
     def get_type(self, **kwargs):
         types = dict((r[0], r[2]) for r in self.FIELD_TYPES)
         return types[self.type](**kwargs)
-    
+
     def add_formfield(self, fields, form):
         fields[self.name] = self.formfield()
 
@@ -159,7 +181,7 @@ class FormSubmission(models.Model):
         if 'path' in include:
             data['form path'] = self.path
         return data
-        
+
     def formatted_data(self, html=False):
         formatted = ""
         for key, value in self.sorted_data().items():
@@ -171,7 +193,7 @@ class FormSubmission(models.Model):
 
     def formatted_data_html(self):
         return self.formatted_data(html=True)
-        
+
 
 class FormContent(models.Model):
     form = models.ForeignKey(Form, verbose_name=_('form'),
@@ -182,7 +204,7 @@ class FormContent(models.Model):
         _("Optional custom message to display after valid form is submitted"))
 
     template = 'content/form/form.html'
-    
+
     class Meta:
         abstract = True
         verbose_name = _('form content')
@@ -196,7 +218,7 @@ class FormContent(models.Model):
                 'content': self,
                 'message': self.success_message or process_result or u''})
         return render_to_string(self.template, context)
-        
+
     def render(self, request, **kwargs):
         form_class = self.form.form()
         prefix = 'fc%d' % self.id
