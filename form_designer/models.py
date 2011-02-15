@@ -76,7 +76,11 @@ class FormField(models.Model):
     type = models.CharField(
         _('type'), max_length=20, choices=[r[:2] for r in FIELD_TYPES])
     choices = models.CharField(
-        _('choices'), max_length=1024, blank=True, help_text='Comma-separated')
+        _('choices'), max_length=1024, blank=True,
+        help_text=_('Comma-separated'))
+    help_text = models.CharField(
+        _('help text'), max_length=1024, blank=True,
+        help_text=_('Optional extra explanatory text beside the field'))
     
     is_required = models.BooleanField(_('is required'), default=True)
 
@@ -112,20 +116,27 @@ class FormField(models.Model):
         kwargs = dict(label=self.title, required=self.is_required)
         if self.choices:
             kwargs['choices'] = self.get_choices()
+        if self.help_text:
+            kwargs['help_text'] = self.help_text
         return self.get_type(**kwargs)
 
 
 class FormSubmission(models.Model):
     submitted = models.DateTimeField(auto_now_add=True)
-    form = models.ForeignKey(Form, verbose_name=_('form'))
+    form = models.ForeignKey(
+        Form, verbose_name=_('form'), related_name='submissions')
     data = models.TextField()
     path = models.CharField(max_length=255)
 
     class Meta:
         ordering = ('-submitted',)
 
-    def sorted_data(self):
-        """ Return SortedDict by field ordering and using titles as keys. """
+    def sorted_data(self, include=()):
+        """ Return SortedDict by field ordering and using titles as keys.
+
+        `include` can be a tuple containing any or all of 'date', 'time',
+        'datetime', or 'path' to include additional meta data.
+        """
         data_dict = eval(self.data)
         data = SortedDict()
         field_names = []
@@ -136,6 +147,14 @@ class FormSubmission(models.Model):
         for field_name in data_dict:
             if not field_name in field_names:
                 data[field_name] = data_dict[field_name]
+        if 'datetime' in include:
+            data['submitted'] = self.submitted
+        if 'date' in include:
+            data['date submitted'] = self.submitted.date()
+        if 'time' in include:
+            data['time submitted'] = self.submitted.time()
+        if 'path' in include:
+            data['form path'] = self.path
         return data
         
     def formatted_data(self, html=False):
@@ -152,7 +171,8 @@ class FormSubmission(models.Model):
         
 
 class FormContent(models.Model):
-    form = models.ForeignKey(Form, verbose_name=_('form'))
+    form = models.ForeignKey(Form, verbose_name=_('form'),
+                             related_name='%(app_label)s_%(class)s_related')
     show_form_title = models.BooleanField(_('show form title'), default=True)
     success_message = models.TextField(
         _('success message'), blank=True, help_text=
