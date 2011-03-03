@@ -142,6 +142,7 @@ class FormAdmin(admin.ModelAdmin):
     form = FormAdminForm
     inlines = [FormFieldAdmin]
     list_display = ('title',)
+    save_as = True
 
     def get_form(self, request, obj=None, **kwargs):
         _formdesigner_admin_state[currentThread()] = request
