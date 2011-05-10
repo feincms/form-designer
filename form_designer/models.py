@@ -36,7 +36,10 @@ class Form(models.Model):
         return self.title
 
     def form(self):
-        fields = SortedDict()
+        fields = SortedDict((
+            ('required_css_class', 'required'),
+            ('error_css_class', 'error'),
+            ))
 
         for field in self.fields.all():
             field.add_formfield(fields, self)
