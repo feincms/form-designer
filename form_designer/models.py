@@ -16,7 +16,7 @@ from form_designer.utils import JSONFieldDescriptor
 def create_form_submission(model_instance, form_instance, request, **kwargs):
     return FormSubmission.objects.create(
         form=model_instance,
-        data=repr(form.cleaned_data),
+        data=repr(form_instance.cleaned_data),
         path=request.path)
 
 
@@ -68,9 +68,17 @@ class Form(models.Model):
         return type('Form%s' % self.pk, (forms.Form,), fields)
 
     def process(self, form, request):
-        ret = []
+        ret = {}
+        cfg = dict(self.CONFIG_OPTIONS)
+
         for key, config in self.config.items():
-            ret[key] = config['process'](
+            try:
+                process = cfg[key]['process']
+            except KeyError:
+                # ignore configs without process methods
+                continue
+
+            ret[key] = process(
                 model_instance=self,
                 form_instance=form,
                 request=request,
