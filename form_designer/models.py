@@ -114,7 +114,9 @@ class FormField(models.Model):
     help_text = models.CharField(
         _('help text'), max_length=1024, blank=True,
         help_text=_('Optional extra explanatory text beside the field'))
-
+    default_value = models.CharField(
+        _('default value'), max_length=255, blank=True,
+        help_text=_('Optional default value of the field'))
     is_required = models.BooleanField(_('is required'), default=True)
 
     class Meta:
@@ -146,7 +148,7 @@ class FormField(models.Model):
         fields[self.name] = self.formfield()
 
     def formfield(self):
-        kwargs = dict(label=self.title, required=self.is_required)
+        kwargs = dict(label=self.title, required=self.is_required, initial=self.default_value)
         if self.choices:
             kwargs['choices'] = self.get_choices()
         if self.help_text:
