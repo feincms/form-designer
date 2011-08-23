@@ -2,6 +2,7 @@ import csv
 from threading import currentThread
 
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
@@ -176,7 +177,7 @@ class FormAdmin(admin.ModelAdmin):
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = \
             'attachment; filename=form_submissions.csv'
-        writer = UnicodeWriter(response)
+        writer = UnicodeWriter(response, **getattr(settings, 'FORM_DESIGNER_EXPORT', {}))
         writer.writerows(rows)
         return response
 
