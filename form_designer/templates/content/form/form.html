@@ -12,6 +12,7 @@
         <td><input type="submit" value="{% trans "Submit" %}" /></td>
       </tr>
     </table>
+    <div style="display:none"><input type="hidden" name="prefix" value="{{ form.prefix }}" /></div>
   </form>
   {% else %}
     {{ message|safe }}
