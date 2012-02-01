@@ -28,16 +28,14 @@ class UnicodeWriter:
         self.queue = cStringIO.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
+        self.encoding = encoding
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
         row = [unicode(s) for s in row]
         self.writer.writerow([self.encoder.encode(s) for s in row])
-        # Fetch UTF-8 output from the queue ...
+        # Fetch encoded output from the queue ...
         data = self.queue.getvalue()
-        data = data.decode("utf-8")
-        # ... and reencode it into the target encoding
-        data = self.encoder.encode(data)
         # write to the target stream
         self.stream.write(data)
         # empty queue
