@@ -234,7 +234,7 @@ class FormContent(models.Model):
         form_class = self.form.form()
         prefix = 'fc%d' % self.id
 
-        if request.method == 'POST':
+        if request.method == 'POST' and request.POST.get('prefix', None) == prefix:
             form_instance = form_class(request.POST, prefix=prefix)
 
             if form_instance.is_valid():
