@@ -28,7 +28,7 @@ class UnicodeWriter:
         self.queue = cStringIO.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
+        self.encoder = codecs.getincrementalencoder(encoding)('replace')
 
     def writerow(self, row):
         row = [unicode(s) for s in row]
