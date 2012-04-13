@@ -99,6 +99,7 @@ class FormField(models.Model):
          curry(forms.ChoiceField, widget=forms.RadioSelect)),
         ('multiple-select', _('multiple select'),
          curry(forms.MultipleChoiceField, widget=forms.CheckboxSelectMultiple)),
+        ('hidden', _('hidden'), curry(forms.CharField, widget=forms.HiddenInput)),
     ]
 
     form = models.ForeignKey(Form, related_name='fields',
