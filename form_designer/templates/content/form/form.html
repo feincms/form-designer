@@ -5,11 +5,12 @@
   {% endif %}
   {% if form %}
   <form method="post" action="#form{{ content.id }}">{% csrf_token %}
+    <input type="hidden" name="fc{{ content.id }}" value="1">
     <table>
       {{ form }}
       <tr>
         <td>&nbsp;</td>
-        <td><input type="submit" value="{% trans "Submit" %}" /></td>
+        <td><input type="submit" value="{% trans "Submit" %}"></td>
       </tr>
     </table>
   </form>
