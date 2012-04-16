@@ -211,8 +211,8 @@ class FormContent(models.Model):
                              related_name='%(app_label)s_%(class)s_related')
     show_form_title = models.BooleanField(_('show form title'), default=True)
     success_message = models.TextField(
-        _('success message'), blank=True, help_text=
-        _("Optional custom message to display after valid form is submitted"))
+        _('success message'), help_text=
+        _("Custom message to display after valid form is submitted"))
 
     template = 'content/form/form.html'
 
@@ -234,7 +234,7 @@ class FormContent(models.Model):
         form_class = self.form.form()
         prefix = 'fc%d' % self.id
 
-        if request.method == 'POST':
+        if request.method == 'POST' and request.POST.get('prefix', None) == prefix:
             form_instance = form_class(request.POST, prefix=prefix)
 
             if form_instance.is_valid():
