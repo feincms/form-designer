@@ -26,6 +26,22 @@ actions aren't hardcoded -- they can be freely defined for every form defined
 through this form designer.
 
 
+Configuring the export
+======================
+
+The CSV export of form submissions uses the Python's CSV module, the Excel
+dialect and UTF-8 encoding by default. If your main target is Excel, you should
+probably add the following setting to work around Excel's abysmal handling of
+CSV files encoded in anything but latin-1::
+
+    FORM_DESIGNER_EXPORT = {
+        'encoding': 'latin-1',
+    }
+
+You may add additional keyword arguments here which will be used during the
+instantiation of ``csv.writer``.
+
+
 Visit these sites for more information
 ======================================
 
