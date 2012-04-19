@@ -234,8 +234,9 @@ class FormContent(models.Model):
     def render(self, request, **kwargs):
         form_class = self.form.form()
         prefix = 'fc%d' % self.id
+        formcontent = request.POST.get('_formcontent')
 
-        if request.method == 'POST' and prefix in request.POST:
+        if request.method == 'POST' and (not formcontent or formcontent == unicode(self.id)):
             form_instance = form_class(request.POST, prefix=prefix)
 
             if form_instance.is_valid():

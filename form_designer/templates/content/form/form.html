@@ -5,7 +5,7 @@
   {% endif %}
   {% if form %}
   <form method="post" action="#form{{ content.id }}">{% csrf_token %}
-    <input type="hidden" name="fc{{ content.id }}" value="1">
+    <input type="hidden" name="_formcontent" value="{{ content.id }}">
     <table>
       {{ form }}
       <tr>
