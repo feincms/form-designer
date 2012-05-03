@@ -65,7 +65,22 @@ class Form(models.Model):
         for field in self.fields.all():
             field.add_formfield(fields, self)
 
-        return type('Form%s' % self.pk, (forms.Form,), fields)
+        validators = []
+        cfg = dict(self.CONFIG_OPTIONS)
+        for key, config in self.config.items():
+            try:
+                validators.append(cfg[key]['validate'])
+            except KeyError:
+                pass
+
+        class Form(forms.Form):
+            def clean(self):
+                data = super(Form, self).clean()
+                for validator in validators:
+                    validator(self, data)
+                return data
+
+        return type('Form%s' % self.pk, (Form,), fields)
 
     def process(self, form, request):
         ret = {}
