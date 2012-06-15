@@ -1,4 +1,5 @@
 import csv
+import json
 from threading import currentThread
 
 from django import forms
@@ -8,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.conf.urls.defaults import patterns, url
 from django.db.models import Model
-from django.utils import simplejson
 from django.utils.text import truncate_words
 from django.utils.translation import ugettext_lazy as _
 
@@ -129,7 +129,7 @@ class FormAdminForm(forms.ModelForm):
 
             config_options[s] = option_item
 
-        data['config_json'] = simplejson.dumps(jsonize(config_options))
+        data['config_json'] = json.dumps(jsonize(config_options))
         return data
 
 

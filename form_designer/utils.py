@@ -1,7 +1,7 @@
 from decimal import Decimal
+import json
 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.utils import simplejson
 
 
 class JSONFieldDescriptor(object):
@@ -12,7 +12,7 @@ class JSONFieldDescriptor(object):
         cache_field = '_cached_jsonfield_%s' % self.field
         if not hasattr(obj, cache_field):
             try:
-                setattr(obj, cache_field, simplejson.loads(getattr(obj, self.field),
+                setattr(obj, cache_field, json.loads(getattr(obj, self.field),
                     parse_float=Decimal))
             except (TypeError, ValueError):
                 setattr(obj, cache_field, {})
@@ -20,4 +20,4 @@ class JSONFieldDescriptor(object):
 
     def __set__(self, obj, value):
         setattr(obj, '_cached_jsonfield_%s' % self.field, value)
-        setattr(obj, self.field, simplejson.dumps(value, cls=DjangoJSONEncoder))
+        setattr(obj, self.field, json.dumps(value, cls=DjangoJSONEncoder))
