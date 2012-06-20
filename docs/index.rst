@@ -74,3 +74,4 @@ Include the forms through a FeinCMS content type
 
 .. _FeinCMS: http://www.feincms.org/
 .. _South: http://south.aeracode.org/
+.. _pip: http://www.pip-installer.org/
