@@ -28,18 +28,49 @@ actions aren't hardcoded -- they can be freely defined for every form defined
 through this form designer.
 
 
-Contents
-========
+Installing the form designer
+============================
 
-.. toctree::
-   :maxdepth: 2
+It is assumed that you have a working FeinCMS_ installation already.
 
-   installation
+Install the package using pip_::
+
+    $ pip install form_designer
 
 
-Indices and tables
-==================
+Setting up the form designer
+============================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+- Add ``'form_designer'`` to ``INSTALLED_APPS``.
+- Run ``./manage.py migrate form_designer`` if you are using South_, or
+  ``./manage.py syncdb`` otherwise.
+- Go into Django's admin panel and add one or more forms with the fields you
+  require. Also select at least one action in the configuration options
+  selectbox, most often you'd want to select both the "E-mail" and the
+  "Save form submission" option. After saving once, you'll see additional
+  fields belonging to the selected configuration options, in this case
+  a field for entering an e-mail address where the submission results should
+  be sent to.
+
+
+Include the forms through a FeinCMS content type
+================================================
+
+- Create the content type for including forms on CMS pages::
+
+    from feincms.module.page.models import Page
+    from form_designer.models import FormContent
+
+    Page.create_content_type(FormContent)
+
+- Create the appropriate migrations for the page module or run
+  ``./manage.py syncdb`` if you aren't using South_. (But hey, you really
+  should!)
+
+- Add the form to a page.
+
+- Profit!
+
+
+.. _FeinCMS: http://www.feincms.org/
+.. _South: http://south.aeracode.org/
