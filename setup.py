@@ -6,7 +6,7 @@ import setuplib
 
 packages, package_data = setuplib.find_packages('form_designer')
 
-setup(name='FeinCMS',
+setup(name='form_designer',
     version=__import__('form_designer').__version__,
     description='Form Designer - a simple form designer for FeinCMS',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
