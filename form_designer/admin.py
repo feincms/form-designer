@@ -7,7 +7,10 @@ from django.conf import settings
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from django.conf.urls import patterns, url
+try:
+    from django.conf.urls import patterns, url
+except ImportError:
+    from django.conf.urls.defaults import patterns, url  # Django 1.3
 from django.db.models import Model
 from django.utils.text import truncate_words
 from django.utils.translation import ugettext_lazy as _
