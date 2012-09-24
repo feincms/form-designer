@@ -146,7 +146,6 @@ class FormAdmin(admin.ModelAdmin):
     form = FormAdminForm
     inlines = [FormFieldAdmin]
     list_display = ('title',)
-    list_filter = ('form',)
     save_as = True
 
     def get_form(self, request, obj=None, **kwargs):
@@ -195,12 +194,16 @@ class FormAdmin(admin.ModelAdmin):
 
 class FormSubmissionAdmin(admin.ModelAdmin):
     list_display = ('form', 'path', 'submitted', 'data_summary')
+    list_filter = ('form',)
     fields = ('form', 'path', 'submitted')
     readonly_fields = fields
+
     def data_summary(self, submission):
         return truncate_words(submission.formatted_data(), 15)
+
     def has_add_permission(self, request):
         return False
+
 
 admin.site.register(models.Form, FormAdmin)
 admin.site.register(models.FormSubmission, FormSubmissionAdmin)
