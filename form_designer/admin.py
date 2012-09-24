@@ -146,6 +146,7 @@ class FormAdmin(admin.ModelAdmin):
     form = FormAdminForm
     inlines = [FormFieldAdmin]
     list_display = ('title',)
+    list_filter = ('form',)
     save_as = True
 
     def get_form(self, request, obj=None, **kwargs):
