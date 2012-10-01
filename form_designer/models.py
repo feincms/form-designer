@@ -10,6 +10,11 @@ from django.utils.datastructures import SortedDict
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
 
+try:
+    from django.utils.text import slugify
+except ImportError:  # Django 1.4
+    from django.template.defaultfilters import slugify
+
 from form_designer.utils import JSONFieldDescriptor
 
 
@@ -165,10 +170,11 @@ class FormField(models.Model):
         return types[self.type](**kwargs)
 
     def add_formfield(self, fields, form):
-        fields[self.name] = self.formfield()
+        fields[slugify(self.name)] = self.formfield()
 
     def formfield(self):
-        kwargs = dict(label=self.title, required=self.is_required, initial=self.default_value)
+        kwargs = dict(label=self.title, required=self.is_required,
+            initial=self.default_value)
         if self.choices:
             kwargs['choices'] = self.get_choices()
         if self.help_text:
