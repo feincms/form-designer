@@ -44,7 +44,7 @@ class Form(models.Model):
             'process': create_form_submission,
         }),
         ('email', {
-            'title': _('E-mail'),
+            'title': _('Send e-mail'),
             'form_fields': [
                 ('email', forms.EmailField(_('e-mail address'))),
             ],
