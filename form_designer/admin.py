@@ -80,6 +80,7 @@ class FormAdminForm(forms.ModelForm):
             choices=choices,
             label=_('Configuration options'),
             help_text=_('Save and continue editing to configure options.'),
+            widget=forms.CheckboxSelectMultiple,
             )
 
         request = _formdesigner_admin_state[currentThread()]
