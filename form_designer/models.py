@@ -15,6 +15,12 @@ try:
 except ImportError:  # Django 1.4
     from django.template.defaultfilters import slugify
 
+try:
+    from feincms.admin.item_editor import FeinCMSInline
+except ImportError:  # FeinCMS not available?
+    # Does not do anything sane, but does not hurt either
+    from django.contrib.admin import StackedInline as FeinCMSInline
+
 from form_designer.utils import JSONFieldDescriptor
 
 
@@ -191,6 +197,8 @@ class FormSubmission(models.Model):
 
     class Meta:
         ordering = ('-submitted',)
+        verbose_name = _('form submission')
+        verbose_name_plural = _('form submissions')
 
     def sorted_data(self, include=()):
         """ Return SortedDict by field ordering and using titles as keys.
@@ -231,7 +239,13 @@ class FormSubmission(models.Model):
         return self.formatted_data(html=True)
 
 
+class FormContentInline(FeinCMSInline):
+    raw_id_fields = ('form',)
+
+
 class FormContent(models.Model):
+    feincms_item_editor_inline = FormContentInline
+
     form = models.ForeignKey(Form, verbose_name=_('form'),
                              related_name='%(app_label)s_%(class)s_related')
     show_form_title = models.BooleanField(_('show form title'), default=True)

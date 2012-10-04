@@ -164,6 +164,12 @@ msgstr "Mitteilung, welche angezeigt wird, wenn ein gültiges Formular abgeschic
 msgid "Export submissions"
 msgstr "Formulardaten exportieren"
 
+msgid "form submission"
+msgstr "Formulardaten"
+
+msgid "form submissions"
+msgstr "Formulardaten"
+
 #: templates/admin/form_designer/form/change_form.html:7
 msgid "History"
 msgstr ""
