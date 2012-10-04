@@ -8,100 +8,170 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-08 11:13+0200\n"
+"POT-Creation-Date: 2012-10-04 11:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:39
-msgid "Configuration options"
-msgstr "Konfigurationsoptionen"
+#: admin.py:81
+msgid "Options"
+msgstr "Optionen"
 
-#: admin.py:40
+#: admin.py:82
 msgid "Save and continue editing to configure options."
 msgstr "Speichern und weiter bearbeiten um die Optionen zu bearbeiten."
 
-#: admin.py:61
+#: admin.py:104
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Formulareinstellungen: %s"
 
-#: admin.py:116
+#: admin.py:160
 msgid "Configuration"
 msgstr "Einstellungen"
 
-#: models.py:15
-msgid "E-mail"
-msgstr "E-Mail-Adresse"
+#: models.py:37
+msgid "Thank you, your input has been received."
+msgstr "Vielen Dank"
 
-#: models.py:17 models.py:51
+#: models.py:43
+msgid "Save form submission"
+msgstr "Formulardaten sichern"
+
+#: models.py:47
+msgid "Send e-mail"
+msgstr "E-Mail versenden"
+
+#: models.py:49 models.py:116
 msgid "e-mail address"
 msgstr "E-Mail-Adresse"
 
-#: models.py:22 models.py:60
+#: models.py:55 models.py:132
 msgid "title"
 msgstr "Titel"
 
-#: models.py:24
+#: models.py:57
 msgid "config"
 msgstr "Konfiguration"
 
-#: models.py:28 models.py:57 models.py:85
+#: models.py:61 models.py:129 models.py:188 models.py:235 models.py:246
 msgid "form"
 msgstr "Formular"
 
-#: models.py:29
+#: models.py:62 models.py:247
 msgid "forms"
 msgstr "Formulare"
 
-#: models.py:50
+#: models.py:115
 msgid "text"
 msgstr "Text"
 
-#: models.py:52
+#: models.py:117
 msgid "long text"
 msgstr "Langer Text"
 
-#: models.py:53
+#: models.py:119
 msgid "checkbox"
 msgstr "Checkbox"
 
-#: models.py:58
+#: models.py:120
+msgid "select"
+msgstr "Auswahlbox"
+
+#: models.py:121
+msgid "radio"
+msgstr "Auswahl (Radiobuttons)"
+
+#: models.py:123
+msgid "multiple select"
+msgstr "Mehrfachauswahl"
+
+#: models.py:125
+msgid "hidden"
+msgstr "versteckt"
+
+#: models.py:130
 msgid "ordering"
 msgstr "Sortierung"
 
-#: models.py:61
+#: models.py:133
 msgid "name"
 msgstr "Name"
 
-#: models.py:62
+#: models.py:135
 msgid "type"
 msgstr "Typ"
 
-#: models.py:64
+#: models.py:137
+msgid "choices"
+msgstr "Wahlmöglichkeiten"
+
+#: models.py:138
+msgid "Comma-separated"
+msgstr "Durch Kommata getrennt"
+
+#: models.py:140
+msgid "help text"
+msgstr "Hilfstext"
+
+#: models.py:141
+msgid "Optional extra explanatory text beside the field"
+msgstr "Optionaler zusätzlicher Erklärungstext neben dem Feld"
+
+#: models.py:143
+msgid "default value"
+msgstr "Standardwert"
+
+#: models.py:144
+msgid "Optional default value of the field"
+msgstr "Optionaler Standardwert des Feldes"
+
+#: models.py:145
 msgid "is required"
 msgstr "Wird benötigt"
 
-#: models.py:69
+#: models.py:150
 msgid "form field"
 msgstr "Formularfeld"
 
-#: models.py:70
+#: models.py:151
 msgid "form fields"
 msgstr "Formularfelder"
 
-#: models.py:89
-msgid "form content"
-msgstr "Formular"
+#: models.py:159
+#, python-format
+msgid "You can't specify choices for %s fields"
+msgstr "Sie können keine Wahlmöglichkeiten für %s-Felder angeben"
 
-#: models.py:90
-msgid "form contents"
-msgstr "Formulare"
+#: models.py:237
+msgid "show form title"
+msgstr "Formulartitel anzeigen"
 
-#: templates/content/form/form.html:7
+#: models.py:239
+msgid "success message"
+msgstr "Mitteilung bei Erfolg"
+
+#: models.py:240
+msgid "Custom message to display after valid form is submitted"
+msgstr "Mitteilung, welche angezeigt wird, wenn ein gültiges Formular abgeschickt wird"
+
+#: templates/admin/form_designer/form/change_form.html:6
+msgid "Export submissions"
+msgstr "Formulardaten exportieren"
+
+#: templates/admin/form_designer/form/change_form.html:7
+msgid "History"
+msgstr ""
+
+#: templates/admin/form_designer/form/change_form.html:8
+msgid "View on site"
+msgstr ""
+
+#: templates/content/form/form.html:13
 msgid "Submit"
 msgstr "Abschicken"
