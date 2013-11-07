@@ -52,7 +52,7 @@ class Form(models.Model):
         ('email', {
             'title': _('Send e-mail'),
             'form_fields': [
-                ('email', forms.EmailField(_('e-mail address'))),
+                ('email', forms.EmailField(label=_('e-mail address'))),
             ],
             'process': send_as_mail,
         }),
