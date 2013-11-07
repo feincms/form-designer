@@ -12,7 +12,6 @@ try:
 except ImportError:
     from django.conf.urls.defaults import patterns, url  # Django 1.3
 from django.db.models import Model
-from django.utils.text import truncate_words
 from django.utils.translation import ugettext_lazy as _
 
 from . import models
@@ -200,7 +199,10 @@ class FormSubmissionAdmin(admin.ModelAdmin):
     readonly_fields = fields
 
     def data_summary(self, submission):
-        return truncate_words(submission.formatted_data(), 15)
+        data = submission.formatted_data()
+        if len(data) > 100:
+            return u'%s...' % data[:95]
+        return data
 
     def has_add_permission(self, request):
         return False
