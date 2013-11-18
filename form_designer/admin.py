@@ -10,6 +10,7 @@ from django.contrib import admin
 from django.db.models import Model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
 
 from form_designer import models
@@ -29,7 +30,7 @@ class UnicodeWriter:
         self.encoder = codecs.getincrementalencoder(encoding)('replace')
 
     def writerow(self, row):
-        row = [unicode(s) for s in row]
+        row = [smart_text(s) for s in row]
         self.writer.writerow([s.encode("utf-8") for s in row])
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()

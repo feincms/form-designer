@@ -6,6 +6,7 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
 
@@ -42,6 +43,7 @@ def send_as_mail(model_instance, form_instance, request, config, **kwargs):
     return _('Thank you, your input has been received.')
 
 
+@python_2_unicode_compatible
 class Form(models.Model):
     CONFIG_OPTIONS = [
         ('save_fs', {
@@ -66,7 +68,7 @@ class Form(models.Model):
         verbose_name = _('form')
         verbose_name_plural = _('forms')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def form(self):
@@ -115,6 +117,7 @@ class Form(models.Model):
         return ret
 
 
+@python_2_unicode_compatible
 class FormField(models.Model):
     FIELD_TYPES = [
         ('text', _('text'), forms.CharField),
@@ -170,7 +173,7 @@ class FormField(models.Model):
         verbose_name = _('form field')
         verbose_name_plural = _('form fields')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def clean(self):
@@ -289,7 +292,7 @@ class FormContent(models.Model):
         formcontent = request.POST.get('_formcontent')
 
         if request.method == 'POST' and (
-                not formcontent or formcontent == unicode(self.id)):
+                not formcontent or formcontent == smart_text(self.id)):
             form_instance = form_class(request.POST, prefix=prefix)
 
             if form_instance.is_valid():
