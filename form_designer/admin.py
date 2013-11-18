@@ -2,7 +2,6 @@ import codecs
 import csv
 from io import BytesIO
 import json
-from threading import currentThread
 
 from django import forms
 from django.conf import settings
@@ -47,10 +46,6 @@ class UnicodeWriter:
             self.writerow(row)
 
 
-# Internal state tracking helper for config fields
-_formdesigner_admin_state = {}
-
-
 def jsonize(v):
     if isinstance(v, dict):
         return dict((i1, jsonize(i2)) for i1, i2 in v.items())
@@ -81,8 +76,7 @@ class FormAdminForm(forms.ModelForm):
             widget=forms.CheckboxSelectMultiple,
             )
 
-        request = _formdesigner_admin_state[currentThread()]
-        request._formdesigner_discount_config_fieldsets = []
+        config_fieldsets = []
 
         try:
             selected = self.data.getlist('config_options')
@@ -109,7 +103,9 @@ class FormAdminForm(forms.ModelForm):
                     f.initial = self.instance.config[s].get(k)
                 fieldset[1]['fields'].append('%s_%s' % (s, k))
 
-            request._formdesigner_discount_config_fieldsets.append(fieldset)
+            config_fieldsets.append(fieldset)
+
+        self.request._formdesigner_config_fieldsets = config_fieldsets
 
     def clean(self):
         data = self.cleaned_data
@@ -148,19 +144,23 @@ class FormAdmin(admin.ModelAdmin):
     save_as = True
 
     def get_form(self, request, obj=None, **kwargs):
-        _formdesigner_admin_state[currentThread()] = request
-        return super(FormAdmin, self).get_form(request, obj, **kwargs)
+        form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
+        # Generate a new type to be sure that the request stays inside this
+        # request/response cycle.
+        return type(form_class.__name__, (form_class,), {'request': request})
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(FormAdmin, self).get_fieldsets(request, obj)
+        if not hasattr(request, '_formdesigner_config_fieldsets'):
+            return fieldsets
+
         fieldsets[0][1]['fields'].remove('config_json')
 
         fieldsets.append((_('Configuration'), {
             'fields': ('config_json', 'config_options'),
             }))
 
-        fieldsets.extend(request._formdesigner_discount_config_fieldsets)
-        del _formdesigner_admin_state[currentThread()]
+        fieldsets.extend(request._formdesigner_config_fieldsets)
 
         return fieldsets
 
