@@ -10,41 +10,45 @@ from django.contrib import admin
 from django.db.models import Model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils import six
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
 
 from form_designer import models
 
 
-class UnicodeWriter:
-    """
-    A CSV writer which will write rows to CSV file "f",
-    which is encoded in the given encoding.
-    """
+if six.PY3:
+    UnicodeWriter = csv.writer
+else:
+    class UnicodeWriter:
+        """
+        A CSV writer which will write rows to CSV file "f",
+        which is encoded in the given encoding.
+        """
 
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        # Redirect output to a queue
-        self.queue = BytesIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)('replace')
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+            # Redirect output to a queue
+            self.queue = BytesIO()
+            self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+            self.stream = f
+            self.encoder = codecs.getincrementalencoder(encoding)('replace')
 
-    def writerow(self, row):
-        row = [smart_text(s) for s in row]
-        self.writer.writerow([s.encode("utf-8") for s in row])
-        # Fetch UTF-8 output from the queue ...
-        data = self.queue.getvalue()
-        data = data.decode("utf-8")
-        # ... and reencode it into the target encoding
-        data = self.encoder.encode(data)
-        # write to the target stream
-        self.stream.write(data)
-        # empty queue
-        self.queue.truncate(0)
+        def writerow(self, row):
+            row = [smart_text(s) for s in row]
+            self.writer.writerow([s.encode("utf-8") for s in row])
+            # Fetch UTF-8 output from the queue ...
+            data = self.queue.getvalue()
+            data = data.decode("utf-8")
+            # ... and reencode it into the target encoding
+            data = self.encoder.encode(data)
+            # write to the target stream
+            self.stream.write(data)
+            # empty queue
+            self.queue.truncate(0)
 
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)
+        def writerows(self, rows):
+            for row in rows:
+                self.writerow(row)
 
 
 def jsonize(v):
@@ -172,7 +176,7 @@ class FormAdmin(admin.ModelAdmin):
         for submission in form.submissions.all():
             data = submission.sorted_data(include=('date', 'time', 'path'))
             if not rows:
-                rows.append(data.keys())
+                rows.append(list(data.keys()))
             rows.append([data.get(field_name) for field_name in rows[0]])
             # (fairly gracefully handles changes in form fields between
             #  submissions)
