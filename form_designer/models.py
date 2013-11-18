@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.template.defaultfilters import slugify
 from django.utils.datastructures import SortedDict
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
@@ -126,9 +125,12 @@ class FormField(models.Model):
         ('select', _('select'), curry(forms.ChoiceField, required=False)),
         ('radio', _('radio'),
          curry(forms.ChoiceField, widget=forms.RadioSelect)),
-        ('multiple-select', _('multiple select'),
-         curry(forms.MultipleChoiceField, widget=forms.CheckboxSelectMultiple)),
-        ('hidden', _('hidden'), curry(forms.CharField, widget=forms.HiddenInput)),
+        ('multiple-select', _('multiple select'), curry(
+            forms.MultipleChoiceField,
+            widget=forms.CheckboxSelectMultiple)),
+        ('hidden', _('hidden'), curry(
+            forms.CharField,
+            widget=forms.HiddenInput)),
     ]
 
     # Add recaptcha field if available
@@ -140,7 +142,7 @@ class FormField(models.Model):
         else:
             FIELD_TYPES.append(
                 ('recaptcha', _('recaptcha'),
-                 curry(ReCaptchaField, attrs={'theme' : 'clean'})),
+                 curry(ReCaptchaField, attrs={'theme': 'clean'})),
             )
 
     form = models.ForeignKey(Form, related_name='fields',
@@ -179,7 +181,7 @@ class FormField(models.Model):
     def get_choices(self):
         get_tuple = lambda value: (slugify(value.strip()), value.strip())
         choices = [get_tuple(value) for value in self.choices.split(',')]
-        if not self.is_required and self.type=='select':
+        if not self.is_required and self.type == 'select':
             choices = BLANK_CHOICE_DASH + choices
         return tuple(choices)
 
@@ -286,11 +288,13 @@ class FormContent(models.Model):
         prefix = 'fc%d' % self.id
         formcontent = request.POST.get('_formcontent')
 
-        if request.method == 'POST' and (not formcontent or formcontent == unicode(self.id)):
+        if request.method == 'POST' and (
+                not formcontent or formcontent == unicode(self.id)):
             form_instance = form_class(request.POST, prefix=prefix)
 
             if form_instance.is_valid():
-                return self.process_valid_form(request, form_instance, **kwargs)
+                return self.process_valid_form(
+                    request, form_instance, **kwargs)
         else:
             form_instance = form_class(prefix=prefix)
 

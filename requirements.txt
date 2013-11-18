@@ -1,2 +1,0 @@
-Django>=1.4
-FeinCMS>=1.5

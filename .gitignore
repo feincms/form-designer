@@ -5,6 +5,6 @@
 /secrets.py
 .DS_Store
 ._*
-/FeinCMS.egg-info
-django_form_designer.egg-info
 /docs/_build
+/dist
+/form_designer.egg-info

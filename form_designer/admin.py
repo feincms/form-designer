@@ -1,23 +1,20 @@
+import codecs
 import csv
+from io import BytesIO
 import json
 from threading import currentThread
 
 from django import forms
 from django.conf import settings
+from django.conf.urls import patterns, url
 from django.contrib import admin
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-try:
-    from django.conf.urls import patterns, url
-except ImportError:
-    from django.conf.urls.defaults import patterns, url  # Django 1.3
 from django.db.models import Model
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
-from . import models
+from form_designer import models
 
-import cStringIO
-import codecs
 
 class UnicodeWriter:
     """
@@ -27,7 +24,7 @@ class UnicodeWriter:
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = BytesIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)('replace')
@@ -73,7 +70,9 @@ class FormAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FormAdminForm, self).__init__(*args, **kwargs)
 
-        choices = ((key, cfg.get('title', key)) for key, cfg in self._meta.model.CONFIG_OPTIONS)
+        choices = (
+            (key, cfg.get('title', key))
+            for key, cfg in self._meta.model.CONFIG_OPTIONS)
 
         self.fields['config_options'] = forms.MultipleChoiceField(
             choices=choices,
@@ -170,7 +169,7 @@ class FormAdmin(admin.ModelAdmin):
 
         rows = []
         for submission in form.submissions.all():
-            data = submission.sorted_data(include=('date','time','path'))
+            data = submission.sorted_data(include=('date', 'time', 'path'))
             if not rows:
                 rows.append(data.keys())
             rows.append([data.get(field_name) for field_name in rows[0]])
@@ -180,7 +179,8 @@ class FormAdmin(admin.ModelAdmin):
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = \
             'attachment; filename=form_submissions.csv'
-        writer = UnicodeWriter(response, **getattr(settings, 'FORM_DESIGNER_EXPORT', {}))
+        writer = UnicodeWriter(
+            response, **getattr(settings, 'FORM_DESIGNER_EXPORT', {}))
         writer.writerows(rows)
         return response
 
