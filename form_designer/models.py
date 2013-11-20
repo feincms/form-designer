@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
@@ -7,8 +6,11 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.encoding import python_2_unicode_compatible, smart_text
-from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
+
+from form_designer import utils
+from form_designer import settings
+
 
 try:
     from django.utils.text import slugify
@@ -117,37 +119,11 @@ class Form(models.Model):
         return ret
 
 
+FIELD_TYPES = utils.get_object(settings.FORM_DESIGNER_FIELD_TYPES)
+
+
 @python_2_unicode_compatible
 class FormField(models.Model):
-    FIELD_TYPES = [
-        ('text', _('text'), forms.CharField),
-        ('email', _('e-mail address'), forms.EmailField),
-        ('longtext', _('long text'),
-         curry(forms.CharField, widget=forms.Textarea)),
-        ('checkbox', _('checkbox'), curry(forms.BooleanField, required=False)),
-        ('select', _('select'), curry(forms.ChoiceField, required=False)),
-        ('radio', _('radio'),
-         curry(forms.ChoiceField, widget=forms.RadioSelect)),
-        ('multiple-select', _('multiple select'), curry(
-            forms.MultipleChoiceField,
-            widget=forms.CheckboxSelectMultiple)),
-        ('hidden', _('hidden'), curry(
-            forms.CharField,
-            widget=forms.HiddenInput)),
-    ]
-
-    # Add recaptcha field if available
-    if 'captcha' in settings.INSTALLED_APPS:
-        try:
-            from captcha.fields import ReCaptchaField
-        except ImportError:
-            pass
-        else:
-            FIELD_TYPES.append(
-                ('recaptcha', _('recaptcha'),
-                 curry(ReCaptchaField, attrs={'theme': 'clean'})),
-            )
-
     form = models.ForeignKey(Form, related_name='fields',
         verbose_name=_('form'))
     ordering = models.IntegerField(_('ordering'), default=0)
@@ -189,7 +165,7 @@ class FormField(models.Model):
         return tuple(choices)
 
     def get_type(self, **kwargs):
-        types = dict((r[0], r[2]) for r in self.FIELD_TYPES)
+        types = dict((r[0], r[2]) for r in FIELD_TYPES)
         return types[self.type](**kwargs)
 
     def add_formfield(self, fields, form):

@@ -53,6 +53,24 @@ field to the form designer. For everything else read through the
 django-recaptcha readme.
 
 
+Override field types
+====================
+
+Define ``FORM_DESIGNER_FIELD_TYPES`` in your settings file like::
+
+    FORM_DESIGNER_FIELD_TYPES = 'your_project.form_designer_config.FIELD_TYPES'
+
+In ``your_project.form_designer_config.py`` something like::
+
+    from django import forms
+    from django.utils.translation import ugettext_lazy as _
+
+    FIELD_TYPES = [
+        ('text', _('text'), forms.CharField),
+        ('email', _('e-mail address'), forms.EmailField),
+    ]
+
+
 Visit these sites for more information
 ======================================
 
