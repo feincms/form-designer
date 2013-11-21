@@ -2,6 +2,7 @@ from decimal import Decimal
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
+from django.utils import six
 from django.utils.importlib import import_module
 
 
@@ -27,7 +28,7 @@ class JSONFieldDescriptor(object):
 def get_object(path, fail_silently=False):
     # Return early if path isn't a string (might already be an callable or
     # a class or whatever)
-    if not isinstance(path, (str, unicode)):
+    if not isinstance(path, six.string_types):  # XXX bytes?
         return path
 
     try:
