@@ -1,5 +1,3 @@
-from django.db import models
-
 from feincms.module.page.models import Page
 
 from form_designer.models import FormContent

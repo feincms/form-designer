@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings as django_settings
 from django.core.mail import send_mail
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
@@ -39,9 +40,12 @@ def send_as_mail(model_instance, form_instance, request, config, **kwargs):
         data=repr(form_instance.cleaned_data),
         path=request.path)
 
-    send_mail(model_instance.title, submission.formatted_data(),
-              settings.DEFAULT_FROM_EMAIL,
-              [config['email']], fail_silently=True)
+    send_mail(
+        model_instance.title,
+        submission.formatted_data(),
+        django_settings.DEFAULT_FROM_EMAIL,
+        [config['email']],
+        fail_silently=True)
     return _('Thank you, your input has been received.')
 
 

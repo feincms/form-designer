@@ -41,3 +41,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
 )
+
+DEFAULT_FROM_EMAIL = 'no-reply@example.com'
