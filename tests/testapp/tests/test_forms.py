@@ -63,7 +63,7 @@ class FormsTest(TestCase):
         )
         self.assertContains(
             response,
-            'action="#form{}"'.format(form.id),
+            'action="#form{0}"'.format(form.id),
             1,
         )
         self.assertContains(
@@ -97,9 +97,9 @@ class FormsTest(TestCase):
 
         response = self.client.post('/', {
             '_formcontent'.format(form.id): form.id,
-            'fc{}-subject'.format(form.id): 'Test',
-            'fc{}-email'.format(form.id): 'invalid',
-            'fc{}-body'.format(form.id): 'Hello World',
+            'fc{0}-subject'.format(form.id): 'Test',
+            'fc{0}-email'.format(form.id): 'invalid',
+            'fc{0}-body'.format(form.id): 'Hello World',
         })
 
         self.assertNotContains(
@@ -109,15 +109,15 @@ class FormsTest(TestCase):
 
         self.assertContains(
             response,
-            'Enter a valid email address',
+            'Enter a valid e',  # Django 1.4 has e-mail, 1.5 and up email
             1,
         )
 
         response = self.client.post('/', {
             '_formcontent'.format(form.id): form.id,
-            'fc{}-subject'.format(form.id): 'Test',
-            'fc{}-email'.format(form.id): 'valid@example.com',
-            'fc{}-body'.format(form.id): 'Hello World',
+            'fc{0}-subject'.format(form.id): 'Test',
+            'fc{0}-email'.format(form.id): 'valid@example.com',
+            'fc{0}-body'.format(form.id): 'Hello World',
         })
 
         self.assertContains(
