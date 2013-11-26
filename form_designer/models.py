@@ -206,7 +206,7 @@ class FormSubmission(models.Model):
         `include` can be a tuple containing any or all of 'date', 'time',
         'datetime', or 'path' to include additional meta data.
         """
-        data_dict = eval(self.data)
+        data_dict = eval(self.data)  # XXX fix this! eval() !?
         data = SortedDict()
         field_names = []
         for field in self.form.fields.all():
