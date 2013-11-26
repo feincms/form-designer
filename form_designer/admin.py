@@ -65,7 +65,7 @@ class FormAdminForm(forms.ModelForm):
     class Meta:
         widgets = {
             'config_json': forms.Textarea(attrs={'rows': 3}),
-            }
+        }
 
     def __init__(self, *args, **kwargs):
         super(FormAdminForm, self).__init__(*args, **kwargs)
@@ -79,7 +79,7 @@ class FormAdminForm(forms.ModelForm):
             label=_('Options'),
             help_text=_('Save and continue editing to configure options.'),
             widget=forms.CheckboxSelectMultiple,
-            )
+        )
 
         config_fieldsets = []
 
@@ -100,7 +100,7 @@ class FormAdminForm(forms.ModelForm):
             fieldset = [
                 _('Form configuration: %s') % cfg.get('title', s),
                 {'fields': []},
-                ]
+            ]
 
             for k, f in cfg.get('form_fields', []):
                 self.fields['%s_%s' % (s, k)] = f
@@ -161,9 +161,12 @@ class FormAdmin(admin.ModelAdmin):
 
         fieldsets[0][1]['fields'].remove('config_json')
 
-        fieldsets.append((_('Configuration'), {
-            'fields': ('config_json', 'config_options'),
-            }))
+        fieldsets.append((
+            _('Configuration'),
+            {
+                'fields': ('config_json', 'config_options'),
+            }
+        ))
 
         fieldsets.extend(request._formdesigner_config_fieldsets)
 
@@ -192,9 +195,11 @@ class FormAdmin(admin.ModelAdmin):
     def get_urls(self):
         return patterns(
             '',
-            url(r'(?P<form_id>\d+)/export_submissions/',
-                self.admin_site.admin_view(self.export_submissions))
-            ) + super(FormAdmin, self).get_urls()
+            url(
+                r'(?P<form_id>\d+)/export_submissions/',
+                self.admin_site.admin_view(self.export_submissions),
+            )
+        ) + super(FormAdmin, self).get_urls()
 
 
 class FormSubmissionAdmin(admin.ModelAdmin):

@@ -9,28 +9,28 @@ FIELD_TYPES = [
     ('email', _('e-mail address'), forms.EmailField),
     ('longtext', _('long text'), curry(
         forms.CharField,
-        widget=forms.Textarea)
-    ),
+        widget=forms.Textarea,
+    )),
     ('checkbox', _('checkbox'), curry(
         forms.BooleanField,
-        required=False)
-    ),
+        required=False,
+    )),
     ('select', _('select'), curry(
         forms.ChoiceField,
-        required=False)
-    ),
+        required=False,
+    )),
     ('radio', _('radio'), curry(
         forms.ChoiceField,
-        widget=forms.RadioSelect)
-    ),
+        widget=forms.RadioSelect,
+    )),
     ('multiple-select', _('multiple select'), curry(
         forms.MultipleChoiceField,
-        widget=forms.CheckboxSelectMultiple)
-    ),
+        widget=forms.CheckboxSelectMultiple,
+    )),
     ('hidden', _('hidden'), curry(
         forms.CharField,
-        widget=forms.HiddenInput)
-    ),
+        widget=forms.HiddenInput,
+    )),
 ]
 
 # Add recaptcha field if available
@@ -40,7 +40,11 @@ if 'captcha' in settings.INSTALLED_APPS:
     except ImportError:
         pass
     else:
-        FIELD_TYPES.append(('recaptcha', _('recaptcha'), curry(
-            ReCaptchaField,
-            attrs={'theme': 'clean'}),
+        FIELD_TYPES.append((
+            'recaptcha',
+            _('recaptcha'),
+            curry(
+                ReCaptchaField,
+                attrs={'theme': 'clean'},
+            ),
         ))

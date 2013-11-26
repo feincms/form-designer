@@ -14,8 +14,14 @@ class JSONFieldDescriptor(object):
         cache_field = '_cached_jsonfield_%s' % self.field
         if not hasattr(obj, cache_field):
             try:
-                setattr(obj, cache_field, json.loads(getattr(obj, self.field),
-                    parse_float=Decimal))
+                setattr(
+                    obj,
+                    cache_field,
+                    json.loads(
+                        getattr(obj, self.field),
+                        parse_float=Decimal,
+                    )
+                )
             except (TypeError, ValueError):
                 setattr(obj, cache_field, {})
         return getattr(obj, cache_field)

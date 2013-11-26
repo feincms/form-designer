@@ -81,7 +81,7 @@ class Form(models.Model):
         fields = SortedDict((
             ('required_css_class', 'required'),
             ('error_css_class', 'error'),
-            ))
+        ))
 
         for field in self.fields.all():
             field.add_formfield(fields, self)
@@ -128,8 +128,8 @@ FIELD_TYPES = utils.get_object(settings.FORM_DESIGNER_FIELD_TYPES)
 
 @python_2_unicode_compatible
 class FormField(models.Model):
-    form = models.ForeignKey(Form, related_name='fields',
-        verbose_name=_('form'))
+    form = models.ForeignKey(
+        Form, related_name='fields', verbose_name=_('form'))
     ordering = models.IntegerField(_('ordering'), default=0)
 
     title = models.CharField(_('title'), max_length=100)
@@ -176,8 +176,11 @@ class FormField(models.Model):
         fields[slugify(self.name)] = self.formfield()
 
     def formfield(self):
-        kwargs = dict(label=self.title, required=self.is_required,
-            initial=self.default_value)
+        kwargs = dict(
+            label=self.title,
+            required=self.is_required,
+            initial=self.default_value,
+        )
         if self.choices:
             kwargs['choices'] = self.get_choices()
         if self.help_text:
@@ -261,9 +264,12 @@ class FormContent(models.Model):
         """ Process form and return response (hook method). """
         process_result = self.form.process(form_instance, request)
         context = RequestContext(
-            request, {
+            request,
+            {
                 'content': self,
-                'message': self.success_message or process_result or u''})
+                'message': self.success_message or process_result or u'',
+            }
+        )
         return render_to_string(self.template, context)
 
     def render(self, request, **kwargs):
