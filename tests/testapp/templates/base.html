@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+{% load feincms_tags %}
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+  {% block content %}
+    {% feincms_render_region feincms_page "main" request %}
+  {% endblock %}
+</body>
+</html>

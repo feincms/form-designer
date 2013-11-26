@@ -8,3 +8,5 @@
 /docs/_build
 /dist
 /form_designer.egg-info
+.tox
+venv
