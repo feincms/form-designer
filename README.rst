@@ -2,6 +2,9 @@
 Form Designer - a simple form designer for FeinCMS
 ==================================================
 
+.. image:: https://travis-ci.org/feincms/form_designer.png?branch=master
+   :target: https://travis-ci.org/feincms/form_designer
+
 This form designer does not try to offer every last configuration possibility
 of Django's forms, just through the administration interface instead of
 directly in Python code. Instead, it strives to be a tool which everyone can
