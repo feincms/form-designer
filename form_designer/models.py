@@ -214,7 +214,7 @@ class FormSubmission(models.Model):
             field_names.append(field.name)
         # append any extra data (form may have changed since submission, etc)
         for field_name in data_dict:
-            if not field_name in field_names:
+            if field_name not in field_names:
                 data[field_name] = data_dict[field_name]
         if 'datetime' in include:
             data['submitted'] = self.submitted
@@ -250,8 +250,8 @@ class FormContent(models.Model):
                              related_name='%(app_label)s_%(class)s_related')
     show_form_title = models.BooleanField(_('show form title'), default=True)
     success_message = models.TextField(
-        _('success message'), help_text=
-        _("Custom message to display after valid form is submitted"))
+        _('success message'),
+        help_text=_("Custom message to display after valid form is submitted"))
 
     template = 'content/form/form.html'
 
