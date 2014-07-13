@@ -74,6 +74,23 @@ In ``your_project.form_designer_config.py`` something like::
     ]
 
 
+Version history
+===============
+
+0.4
+---
+
+* Built-in support for Django 1.7-style migrations. If you're using South,
+  update to South 1.0 or better.
+
+
+0.3
+---
+
+* Support for Python 3.3, 2.7 and 2.6.
+* Support for overridding field types with ``FORM_DESIGNER_FIELD_TYPES``.
+
+
 Visit these sites for more information
 ======================================
 
