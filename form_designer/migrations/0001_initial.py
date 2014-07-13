@@ -1,92 +1,67 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        
-        # Adding model 'Form'
-        db.create_table('form_designer_form', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('config_json', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('form_designer', ['Form'])
+    dependencies = [
+    ]
 
-        # Adding model 'FormField'
-        db.create_table('form_designer_formfield', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('form', self.gf('django.db.models.fields.related.ForeignKey')(related_name='fields', to=orm['form_designer.Form'])),
-            ('ordering', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('type', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('choices', self.gf('django.db.models.fields.CharField')(max_length=1024, blank=True)),
-            ('help_text', self.gf('django.db.models.fields.CharField')(max_length=1024, blank=True)),
-            ('default_value', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('is_required', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal('form_designer', ['FormField'])
-
-        # Adding unique constraint on 'FormField', fields ['form', 'name']
-        db.create_unique('form_designer_formfield', ['form_id', 'name'])
-
-        # Adding model 'FormSubmission'
-        db.create_table('form_designer_formsubmission', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('submitted', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('form', self.gf('django.db.models.fields.related.ForeignKey')(related_name='submissions', to=orm['form_designer.Form'])),
-            ('data', self.gf('django.db.models.fields.TextField')()),
-            ('path', self.gf('django.db.models.fields.CharField')(max_length=255)),
-        ))
-        db.send_create_signal('form_designer', ['FormSubmission'])
-
-    def backwards(self, orm):
-        
-        # Removing unique constraint on 'FormField', fields ['form', 'name']
-        db.delete_unique('form_designer_formfield', ['form_id', 'name'])
-
-        # Deleting model 'Form'
-        db.delete_table('form_designer_form')
-
-        # Deleting model 'FormField'
-        db.delete_table('form_designer_formfield')
-
-        # Deleting model 'FormSubmission'
-        db.delete_table('form_designer_formsubmission')
-
-    models = {
-        'form_designer.form': {
-            'Meta': {'object_name': 'Form'},
-            'config_json': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'form_designer.formfield': {
-            'Meta': {'ordering': "['ordering', 'id']", 'unique_together': "(('form', 'name'),)", 'object_name': 'FormField'},
-            'choices': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'blank': 'True'}),
-            'default_value': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'form': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'fields'", 'to': "orm['form_designer.Form']"}),
-            'help_text': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_required': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'ordering': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '20'})
-        },
-        'form_designer.formsubmission': {
-            'Meta': {'ordering': "('-submitted',)", 'object_name': 'FormSubmission'},
-            'data': ('django.db.models.fields.TextField', [], {}),
-            'form': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'submissions'", 'to': "orm['form_designer.Form']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'path': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'submitted': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['form_designer']
+    operations = [
+        migrations.CreateModel(
+            name='Form',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('title', models.CharField(verbose_name='title', max_length=100)),
+                ('config_json', models.TextField(verbose_name='config', blank=True)),
+            ],
+            options={
+                'verbose_name': 'form',
+                'verbose_name_plural': 'forms',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='FormField',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('ordering', models.IntegerField(default=0, verbose_name='ordering')),
+                ('title', models.CharField(verbose_name='title', max_length=100)),
+                ('name', models.CharField(verbose_name='name', max_length=100)),
+                ('type', models.CharField(verbose_name='type', choices=[('text', 'text'), ('email', 'e-mail address'), ('longtext', 'long text'), ('checkbox', 'checkbox'), ('select', 'select'), ('radio', 'radio'), ('multiple-select', 'multiple select'), ('hidden', 'hidden')], max_length=20)),
+                ('choices', models.CharField(verbose_name='choices', help_text='Comma-separated', blank=True, max_length=1024)),
+                ('help_text', models.CharField(verbose_name='help text', help_text='Optional extra explanatory text beside the field', blank=True, max_length=1024)),
+                ('default_value', models.CharField(verbose_name='default value', help_text='Optional default value of the field', blank=True, max_length=255)),
+                ('is_required', models.BooleanField(default=True, verbose_name='is required')),
+                ('form', models.ForeignKey(verbose_name='form', to='form_designer.Form')),
+            ],
+            options={
+                'ordering': ['ordering', 'id'],
+                'verbose_name': 'form field',
+                'verbose_name_plural': 'form fields',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='formfield',
+            unique_together=set([('form', 'name')]),
+        ),
+        migrations.CreateModel(
+            name='FormSubmission',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('submitted', models.DateTimeField(auto_now_add=True)),
+                ('data', models.TextField()),
+                ('path', models.CharField(max_length=255)),
+                ('form', models.ForeignKey(verbose_name='form', to='form_designer.Form')),
+            ],
+            options={
+                'ordering': ('-submitted',),
+                'verbose_name': 'form submission',
+                'verbose_name_plural': 'form submissions',
+            },
+            bases=(models.Model,),
+        ),
+    ]
