@@ -10,12 +10,15 @@ env:
   - DJANGO=1.4.10 FEINCMS=1.9.0
   - DJANGO=1.5.5 FEINCMS=1.9.0
   - DJANGO=1.6 FEINCMS=1.9.0
+  - DJANGO=1.7 FEINCMS=1.10.1
 matrix:
   exclude:
     - python: "3.3"
       env: DJANGO=1.4.10 FEINCMS=1.8.0
     - python: "3.3"
       env: DJANGO=1.4.10 FEINCMS=1.9.0
+    - python: "2.6"
+      env: DJANGO=1.7 FEINCMS=1.10.1
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
   - pip install -q Django==$DJANGO FeinCMS==$FEINCMS django-mptt==0.6.0 --use-mirrors
