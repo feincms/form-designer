@@ -15,12 +15,12 @@ from form_designer import settings
 
 try:
     from django.utils.text import slugify
-except ImportError:  # Django 1.4
+except ImportError:  # pragma: no cover, Django 1.4
     from django.template.defaultfilters import slugify
 
 try:
     from feincms.admin.item_editor import FeinCMSInline
-except ImportError:  # FeinCMS not available?
+except ImportError:  # pragma: no cover, FeinCMS not available.
     # Does not do anything sane, but does not hurt either
     from django.contrib.admin import StackedInline as FeinCMSInline
 
