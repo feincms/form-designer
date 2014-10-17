@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('help_text', models.CharField(verbose_name='help text', help_text='Optional extra explanatory text beside the field', blank=True, max_length=1024)),
                 ('default_value', models.CharField(verbose_name='default value', help_text='Optional default value of the field', blank=True, max_length=255)),
                 ('is_required', models.BooleanField(default=True, verbose_name='is required')),
-                ('form', models.ForeignKey(related_name=b'fields', verbose_name='form', to='form_designer.Form')),
+                ('form', models.ForeignKey(related_name='fields', verbose_name='form', to='form_designer.Form')),
             ],
             options={
                 'ordering': ['ordering', 'id'],
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('submitted', models.DateTimeField(auto_now_add=True)),
                 ('data', models.TextField()),
                 ('path', models.CharField(max_length=255)),
-                ('form', models.ForeignKey(related_name=b'submissions', verbose_name='form', to='form_designer.Form')),
+                ('form', models.ForeignKey(related_name='submissions', verbose_name='form', to='form_designer.Form')),
             ],
             options={
                 'ordering': ('-submitted',),
