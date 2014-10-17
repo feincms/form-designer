@@ -3,7 +3,10 @@ import json
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import six
-from django.utils.importlib import import_module
+try:
+    from importlib import import_module
+except ImportError:  # pragma: no cover
+    from django.utils.importlib import import_module
 
 
 class JSONFieldDescriptor(object):
