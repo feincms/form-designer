@@ -184,7 +184,7 @@ class FormAdmin(admin.ModelAdmin):
             # (fairly gracefully handles changes in form fields between
             #  submissions)
 
-        response = HttpResponse(mimetype='text/csv')
+        response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = \
             'attachment; filename=form_submissions.csv'
         writer = UnicodeWriter(
