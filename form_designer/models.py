@@ -37,7 +37,7 @@ def create_form_submission(model_instance, form_instance, request, **kwargs):
 def send_as_mail(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
-        data=str(form_instance.cleaned_data),
+        data=repr(form_instance.cleaned_data),
         path=request.path)
 
     send_mail(
