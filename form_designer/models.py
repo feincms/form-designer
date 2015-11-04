@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.functional import lazy
 from form_designer import utils
 from form_designer import settings
 
@@ -126,6 +126,11 @@ class Form(models.Model):
 FIELD_TYPES = utils.get_object(settings.FORM_DESIGNER_FIELD_TYPES)
 
 
+def get_type_choices():
+    return [r[:2] for r in
+            utils.get_object(settings.FORM_DESIGNER_FIELD_TYPES)]
+
+
 @python_2_unicode_compatible
 class FormField(models.Model):
     form = models.ForeignKey(
@@ -135,7 +140,7 @@ class FormField(models.Model):
     title = models.CharField(_('title'), max_length=100)
     name = models.CharField(_('name'), max_length=100)
     type = models.CharField(
-        _('type'), max_length=20, choices=[r[:2] for r in FIELD_TYPES])
+        _('type'), max_length=20, choices=lazy(get_type_choices, list)())
     choices = models.CharField(
         _('choices'), max_length=1024, blank=True,
         help_text=_('Comma-separated'))
