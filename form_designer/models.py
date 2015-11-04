@@ -7,10 +7,10 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.encoding import python_2_unicode_compatible, smart_text
-from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import lazy
-from form_designer import utils
-from form_designer import settings
+from django.utils.translation import ugettext_lazy as _
+
+from form_designer import settings, utils
 
 
 try:
