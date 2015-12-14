@@ -1,3 +1,8 @@
+try:
+    from collections import OrderedDict
+except ImportError:
+    from django.utils.datastructures import SortedDict as OrderedDict
+
 from django import forms
 from django.conf import settings as django_settings
 from django.core.mail import send_mail
@@ -5,7 +10,6 @@ from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils.datastructures import SortedDict
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils.functional import lazy
 from django.utils.translation import ugettext_lazy as _
@@ -78,7 +82,7 @@ class Form(models.Model):
         return self.title
 
     def form(self):
-        fields = SortedDict((
+        fields = OrderedDict((
             ('required_css_class', 'required'),
             ('error_css_class', 'error'),
         ))
@@ -206,13 +210,13 @@ class FormSubmission(models.Model):
         verbose_name_plural = _('form submissions')
 
     def sorted_data(self, include=()):
-        """ Return SortedDict by field ordering and using titles as keys.
+        """ Return OrderedDict by field ordering and using titles as keys.
 
         `include` can be a tuple containing any or all of 'date', 'time',
         'datetime', or 'path' to include additional meta data.
         """
         data_dict = eval(self.data)  # XXX fix this! eval() !?
-        data = SortedDict()
+        data = OrderedDict()
         field_names = []
         for field in self.form.fields.all():
             data[field.title] = data_dict.get(field.name)
