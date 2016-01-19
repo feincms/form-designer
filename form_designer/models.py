@@ -12,6 +12,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils.functional import lazy
+from django.utils.html import format_html, mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from form_designer import settings, utils
@@ -239,10 +240,14 @@ class FormSubmission(models.Model):
         formatted = ""
         for key, value in self.sorted_data().items():
             if html:
-                formatted += "<dt>%s</dt><dd>%s</dd>\n" % (key, value)
+                formatted += format_html(
+                    "<dt>{}</dt><dd>{}</dd>\n",
+                    key,
+                    value,
+                )
             else:
                 formatted += "%s: %s\n" % (key, value)
-        return formatted if not html else "<dl>%s</dl>" % formatted
+        return mark_safe("<dl>%s</dl>" % formatted) if html else formatted
 
     def formatted_data_html(self):
         return self.formatted_data(html=True)
