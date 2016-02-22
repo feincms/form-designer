@@ -3,6 +3,7 @@ try:
 except ImportError:
     from django.utils.datastructures import SortedDict as OrderedDict
 
+import datetime # noqa
 from django import forms
 from django.conf import settings as django_settings
 from django.core.mail import send_mail
