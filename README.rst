@@ -126,6 +126,38 @@ In ``your_project.form_designer_config.py`` something like::
 Version history
 ===============
 
+Next version
+------------
+
+* Replaced ``SortedDict`` with ``collections.OrderedDict``.
+* Fixed an XSS vulnerability in the administration.
+* Dropped compatibility with old Django versions (<1.8).
+* Replaced the horrible form submission serialization of ``repr()`` and
+  ``eval()`` with JSON.
+* General packaging and code cleanups.
+
+
+0.7
+---
+
+* Avoid the deprecated ``mimetype`` argument to HTTP responses.
+* Fixed infinite recursion in ``jsonize``.
+* Made field type choices lazy so that changing available field types is
+  easier resp. actually possible.
+
+
+0.6
+---
+
+* Improve code coverage, less warnings, less complaining.
+
+
+0.5
+---
+
+* Added an app config for a nicer app name.
+
+
 0.4
 ---
 
