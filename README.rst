@@ -126,8 +126,8 @@ In ``your_project.form_designer_config.py`` something like::
 Version history
 ===============
 
-Next version
-------------
+0.8
+---
 
 * Replaced ``SortedDict`` with ``collections.OrderedDict``.
 * Fixed an XSS vulnerability in the administration.
