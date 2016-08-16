@@ -18,6 +18,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from form_designer import models
 
+try:
+    from admin_ordering.admin import OrderableAdmin
+except ImportError:
+    OrderableAdmin = object
 
 if six.PY3:
     UnicodeWriter = csv.writer
@@ -138,10 +142,12 @@ class FormAdminForm(forms.ModelForm):
         return data
 
 
-class FormFieldAdmin(admin.TabularInline):
+class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
     extra = 0
     model = models.FormField
     prepopulated_fields = {'name': ('title',)}
+    fk_name = 'form'
+    ordering_field = 'ordering'
 
 
 class FormAdmin(admin.ModelAdmin):
