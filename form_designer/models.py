@@ -2,10 +2,12 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 import datetime  # noqa
+import json
 
 from django import forms
 from django.conf import settings as django_settings
 from django.core.mail import send_mail
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.encoding import python_2_unicode_compatible
@@ -21,14 +23,14 @@ from form_designer.utils import JSONFieldDescriptor, get_object
 def create_form_submission(model_instance, form_instance, request, **kwargs):
     return FormSubmission.objects.create(
         form=model_instance,
-        data=repr(form_instance.cleaned_data),
+        data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
         path=request.path)
 
 
 def send_as_mail(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
-        data=repr(form_instance.cleaned_data),
+        data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
         path=request.path)
 
     send_mail(
@@ -206,7 +208,7 @@ class FormSubmission(models.Model):
         `include` can be a tuple containing any or all of 'date', 'time',
         'datetime', or 'path' to include additional meta data.
         """
-        data_dict = eval(self.data)  # XXX fix this! eval() !?
+        data_dict = json.loads(self.data)
         data = OrderedDict()
         field_names = []
         for field in self.form.fields.all():
