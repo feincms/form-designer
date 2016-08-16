@@ -3,7 +3,6 @@
 {% load i18n %}
 
 {% block object-tools-items %}
-{% if original %}<li><a href="export_submissions">{% trans "Export submissions" %}</a></li>{% endif %}
-<li><a href="history/" class="historylink">{% trans "History" %}</a></li>
-{% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+{% if original %}<li><a href="{% url 'admin:form_designer_formsubmission_export' form_id=original.pk %}">{% trans "Export submissions" %}</a></li>{% endif %}
+{{ block.super }}
 {% endblock %}

@@ -199,6 +199,7 @@ class FormAdmin(admin.ModelAdmin):
             url(
                 r'(?P<form_id>\d+)/export_submissions/',
                 self.admin_site.admin_view(self.export_submissions),
+                name='form_designer_formsubmission_export',
             )
         ] + super(FormAdmin, self).get_urls()
 
