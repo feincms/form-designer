@@ -126,6 +126,12 @@ In ``your_project.form_designer_config.py`` something like::
 Version history
 ===============
 
+Next
+----
+
+* The form admin uses django-admin-ordering_ for fields if available.
+
+
 0.8
 ---
 
@@ -177,3 +183,5 @@ Visit these sites for more information
 
 * form_designer: https://github.com/matthiask/form_designer
 * FeinCMS: http://www.feinheit.ch/labs/feincms-django-cms/
+
+.. _django-admin-ordering: https://github.com/matthiask/django-admin-ordering

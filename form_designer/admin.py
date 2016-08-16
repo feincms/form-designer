@@ -20,8 +20,12 @@ from form_designer import models
 
 try:
     from admin_ordering.admin import OrderableAdmin
+
+    class Inline(OrderableAdmin, admin.TabularInline):
+        pass
+
 except ImportError:
-    OrderableAdmin = object
+    Inline = admin.TabularInline
 
 if six.PY3:
     UnicodeWriter = csv.writer
@@ -142,7 +146,7 @@ class FormAdminForm(forms.ModelForm):
         return data
 
 
-class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
+class FormFieldAdmin(Inline):
     extra = 0
     model = models.FormField
     prepopulated_fields = {'name': ('title',)}
