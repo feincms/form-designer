@@ -30,6 +30,55 @@ actions aren't hardcoded -- they can be freely defined for every form defined
 through this form designer.
 
 
+Installing the form designer
+============================
+
+Install the package using pip_::
+
+    $ pip install form_designer
+
+Setting up the form designer
+============================
+
+- Add ``'form_designer'`` to ``INSTALLED_APPS``.
+- Run ``./manage.py migrate form_designer``
+- Go into Django's admin panel and add one or more forms with the fields you
+  require. Also select at least one action in the configuration options
+  selectbox, most often you'd want to select both the "E-mail" and the
+  "Save form submission" option. After saving once, you'll see additional
+  fields belonging to the selected configuration options, in this case
+  a field for entering an e-mail address where the submission results should
+  be sent to.
+
+If you're using the form designer with FeinCMS_, the content type can be
+imported from ``form_designer.contents.FormContent``. Otherwise, your
+code should use the following methods (the code would probably reside in
+a view)::
+
+    # Somehow fetch the form_designer.models.Form instance:
+    instance = ...
+
+    # Build the form class:
+    form_class = instance.form()
+
+    # Standard form processing:
+    if request.method == 'POST':
+        form = form_class(request.POST)
+
+        if form.is_valid():
+            # Do what you want, or run the configured processors:
+            result = instance.process(form, request)
+
+            # Maybe there's something useful in here:
+            pprint(result)
+
+            ...
+    else:
+        form = form_class()
+
+    return render(...)
+
+
 Configuring the export
 ======================
 
