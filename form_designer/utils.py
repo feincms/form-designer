@@ -1,12 +1,9 @@
 from decimal import Decimal
+from importlib import import_module
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import six
-try:
-    from importlib import import_module
-except ImportError:  # pragma: no cover
-    from django.utils.importlib import import_module
 
 
 class JSONFieldDescriptor(object):

@@ -1,36 +1,21 @@
-try:
-    from collections import OrderedDict
-except ImportError:
-    from django.utils.datastructures import SortedDict as OrderedDict
+from __future__ import unicode_literals
 
-import datetime # noqa
+from collections import OrderedDict
+import datetime  # noqa
+
 from django import forms
 from django.conf import settings as django_settings
 from django.core.mail import send_mail
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
-from django.template import RequestContext
-from django.template.loader import render_to_string
-from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import lazy
 from django.utils.html import format_html, mark_safe
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
-from form_designer import settings, utils
-
-
-try:
-    from django.utils.text import slugify
-except ImportError:  # pragma: no cover, Django 1.4
-    from django.template.defaultfilters import slugify
-
-try:
-    from feincms.admin.item_editor import FeinCMSInline
-except ImportError:  # pragma: no cover, FeinCMS not available.
-    # Does not do anything sane, but does not hurt either
-    from django.contrib.admin import StackedInline as FeinCMSInline
-
-from form_designer.utils import JSONFieldDescriptor
+from form_designer import settings
+from form_designer.utils import JSONFieldDescriptor, get_object
 
 
 def create_form_submission(model_instance, form_instance, request, **kwargs):
@@ -107,7 +92,7 @@ class Form(models.Model):
                     validator(self, data)
                 return data
 
-        return type('Form%s' % self.pk, (Form,), fields)
+        return type(str('Form%s' % self.pk), (Form,), fields)
 
     def process(self, form, request):
         ret = {}
@@ -129,18 +114,19 @@ class Form(models.Model):
         return ret
 
 
-FIELD_TYPES = utils.get_object(settings.FORM_DESIGNER_FIELD_TYPES)
+FIELD_TYPES = get_object(settings.FORM_DESIGNER_FIELD_TYPES)
 
 
 def get_type_choices():
     return [r[:2] for r in
-            utils.get_object(settings.FORM_DESIGNER_FIELD_TYPES)]
+            get_object(settings.FORM_DESIGNER_FIELD_TYPES)]
 
 
 @python_2_unicode_compatible
 class FormField(models.Model):
     form = models.ForeignKey(
-        Form, related_name='fields', verbose_name=_('form'))
+        Form, related_name='fields', verbose_name=_('form'),
+        on_delete=models.CASCADE)
     ordering = models.IntegerField(_('ordering'), default=0)
 
     title = models.CharField(_('title'), max_length=100)
@@ -173,7 +159,9 @@ class FormField(models.Model):
                 _("You can't specify choices for %s fields") % self.type)
 
     def get_choices(self):
-        get_tuple = lambda value: (slugify(value.strip()), value.strip())
+        def get_tuple(value):
+            return (slugify(value.strip()), value.strip())
+
         choices = [get_tuple(value) for value in self.choices.split(',')]
         if not self.is_required and self.type == 'select':
             choices = BLANK_CHOICE_DASH + choices
@@ -202,7 +190,8 @@ class FormField(models.Model):
 class FormSubmission(models.Model):
     submitted = models.DateTimeField(auto_now_add=True)
     form = models.ForeignKey(
-        Form, verbose_name=_('form'), related_name='submissions')
+        Form, verbose_name=_('form'), related_name='submissions',
+        on_delete=models.CASCADE)
     data = models.TextField()
     path = models.CharField(max_length=255)
 
@@ -252,56 +241,3 @@ class FormSubmission(models.Model):
 
     def formatted_data_html(self):
         return self.formatted_data(html=True)
-
-
-class FormContentInline(FeinCMSInline):
-    raw_id_fields = ('form',)
-
-
-class FormContent(models.Model):
-    feincms_item_editor_inline = FormContentInline
-
-    form = models.ForeignKey(Form, verbose_name=_('form'),
-                             related_name='%(app_label)s_%(class)s_related')
-    show_form_title = models.BooleanField(_('show form title'), default=True)
-    success_message = models.TextField(
-        _('success message'),
-        help_text=_("Custom message to display after valid form is submitted"))
-
-    template = 'content/form/form.html'
-
-    class Meta:
-        abstract = True
-        verbose_name = _('form')
-        verbose_name_plural = _('forms')
-
-    def process_valid_form(self, request, form_instance, **kwargs):
-        """ Process form and return response (hook method). """
-        process_result = self.form.process(form_instance, request)
-        context = RequestContext(
-            request,
-            {
-                'content': self,
-                'message': self.success_message or process_result or u'',
-            }
-        )
-        return render_to_string(self.template, context)
-
-    def render(self, request, **kwargs):
-        form_class = self.form.form()
-        prefix = 'fc%d' % self.id
-        formcontent = request.POST.get('_formcontent')
-
-        if request.method == 'POST' and (
-                not formcontent or formcontent == smart_text(self.id)):
-            form_instance = form_class(request.POST, prefix=prefix)
-
-            if form_instance.is_valid():
-                return self.process_valid_form(
-                    request, form_instance, **kwargs)
-        else:
-            form_instance = form_class(prefix=prefix)
-
-        context = RequestContext(
-            request, {'content': self, 'form': form_instance})
-        return render_to_string(self.template, context)

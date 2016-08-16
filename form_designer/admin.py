@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import codecs
 import csv
 from io import BytesIO
@@ -5,7 +7,7 @@ import json
 
 from django import forms
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib import admin
 from django.db.models import Model
 from django.http import HttpResponse
@@ -193,13 +195,12 @@ class FormAdmin(admin.ModelAdmin):
         return response
 
     def get_urls(self):
-        return patterns(
-            '',
+        return [
             url(
                 r'(?P<form_id>\d+)/export_submissions/',
                 self.admin_site.admin_view(self.export_submissions),
             )
-        ) + super(FormAdmin, self).get_urls()
+        ] + super(FormAdmin, self).get_urls()
 
 
 class FormSubmissionAdmin(admin.ModelAdmin):

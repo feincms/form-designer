@@ -1,5 +1,7 @@
+from __future__ import unicode_literals
+
 from django import forms
-from django.conf import settings
+from django.apps import apps
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
 
@@ -34,7 +36,7 @@ FIELD_TYPES = [
 ]
 
 # Add recaptcha field if available
-if 'captcha' in settings.INSTALLED_APPS:
+if apps.is_installed('captcha'):
     try:
         from captcha.fields import ReCaptchaField
     except ImportError:

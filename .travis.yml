@@ -1,13 +1,15 @@
 language: python
 sudo: false
+cache: pip
 python:
   - "3.4"
   - "2.7"
 env:
   - REQ='Django>=1.8,<1.9 FeinCMS>=1.11,<1.12'
-  - REQ='Django>=1.9,<1.10 FeinCMS==2.0a11'
+  - REQ='Django>=1.9,<1.10 FeinCMS>=1.12'
 install:
-  - pip install -q $REQ django-mptt==0.8.0
-  - python setup.py -q install
+  - pip install -U pip wheel
+  - pip install -q $REQ django-mptt==0.8.5
+  - python setup.py install
 # command to run tests, e.g. python setup.py test
 script: "cd tests && ./manage.py test testapp"

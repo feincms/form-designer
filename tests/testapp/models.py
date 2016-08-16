@@ -1,6 +1,6 @@
 from feincms.module.page.models import Page
 
-from form_designer.models import FormContent
+from form_designer.contents import FormContent
 
 
 Page.register_templates({

@@ -1,42 +1,29 @@
 #!/usr/bin/env python
 
+import io
 import os
 from setuptools import setup, find_packages
 
 
 def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+    with io.open(os.path.join(os.path.dirname(__file__), filename)) as f:
+        return f.read()
 
 
 setup(
     name='form_designer',
     version=__import__('form_designer').__version__,
-    description='Form Designer - a simple form designer for FeinCMS',
+    description='Form Designer',
     long_description=read('README.rst'),
     author='Matthias Kestenholz',
     author_email='mk@feinheit.ch',
-    url='http://github.com/feincms/form_designer/',
+    url='https://github.com/feincms/form_designer/',
     license='BSD License',
     platforms=['OS Independent'],
     packages=find_packages(
         exclude=[],
     ),
-    package_data={
-        '': ['*.html', '*.txt'],
-        'form_designer': [
-            'locale/*/*/*.*',
-            # 'static/form_designer/*.*',
-            # 'static/form_designer/*/*.*',
-            'templates/*.*',
-            'templates/*/*.*',
-            'templates/*/*/*.*',
-            'templates/*/*/*/*.*',
-        ],
-    },
-    install_requires=[
-        'Django>=1.4.2',
-        # Yes, form_designer can be used without FeinCMS.
-    ],
+    include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -46,10 +33,8 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development',
     ],

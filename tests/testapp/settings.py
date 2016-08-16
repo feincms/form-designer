@@ -32,16 +32,21 @@ LOGIN_REDIRECT_URL = '/?login=1'
 
 ROOT_URLCONF = 'testapp.urls'
 LANGUAGES = (('en', 'English'), ('de', 'German'))
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages',
-)
-
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 DEFAULT_FROM_EMAIL = 'no-reply@example.com'
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -49,4 +54,5 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 )
