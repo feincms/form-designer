@@ -8,6 +8,7 @@ from django import forms
 from django.conf import settings as django_settings
 from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.validators import validate_email
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.encoding import python_2_unicode_compatible
@@ -37,9 +38,14 @@ def send_as_mail(model_instance, form_instance, request, config, **kwargs):
         model_instance.title,
         submission.formatted_data(),
         django_settings.DEFAULT_FROM_EMAIL,
-        [config['email']],
+        [email.strip() for email in config['email'].split(',')],
         fail_silently=True)
     return _('Thank you, your input has been received.')
+
+
+def validate_comma_separated_emails(value):
+    for v in value.split(','):
+        validate_email(v.strip())
 
 
 @python_2_unicode_compatible
@@ -52,7 +58,12 @@ class Form(models.Model):
         ('email', {
             'title': _('Send e-mail'),
             'form_fields': [
-                ('email', forms.EmailField(label=_('e-mail address'))),
+                ('email', forms.CharField(
+                    label=_('e-mail address'),
+                    validators=[validate_comma_separated_emails],
+                    help_text=_(
+                        'Separate multiple e-mail addresses with commas.'),
+                )),
             ],
             'process': send_as_mail,
         }),
