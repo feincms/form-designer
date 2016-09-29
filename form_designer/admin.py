@@ -109,7 +109,7 @@ class FormAdminForm(forms.ModelForm):
 
             fieldset = [
                 _('Form configuration: %s') % cfg.get('title', s),
-                {'fields': []},
+                {'fields': [], 'classes': ('form-designer',)},
             ]
 
             for k, f in cfg.get('form_fields', []):
@@ -159,6 +159,11 @@ class FormAdmin(admin.ModelAdmin):
     inlines = [FormFieldAdmin]
     list_display = ('title',)
     save_as = True
+
+    class Media:
+        css = {'all': (
+            'form_designer/admin.css',
+        )}
 
     def get_form(self, request, obj=None, **kwargs):
         form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
