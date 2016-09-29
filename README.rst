@@ -126,10 +126,11 @@ In ``your_project.form_designer_config.py`` something like::
 Version history
 ===============
 
-Next
-----
+0.9
+---
 
 * The form admin uses django-admin-ordering_ for fields if available.
+* Now supports sending notification mails to multiple addresses.
 
 
 0.8
