@@ -1,3 +1,5 @@
-Django<1.10  # django-mptt...
+Django
 FeinCMS
+Pillow
+django-mptt
 coverage

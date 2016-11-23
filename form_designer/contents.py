@@ -41,7 +41,7 @@ class FormContent(models.Model):
                 'content': self,
                 'message': self.success_message or process_result or u''
             },
-            request)
+            request=request)
 
     def render(self, request, **kwargs):
         form_class = self.form.form()
@@ -59,4 +59,9 @@ class FormContent(models.Model):
             form_instance = form_class(prefix=prefix)
 
         return render_to_string(
-            self.template, {'content': self, 'form': form_instance}, request)
+            self.template,
+            {
+                'content': self,
+                'form': form_instance,
+            },
+            request=request)
