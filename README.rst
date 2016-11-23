@@ -126,6 +126,15 @@ In ``your_project.form_designer_config.py`` something like::
 Version history
 ===============
 
+0.10
+----
+
+* Make the fields tabular inline a bit less wide.
+* Added czech translations.
+* Fixed the usage of ``render_to_string`` to actually work correctly
+  with Django 1.10.
+
+
 0.9
 ---
 
@@ -136,6 +145,8 @@ Version history
 0.8
 ---
 
+* Moved the ``FormContent`` to the new module ``form_designer.contents``
+  to make the form designer usable without FeinCMS_.
 * Replaced ``SortedDict`` with ``collections.OrderedDict``.
 * Fixed an XSS vulnerability in the administration.
 * Dropped compatibility with old Django versions (<1.8).
@@ -186,3 +197,4 @@ Visit these sites for more information
 * FeinCMS: http://www.feinheit.ch/labs/feincms-django-cms/
 
 .. _django-admin-ordering: https://github.com/matthiask/django-admin-ordering
+.. _FeinCMS: https://feincms-django-cms.readthedocs.io/
