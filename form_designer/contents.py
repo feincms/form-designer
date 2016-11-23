@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
@@ -36,14 +35,13 @@ class FormContent(models.Model):
     def process_valid_form(self, request, form_instance, **kwargs):
         """ Process form and return response (hook method). """
         process_result = self.form.process(form_instance, request)
-        context = RequestContext(
-            request,
+        return render_to_string(
+            self.template,
             {
                 'content': self,
-                'message': self.success_message or process_result or u'',
-            }
-        )
-        return render_to_string(self.template, context)
+                'message': self.success_message or process_result or u''
+            },
+            request)
 
     def render(self, request, **kwargs):
         form_class = self.form.form()
@@ -60,6 +58,5 @@ class FormContent(models.Model):
         else:
             form_instance = form_class(prefix=prefix)
 
-        context = RequestContext(
-            request, {'content': self, 'form': form_instance})
-        return render_to_string(self.template, context)
+        return render_to_string(
+            self.template, {'content': self, 'form': form_instance}, request)
