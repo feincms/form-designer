@@ -10,7 +10,7 @@ env:
   - REQ='Django>=1.10,<1.11 FeinCMS>=1.12'
 install:
   - pip install -U pip wheel
-  - pip install $REQ django-mptt
+  - pip install $REQ django-mptt Pillow
   - python setup.py install
 # command to run tests, e.g. python setup.py test
 script: "cd tests && ./manage.py test testapp"
