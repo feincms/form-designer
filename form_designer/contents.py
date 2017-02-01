@@ -45,7 +45,6 @@ class FormContent(models.Model):
 
     def process(self, request, **kwargs):
         self.request = request
-        return True
 
     def render(self, **kwargs):
         form_class = self.form.form()
