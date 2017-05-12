@@ -102,7 +102,7 @@ class FormAdminForm(forms.ModelForm):
                 selected = None
 
         selected = selected or ()
-        self.fields['config_options'].initial = selected
+        self.fields['config_options'].initial = list(selected)
 
         for s in selected:
             cfg = dict(self._meta.model.CONFIG_OPTIONS)[s]
