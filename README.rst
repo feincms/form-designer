@@ -162,6 +162,17 @@ In ``your_project.form_designer_config.py`` something like::
 Version history
 ===============
 
+0.11
+----
+
+* Moved form processing into ``FormContent.process``; this removes the
+  need to pass the request to ``FormContent.render``. ``render`` is not
+  expected to require a request parameter in FeinCMS content types.
+* Added Django 1.11 to the test matrix. No changes were necessary for
+  1.11 support.
+* Added documentation for adding new actions.
+
+
 0.10
 ----
 
