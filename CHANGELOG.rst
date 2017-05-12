@@ -10,6 +10,8 @@ Change log
 * Added Django 1.11 to the test matrix. No changes were necessary for
   1.11 support.
 * Added documentation for adding new actions.
+* Fixed a bug where activated config options were lost because of
+  differences between ``list()`` and ``dict_keys()`` objects.
 
 
 0.10
