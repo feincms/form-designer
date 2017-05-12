@@ -1,6 +1,6 @@
-==================================================
-Form Designer - a simple form designer for FeinCMS
-==================================================
+=================================================
+Form Designer - a simple form designer for Django
+=================================================
 
 .. image:: https://travis-ci.org/feincms/form_designer.png?branch=master
    :target: https://travis-ci.org/feincms/form_designer
@@ -157,84 +157,6 @@ In ``your_project.form_designer_config.py`` something like::
         ('text', _('text'), forms.CharField),
         ('email', _('e-mail address'), forms.EmailField),
     ]
-
-
-Version history
-===============
-
-0.11
-----
-
-* Moved form processing into ``FormContent.process``; this removes the
-  need to pass the request to ``FormContent.render``. ``render`` is not
-  expected to require a request parameter in FeinCMS content types.
-* Added Django 1.11 to the test matrix. No changes were necessary for
-  1.11 support.
-* Added documentation for adding new actions.
-
-
-0.10
-----
-
-* Make the fields tabular inline a bit less wide.
-* Added czech translations.
-* Fixed the usage of ``render_to_string`` to actually work correctly
-  with Django 1.10.
-
-
-0.9
----
-
-* The form admin uses django-admin-ordering_ for fields if available.
-* Now supports sending notification mails to multiple addresses.
-
-
-0.8
----
-
-* Moved the ``FormContent`` to the new module ``form_designer.contents``
-  to make the form designer usable without FeinCMS_.
-* Replaced ``SortedDict`` with ``collections.OrderedDict``.
-* Fixed an XSS vulnerability in the administration.
-* Dropped compatibility with old Django versions (<1.8).
-* Replaced the horrible form submission serialization of ``repr()`` and
-  ``eval()`` with JSON.
-* General packaging and code cleanups.
-
-
-0.7
----
-
-* Avoid the deprecated ``mimetype`` argument to HTTP responses.
-* Fixed infinite recursion in ``jsonize``.
-* Made field type choices lazy so that changing available field types is
-  easier resp. actually possible.
-
-
-0.6
----
-
-* Improve code coverage, less warnings, less complaining.
-
-
-0.5
----
-
-* Added an app config for a nicer app name.
-
-
-0.4
----
-
-* Built-in support for Django 1.7-style migrations. If you're using South,
-  update to South 1.0 or better.
-
-
-0.3
----
-
-* Support for Python 3.3, 2.7 and 2.6.
-* Support for overridding field types with ``FORM_DESIGNER_FIELD_TYPES``.
 
 
 Visit these sites for more information
