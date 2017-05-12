@@ -8,6 +8,7 @@ env:
   - REQ='Django>=1.8,<1.9 FeinCMS>=1.11,<1.12'
   - REQ='Django>=1.9,<1.10 FeinCMS>=1.12'
   - REQ='Django>=1.10,<1.11 FeinCMS>=1.12'
+  - REQ='Django>=1.11,<2.0 FeinCMS>=1.12'
 install:
   - pip install -U pip wheel
   - pip install $REQ django-mptt Pillow
