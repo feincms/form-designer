@@ -25,9 +25,7 @@ are available too. That's it.
 
 By default, form data is sent by e-mail to a freely definable e-mail address
 and stored in the database (a CSV export of saved submissions is provided too).
-It is possible to add your own actions, but that's not documented yet. These
-actions aren't hardcoded -- they can be freely defined for every form defined
-through this form designer.
+It is possible to add your own actions as well.
 
 
 Installing the form designer
@@ -77,6 +75,44 @@ a view)::
         form = form_class()
 
     return render(...)
+
+
+Adding custom actions
+=====================
+
+Custom actions can be added by appending them to
+``Form.CONFIG_OPTIONS``::
+
+    from form_designer.models import Form
+
+    def do_thing(model_instance, form_instance, request, config, **kwargs):
+        pass
+
+    Form.CONFIG_OPTIONS.append(
+        ('do_thing', {
+            'title': _('Do a thing'),
+            'form_fields': [
+                ('optional_form_field', forms.CharField(
+                    label=_('Optional form field'),
+                    required=False,
+                    # validators...
+                    # help_text...
+                )),
+            ],
+            'process': do_thing,
+        })
+    )
+
+The interesting part if the ``do_thing`` callable. It currently receives
+four arguments, however you should also accept ``**kwargs`` to support
+additional arguments added in the future:
+
+- ``model_instance``: The ``Form`` model instance
+- ``form_instance``: The dynamically generated form instance
+- ``request``: The current HTTP request
+- ``config``: The config options (keys and values defined through
+  ``form_fields``; for example the ``email`` action defines an ``email``
+  char field, and accesses its value using ``config['email']``.
 
 
 Configuring the export
