@@ -46,7 +46,6 @@ class FormContent(models.Model):
     def process(self, request, **kwargs):
         self.request = request
 
-    def render(self, **kwargs):
         form_class = self.form.form()
         prefix = 'fc%d' % self.id
         formcontent = self.request.POST.get('_formcontent')
@@ -56,15 +55,19 @@ class FormContent(models.Model):
             form_instance = form_class(self.request.POST, prefix=prefix)
 
             if form_instance.is_valid():
-                return self.process_valid_form(
+                self._rendered_content = self.process_valid_form(
                     self.request, form_instance, **kwargs)
+                return
         else:
             form_instance = form_class(prefix=prefix)
 
-        return render_to_string(
+        self._rendered_content = render_to_string(
             self.template,
             {
                 'content': self,
                 'form': form_instance,
             },
             request=self.request)
+
+    def render(self, **kwargs):
+        return getattr(self, '_rendered_content', '')
