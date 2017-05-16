@@ -214,20 +214,18 @@ class FormSubmission(models.Model):
         verbose_name_plural = _('form submissions')
 
     def sorted_data(self, include=()):
-        """ Return OrderedDict by field ordering and using titles as keys.
+        """ Return OrderedDict by field ordering and using names as keys.
 
         `include` can be a tuple containing any or all of 'date', 'time',
         'datetime', or 'path' to include additional meta data.
         """
         data_dict = json.loads(self.data)
         data = OrderedDict()
-        field_names = []
         for field in self.form.fields.all():
-            data[field.title] = data_dict.get(field.name)
-            field_names.append(field.name)
+            data[field.name] = data_dict.get(field.name)
         # append any extra data (form may have changed since submission, etc)
         for field_name in data_dict:
-            if field_name not in field_names:
+            if field_name not in data:
                 data[field_name] = data_dict[field_name]
         if 'datetime' in include:
             data['submitted'] = self.submitted

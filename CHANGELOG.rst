@@ -1,6 +1,15 @@
 Change log
 ==========
 
+0.12
+----
+
+* Changed ``FormSubmission.sorted_data`` (and by extension also
+  ``formatted_data(_html)`` and the CSV export) to use field names
+  instead of field titles as keys. Field names are guaranteed to be
+  unique, titles are not.
+
+
 0.11
 ----
 
@@ -76,5 +85,3 @@ Change log
 
 * Support for Python 3.3, 2.7 and 2.6.
 * Support for overridding field types with ``FORM_DESIGNER_FIELD_TYPES``.
-
-
