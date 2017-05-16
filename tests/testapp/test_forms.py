@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.core import mail
 from django.test import TestCase
 
@@ -147,10 +149,10 @@ class FormsTest(TestCase):
             message.subject,
             'Test contact form',
         )
-        self.assertIn('Subject: Test\n', message.body)
-        self.assertIn('Email: valid@example.com\n', message.body)
-        self.assertIn('Body: Hello World\n', message.body)
-        self.assertIn('Please call me: False\n', message.body)
+        self.assertIn('subject: Test\n', message.body)
+        self.assertIn('email: valid@example.com\n', message.body)
+        self.assertIn('body: Hello World\n', message.body)
+        self.assertIn('please-call-me: False\n', message.body)
 
         # Exactly one submission
         submission = FormSubmission.objects.get()
@@ -160,9 +162,9 @@ class FormsTest(TestCase):
                 include=('subject', 'email', 'body', 'please-call-me'),
             ),
             {
-                u'Subject': u'Test',
-                u'Email': u'valid@example.com',
-                u'Body': u'Hello World',
-                u'Please call me': False,
+                'subject': 'Test',
+                'email': 'valid@example.com',
+                'body': 'Hello World',
+                'please-call-me': False,
             },
         )

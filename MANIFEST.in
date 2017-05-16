@@ -2,6 +2,4 @@ include LICENSE
 include MANIFEST.in
 include README.rst
 include CHANGELOG.rst
-recursive-include form_designer/static *
-recursive-include form_designer/locale *
-recursive-include form_designer/templates *
+recursive-include form_designer *.html *.po *.mo
