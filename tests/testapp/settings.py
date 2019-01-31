@@ -1,7 +1,5 @@
 import os
 
-SITE_ID = 1
-
 DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
 
 INSTALLED_APPS = [
@@ -43,12 +41,11 @@ TEMPLATES = [
     }
 ]
 DEFAULT_FROM_EMAIL = "no-reply@example.com"
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = MIDDLEWARE = (
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
 )
 MIGRATION_MODULES = {"page": "testapp.migrate.page"}
