@@ -51,3 +51,4 @@ MIDDLEWARE_CLASSES = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
 )
+MIGRATION_MODULES = {"page": "testapp.migrate.page"}
