@@ -5,5 +5,5 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class FormDesignerConfig(AppConfig):
-    name = 'form_designer'
+    name = "form_designer"
     verbose_name = _("Form Designer")

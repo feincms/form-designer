@@ -1,17 +1,45 @@
-language: python
+dist: xenial
 sudo: false
+language: python
 cache: pip
 python:
-  - "3.4"
-  - "2.7"
-env:
-  - REQ='Django>=1.8,<1.9 FeinCMS>=1.11,<1.12'
-  - REQ='Django>=1.9,<1.10 FeinCMS>=1.12'
-  - REQ='Django>=1.10,<1.11 FeinCMS>=1.12'
-  - REQ='Django>=1.11,<2.0 FeinCMS>=1.12'
+  - 3.7
+matrix:
+  fast_finish: true
+  include:
+    - python: 3.7
+      env: REQ="https://github.com/django/django/archive/master.zip#egg=Django"
+    - python: 3.7
+      env: REQ="Django>=2.2a1,<3.0"
+    - python: 3.6
+      env: REQ="Django>=2.2a1,<3.0"
+    - python: 3.5
+      env: REQ="Django>=2.2a1,<3.0"
+    - python: 3.7
+      env: REQ="Django>=2.1,<2.2"
+    - python: 3.7
+      env: REQ="Django>=2.0,<2.1"
+    - python: 3.7
+      env: REQ="Django>=1.11,<2.0"
+    - python: 3.6
+      env: REQ="Django>=1.11,<2.0"
+    - python: 3.5
+      env: REQ="Django>=1.11,<2.0"
+    - python: 3.4
+      env: REQ="Django>=1.11,<2.0"
+    - python: 2.7
+      env: REQ="Django>=1.11,<2.0"
+    - python: 3.7
+      env: REQ="black flake8"
+      install:
+        - pip install black flake8
+      script:
+        - flake8 .
+        - black --check form_designer tests
+  allow_failures:
+    - env: REQ="https://github.com/django/django/archive/master.zip#egg=Django"
 install:
   - pip install -U pip wheel
-  - pip install $REQ django-mptt Pillow
+  - pip install $REQ FeinCMS django-mptt Pillow
   - python setup.py install
-# command to run tests, e.g. python setup.py test
-script: "cd tests && ./manage.py test testapp"
+script: cd tests && ./manage.py test -v2 testapp

@@ -1,6 +1,11 @@
 Change log
 ==========
 
+* Added `tox <https://tox.readthedocs.io/>`__ configuration for easily
+  running linters and tests locally.
+* Reformatted the project using `black
+  <https://black.readthedocs.io/>`__
+
 0.12
 ----
 

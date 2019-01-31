@@ -1,5 +1,0 @@
-Django
-FeinCMS
-Pillow
-django-mptt
-coverage
