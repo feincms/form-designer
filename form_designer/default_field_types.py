@@ -23,7 +23,7 @@ FIELD_TYPES = [
 ]
 
 # Add recaptcha field if available
-if apps.is_installed("captcha"):
+if apps.is_installed("captcha"):  # pragma: no cover
     try:
         from captcha.fields import ReCaptchaField
     except ImportError:

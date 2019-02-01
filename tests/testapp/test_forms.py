@@ -119,6 +119,20 @@ class FormsTest(TestCase):
             },
         )
 
+        # Export the submission
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+        response = self.client.get(
+            "/admin/form_designer/form/{}/export_submissions/".format(
+                submission.form_id
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response["Content-type"],
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
     def test_admin(self):
         User.objects.create_superuser("admin", "admin@example.com", "password")
         self.client.login(username="admin", password="password")
@@ -129,7 +143,8 @@ class FormsTest(TestCase):
         data = {
             "title": "Test form",
             # "config_json": '{"save_fs": {}}',
-            "config_options": "save_fs",
+            "config_options": ["save_fs", "email"],
+            "email_email": "bla@example.com,blabbb@example.com",
             "fields-TOTAL_FORMS": 7,
             "fields-INITIAL_FORMS": 0,
             "fields-MIN_NUM_FORMS": 0,
@@ -145,6 +160,7 @@ class FormsTest(TestCase):
                 data["fields-{}-choices".format(i)] = "a,b,c,d"
 
         response = self.client.post("/admin/form_designer/form/add/", data)
+        self.assertRedirects(response, "/admin/form_designer/form/")
 
         # Basic smoke test
         form = Form.objects.get()
@@ -152,3 +168,10 @@ class FormsTest(TestCase):
 
         self.assertEqual(form.title, "Test form")
         self.assertEqual(len(form_class().fields), 7)
+
+        # The additional formsets exist
+        response = self.client.get(
+            "/admin/form_designer/form/{}/change/".format(form.id)
+        )
+        self.assertContains(response, 'id="id_email_email"')
+        self.assertContains(response, "blabbb@example.com")
