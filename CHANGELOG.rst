@@ -5,6 +5,9 @@ Change log
   running linters and tests locally.
 * Reformatted the project using `black
   <https://black.readthedocs.io/>`__
+* Made `django-admin-ordering
+  <https://github.com/matthiask/django-admin-ordering/>`__ a dependency.
+
 
 0.12
 ----

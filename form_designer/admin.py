@@ -16,17 +16,8 @@ from django.utils import six
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
 
+from admin_ordering.admin import OrderableAdmin
 from form_designer import models
-
-try:
-    from admin_ordering.admin import OrderableAdmin
-
-    class Inline(OrderableAdmin, admin.TabularInline):
-        pass
-
-
-except ImportError:
-    Inline = admin.TabularInline
 
 if six.PY3:
     UnicodeWriter = csv.writer
@@ -146,7 +137,7 @@ class FormAdminForm(forms.ModelForm):
         return data
 
 
-class FormFieldAdmin(Inline):
+class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
     extra = 0
     model = models.FormField
     prepopulated_fields = {"name": ("title",)}
