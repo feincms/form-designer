@@ -183,7 +183,13 @@ class FormField(models.Model):
         return self.title
 
     def clean(self):
-        if self.choices and not isinstance(self.get_type(), forms.ChoiceField):
+        try:
+            field_type = self.get_type()
+        except KeyError:
+            # Fine. The model will not validate anyway.
+            return
+
+        if self.choices and not isinstance(field_type, forms.ChoiceField):
             raise forms.ValidationError(
                 _("You can't specify choices for %s fields") % self.type
             )

@@ -162,6 +162,10 @@ class FormsTest(TestCase):
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertRedirects(response, "/admin/form_designer/form/")
 
+        data["fields-4-type"] = ""  # No crash, but no success either
+        response = self.client.post("/admin/form_designer/form/add/", data)
+        self.assertEqual(response.status_code, 200)
+
         # Basic smoke test
         form = Form.objects.get()
         form_class = form.form_class()
