@@ -38,7 +38,7 @@ Install the package using pip_::
 Setting up the form designer
 ============================
 
-- Add ``'form_designer'`` to ``INSTALLED_APPS``.
+- Add ``'form_designer'`` and ``'admin_ordering'`` to ``INSTALLED_APPS``.
 - Run ``./manage.py migrate form_designer``
 - Go into Django's admin panel and add one or more forms with the fields you
   require. Also select at least one action in the configuration options

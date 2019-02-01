@@ -1,6 +1,9 @@
 Change log
 ==========
 
+0.13
+----
+
 * Added `tox <https://tox.readthedocs.io/>`__ configuration for easily
   running linters and tests locally.
 * Reformatted the project using `black
@@ -10,6 +13,8 @@ Change log
 * Replaced the CSV export with an XLSX export based on `xlsxdocument
   <https://github.com/matthiask/xlsxdocument>`__. It just is a better
   format.
+* Improved the test coverage a bit and fixed an edge case where
+  form field model validation would crash.
 
 
 0.12
