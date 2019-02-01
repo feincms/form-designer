@@ -22,7 +22,7 @@ setup(
     platforms=["OS Independent"],
     packages=find_packages(exclude=[]),
     include_package_data=True,
-    install_requires=["django-admin-ordering"],
+    install_requires=["django-admin-ordering", "xlsxdocument"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",

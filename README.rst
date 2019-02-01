@@ -24,7 +24,7 @@ Every field can optionally be declared mandatory, default values and help texts
 are available too. That's it.
 
 By default, form data is sent by e-mail to a freely definable e-mail address
-and stored in the database (a CSV export of saved submissions is provided too).
+and stored in the database (a XLSX export of saved submissions is provided too).
 It is possible to add your own actions as well.
 
 
@@ -113,22 +113,6 @@ additional arguments added in the future:
 - ``config``: The config options (keys and values defined through
   ``form_fields``; for example the ``email`` action defines an ``email``
   char field, and accesses its value using ``config['email']``.
-
-
-Configuring the export
-======================
-
-The CSV export of form submissions uses the Python's CSV module, the Excel
-dialect and UTF-8 encoding by default. If your main target is Excel, you should
-probably add the following setting to work around Excel's abysmal handling of
-CSV files encoded in anything but latin-1::
-
-    FORM_DESIGNER_EXPORT = {
-        'encoding': 'latin-1',
-    }
-
-You may add additional keyword arguments here which will be used during the
-instantiation of ``csv.writer``.
 
 
 ReCaptcha

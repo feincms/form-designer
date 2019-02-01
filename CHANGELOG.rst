@@ -7,6 +7,9 @@ Change log
   <https://black.readthedocs.io/>`__
 * Made `django-admin-ordering
   <https://github.com/matthiask/django-admin-ordering/>`__ a dependency.
+* Replaced the CSV export with an XLSX export based on `xlsxdocument
+  <https://github.com/matthiask/xlsxdocument>`__. It just is a better
+  format.
 
 
 0.12
