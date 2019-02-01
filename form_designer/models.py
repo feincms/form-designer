@@ -113,7 +113,7 @@ class Form(models.Model):
 
         return type(str("Form%s" % self.pk), (Form,), fields)
 
-    def form(self):
+    def form(self):  # pragma: no cover
         warnings.warn("Use form_class instead", DeprecationWarning, stacklevel=2)
         return self.form_class()
 
@@ -194,6 +194,11 @@ class FormField(models.Model):
                 _("You can't specify choices for %s fields") % self.type
             )
 
+        elif not self.choices and isinstance(field_type, forms.ChoiceField):
+            raise forms.ValidationError(
+                _("Please specify choices for %s fields") % self.type
+            )
+
     def get_choices(self):
         def get_tuple(value):
             return (slugify(value.strip()), value.strip())
@@ -212,12 +217,13 @@ class FormField(models.Model):
 
     def formfield(self):
         kwargs = dict(
-            label=self.title, required=self.is_required, initial=self.default_value
+            label=self.title,
+            required=self.is_required,
+            initial=self.default_value,
+            help_text=self.help_text,
         )
         if self.choices:
             kwargs["choices"] = self.get_choices()
-        if self.help_text:
-            kwargs["help_text"] = self.help_text
         return self.get_type(**kwargs)
 
 

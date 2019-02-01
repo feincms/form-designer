@@ -160,10 +160,22 @@ class FormsTest(TestCase):
             data["fields-{}-title".format(i)] = "title-{}".format(i)
             data["fields-{}-name".format(i)] = "name-{}".format(i)
             data["fields-{}-type".format(i)] = FIELD_TYPES[i][0]
+            data["fields-{}-choices".format(i)] = ""
 
+        # Validation failure because of missing choices
+        response = self.client.post("/admin/form_designer/form/add/", data)
+        self.assertEqual(response.status_code, 200)
+
+        for i in range(7):
             if FIELD_TYPES[i][0] in {"select", "radio", "multiple-select"}:
                 data["fields-{}-choices".format(i)] = "a,b,c,d"
 
+        data["fields-0-choices"] = "invalid"
+        # Validation failure because of choices where there should be none
+        response = self.client.post("/admin/form_designer/form/add/", data)
+        self.assertEqual(response.status_code, 200)
+
+        data["fields-0-choices"] = ""
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertRedirects(response, "/admin/form_designer/form/")
 
