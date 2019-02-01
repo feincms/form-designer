@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
+from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
 
 from feincms.module.page.models import Page
 
-from form_designer.models import Form, FormSubmission
+from form_designer.models import Form, FormSubmission, FIELD_TYPES
 
 
 class FormsTest(TestCase):
@@ -117,3 +118,37 @@ class FormsTest(TestCase):
                 "please-call-me": False,
             },
         )
+
+    def test_admin(self):
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+
+        response = self.client.get("/admin/form_designer/form/add/")
+        self.assertEqual(response.status_code, 200)  # Oh well...
+
+        data = {
+            "title": "Test form",
+            # "config_json": '{"save_fs": {}}',
+            "config_options": "save_fs",
+            "fields-TOTAL_FORMS": 7,
+            "fields-INITIAL_FORMS": 0,
+            "fields-MIN_NUM_FORMS": 0,
+            "fields-MAX_NUM_FORMS": 1000,
+        }
+        for i in range(7):
+            data["fields-{}-ordering".format(i)] = (i + 1) * 10
+            data["fields-{}-title".format(i)] = "title-{}".format(i)
+            data["fields-{}-name".format(i)] = "name-{}".format(i)
+            data["fields-{}-type".format(i)] = FIELD_TYPES[i][0]
+
+            if FIELD_TYPES[i][0] in {"select", "radio", "multiple-select"}:
+                data["fields-{}-choices".format(i)] = "a,b,c,d"
+
+        response = self.client.post("/admin/form_designer/form/add/", data)
+
+        # Basic smoke test
+        form = Form.objects.get()
+        form_class = form.form_class()
+
+        self.assertEqual(form.title, "Test form")
+        self.assertEqual(len(form_class().fields), 7)
