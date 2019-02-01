@@ -133,6 +133,11 @@ class FormsTest(TestCase):
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
+        response = self.client.get(
+            "/admin/form_designer/formsubmission/{}/change/".format(submission.id)
+        )
+        self.assertContains(response, "<dt>body</dt>")
+
     def test_admin(self):
         User.objects.create_superuser("admin", "admin@example.com", "password")
         self.client.login(username="admin", password="password")

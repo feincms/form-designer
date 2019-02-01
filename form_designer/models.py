@@ -12,7 +12,7 @@ from django.core.validators import validate_email
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.html import format_html, mark_safe
+from django.utils.html import format_html, format_html_join
 from django.utils.module_loading import import_string
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -262,13 +262,14 @@ class FormSubmission(models.Model):
         return data
 
     def formatted_data(self, html=False):
-        formatted = ""
-        for key, value in self.sorted_data().items():
-            if html:
-                formatted += format_html("<dt>{}</dt><dd>{}</dd>\n", key, value)
-            else:
-                formatted += "%s: %s\n" % (key, value)
-        return mark_safe("<dl>%s</dl>" % formatted) if html else formatted
+        if html:
+            return format_html(
+                "<dl>{}</dl>",
+                format_html_join(
+                    "", "<dt>{}</dt><dd>{}</dd>", self.sorted_data().items()
+                ),
+            )
+        return "".join("%s: %s\n" % item for item in self.sorted_data().items())
 
     def formatted_data_html(self):
         return self.formatted_data(html=True)
