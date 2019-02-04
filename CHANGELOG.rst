@@ -1,6 +1,12 @@
 Change log
 ==========
 
+Next version
+------------
+
+* Fixed the package to include static files and templates.
+
+
 0.13
 ----
 
