@@ -4,6 +4,10 @@ Change log
 Next version
 ------------
 
+
+0.14
+----
+
 * Fixed the package to include static files and templates.
 * Raised the minimum django-recaptcha version to 2.0.
 
