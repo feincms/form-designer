@@ -26,6 +26,7 @@ FIELD_TYPES = [
 if apps.is_installed("captcha"):  # pragma: no cover
     try:
         from captcha.fields import ReCaptchaField
+        from captcha.widgets import ReCaptchaV2Checkbox
     except ImportError:
         pass
     else:
@@ -33,6 +34,6 @@ if apps.is_installed("captcha"):  # pragma: no cover
             (
                 "recaptcha",
                 _("recaptcha"),
-                partial(ReCaptchaField, attrs={"theme": "clean"}),
+                partial(ReCaptchaField, widget=ReCaptchaV2Checkbox),
             )
         )
