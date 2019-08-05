@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from collections import OrderedDict
 import json
 import warnings
@@ -11,7 +9,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import validate_email
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import format_html, format_html_join
 from django.utils.module_loading import import_string
 from django.utils.text import slugify
@@ -48,7 +45,6 @@ def validate_comma_separated_emails(value):
         validate_email(v.strip())
 
 
-@python_2_unicode_compatible
 class Form(models.Model):
     CONFIG_OPTIONS = [
         (
@@ -157,7 +153,6 @@ for index, field_type in enumerate(FIELD_TYPES[:]):
     }
 
 
-@python_2_unicode_compatible
 class FormField(models.Model):
     form = models.ForeignKey(
         Form, related_name="fields", verbose_name=_("form"), on_delete=models.CASCADE

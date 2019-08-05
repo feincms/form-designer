@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_text
