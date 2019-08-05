@@ -159,7 +159,7 @@ class FormsTest(TestCase):
             data["fields-{}-ordering".format(i)] = (i + 1) * 10
             data["fields-{}-title".format(i)] = "title-{}".format(i)
             data["fields-{}-name".format(i)] = "name-{}".format(i)
-            data["fields-{}-type".format(i)] = FIELD_TYPES[i][0]
+            data["fields-{}-type".format(i)] = FIELD_TYPES[i]["type"]
             data["fields-{}-choices".format(i)] = ""
 
         # Validation failure because of missing choices
@@ -167,7 +167,7 @@ class FormsTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         for i in range(7):
-            if FIELD_TYPES[i][0] in {"select", "radio", "multiple-select"}:
+            if FIELD_TYPES[i]["type"] in {"select", "radio", "multiple-select"}:
                 data["fields-{}-choices".format(i)] = "a,b,c,d"
 
         data["fields-0-choices"] = "invalid"

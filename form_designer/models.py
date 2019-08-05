@@ -142,6 +142,19 @@ FIELD_TYPES = import_string(
         "form_designer.default_field_types.FIELD_TYPES",
     )
 )
+for index, field_type in enumerate(FIELD_TYPES[:]):
+    if isinstance(field_type, dict):
+        continue
+    warnings.warn(
+        "Form designer field type %r still uses the old configuration format."
+        % (field_type,),
+        DeprecationWarning,
+    )
+    FIELD_TYPES[index] = {
+        "type": field_type[0],
+        "verbose_name": field_type[1],
+        "field": field_type[2],
+    }
 
 
 @python_2_unicode_compatible
@@ -154,7 +167,9 @@ class FormField(models.Model):
     title = models.CharField(_("title"), max_length=100)
     name = models.CharField(_("name"), max_length=100)
     type = models.CharField(
-        _("type"), max_length=20, choices=[type[:2] for type in FIELD_TYPES]
+        _("type"),
+        max_length=20,
+        choices=[(type["type"], type["verbose_name"]) for type in FIELD_TYPES],
     )
     choices = models.CharField(
         _("choices"), max_length=1024, blank=True, help_text=_("Comma-separated")
@@ -209,7 +224,7 @@ class FormField(models.Model):
         return tuple(choices)
 
     def get_type(self, **kwargs):
-        types = dict((r[0], r[2]) for r in FIELD_TYPES)
+        types = {type["type"]: type["field"] for type in FIELD_TYPES}
         return types[self.type](**kwargs)
 
     def add_formfield(self, fields, form):

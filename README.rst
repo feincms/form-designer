@@ -138,8 +138,8 @@ In ``your_project.form_designer_config.py`` something like::
     from django.utils.translation import ugettext_lazy as _
 
     FIELD_TYPES = [
-        ('text', _('text'), forms.CharField),
-        ('email', _('e-mail address'), forms.EmailField),
+        {"type": "text", "verbose_name": _("text"), "field": forms.CharField},
+        {"type": "email", "verbose_name": _("e-mail address"), "field": forms.EmailField},
     ]
 
 

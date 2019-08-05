@@ -8,18 +8,40 @@ from django.utils.translation import ugettext_lazy as _
 
 
 FIELD_TYPES = [
-    ("text", _("text"), forms.CharField),
-    ("email", _("e-mail address"), forms.EmailField),
-    ("longtext", _("long text"), partial(forms.CharField, widget=forms.Textarea)),
-    ("checkbox", _("checkbox"), partial(forms.BooleanField, required=False)),
-    ("select", _("select"), partial(forms.ChoiceField, required=False)),
-    ("radio", _("radio"), partial(forms.ChoiceField, widget=forms.RadioSelect)),
-    (
-        "multiple-select",
-        _("multiple select"),
-        partial(forms.MultipleChoiceField, widget=forms.CheckboxSelectMultiple),
-    ),
-    ("hidden", _("hidden"), partial(forms.CharField, widget=forms.HiddenInput)),
+    {"type": "text", "verbose_name": _("text"), "field": forms.CharField},
+    {"type": "email", "verbose_name": _("e-mail address"), "field": forms.EmailField},
+    {
+        "type": "longtext",
+        "verbose_name": _("long text"),
+        "field": partial(forms.CharField, widget=forms.Textarea),
+    },
+    {
+        "type": "checkbox",
+        "verbose_name": _("checkbox"),
+        "field": partial(forms.BooleanField, required=False),
+    },
+    {
+        "type": "select",
+        "verbose_name": _("select"),
+        "field": partial(forms.ChoiceField, required=False),
+    },
+    {
+        "type": "radio",
+        "verbose_name": _("radio"),
+        "field": partial(forms.ChoiceField, widget=forms.RadioSelect),
+    },
+    {
+        "type": "multiple-select",
+        "verbose_name": _("multiple select"),
+        "field": partial(
+            forms.MultipleChoiceField, widget=forms.CheckboxSelectMultiple
+        ),
+    },
+    {
+        "type": "hidden",
+        "verbose_name": _("hidden"),
+        "field": partial(forms.CharField, widget=forms.HiddenInput),
+    },
 ]
 
 # Add recaptcha field if available
@@ -31,9 +53,9 @@ if apps.is_installed("captcha"):  # pragma: no cover
         pass
     else:
         FIELD_TYPES.append(
-            (
-                "recaptcha",
-                _("recaptcha"),
-                partial(ReCaptchaField, widget=ReCaptchaV2Checkbox),
-            )
+            {
+                "type": "recaptcha",
+                "verbose_name": _("recaptcha"),
+                "field": partial(ReCaptchaField, widget=ReCaptchaV2Checkbox),
+            }
         )
