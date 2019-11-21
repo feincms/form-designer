@@ -4,6 +4,8 @@ Change log
 Next version
 ------------
 
+* Fixed the config fieldsets code to work when using Django 3.0.
+
 
 0.15
 ----
