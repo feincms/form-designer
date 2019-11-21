@@ -194,20 +194,13 @@ class FormField(models.Model):
 
     def clean(self):
         try:
-            field_type = self.get_type()
-        except KeyError:
+            cfg = next((type for type in FIELD_TYPES if type["type"] == self.type))
+        except StopIteration:
             # Fine. The model will not validate anyway.
             return
 
-        if self.choices and not isinstance(field_type, forms.ChoiceField):
-            raise forms.ValidationError(
-                _("You can't specify choices for %s fields") % self.type
-            )
-
-        elif not self.choices and isinstance(field_type, forms.ChoiceField):
-            raise forms.ValidationError(
-                _("Please specify choices for %s fields") % self.type
-            )
+        for fn in cfg.get("clean_field", ()):
+            fn(self)
 
     def get_choices(self):
         def get_tuple(value):
