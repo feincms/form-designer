@@ -4,6 +4,10 @@ Change log
 Next version
 ------------
 
+
+0.15
+----
+
 * Restructured the ``FIELD_TYPES`` data structure to use a dictionary
   instead of a tuple to allow for future expansion.
 * Dropped compatibility with Python 2.

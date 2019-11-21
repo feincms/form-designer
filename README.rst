@@ -31,7 +31,7 @@ It is possible to add your own actions as well.
 Installing the form designer
 ============================
 
-Install the package using pip_::
+Install the package using pip::
 
     $ pip install form_designer
 
