@@ -42,6 +42,6 @@ matrix:
     - env: REQ="https://github.com/django/django/archive/master.zip#egg=Django"
 install:
   - pip install -U pip wheel
-  - pip install $REQ Pillow FeinCMS django-admin-ordering django-mptt xlsxdocument
+  - pip install $REQ Pillow FeinCMS django-admin-ordering django-mptt six xlsxdocument
   - python setup.py install
 script: cd tests && ./manage.py test -v2 testapp

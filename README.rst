@@ -135,7 +135,7 @@ Define ``FORM_DESIGNER_FIELD_TYPES`` in your settings file like::
 In ``your_project.form_designer_config.py`` something like::
 
     from django import forms
-    from django.utils.translation import ugettext_lazy as _
+    from django.utils.translation import gettext_lazy as _
 
     FIELD_TYPES = [
         {"type": "text", "verbose_name": _("text"), "field": forms.CharField},

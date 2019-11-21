@@ -12,7 +12,7 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.html import format_html, format_html_join
 from django.utils.module_loading import import_string
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from form_designer.utils import JSONFieldDescriptor
 

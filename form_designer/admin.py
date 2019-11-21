@@ -1,13 +1,13 @@
 import json
+import six
 
 from django import forms
 from django.conf.urls import url
 from django.contrib import admin
 from django.db.models import Model
 from django.shortcuts import get_object_or_404
-from django.utils import six
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from admin_ordering.admin import OrderableAdmin
 from form_designer import models

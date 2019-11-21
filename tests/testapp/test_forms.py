@@ -183,6 +183,7 @@ class FormsTest(TestCase):
 
         # Basic smoke test
         form = Form.objects.get()
+        self.assertEqual(set(form.config), {"email", "save_fs"})
         form_class = form.form_class()
 
         self.assertEqual(form.title, "Test form")
