@@ -44,15 +44,16 @@ class FormAdminForm(forms.ModelForm):
 
         config_fieldsets = []
 
-        try:
-            selected = self.data.getlist("config_options")
-        except AttributeError:
-            if self.instance.pk:
-                selected = self.instance.config.keys()
-            else:
-                selected = None
+        selected = []
+        if self.data:
+            try:
+                selected = self.data.getlist("config_options", ())
+            except AttributeError:
+                pass
 
-        selected = selected or ()
+        if not selected and self.instance.pk:
+            selected = self.instance.config.keys()
+
         self.fields["config_options"].initial = list(selected)
 
         for s in selected:
