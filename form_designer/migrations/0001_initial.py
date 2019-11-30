@@ -56,12 +56,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("ordering", models.IntegerField(default=0, verbose_name="ordering")),
-                ("title", models.CharField(verbose_name="title", max_length=100)),
-                ("name", models.CharField(verbose_name="name", max_length=100)),
+                ("title", models.CharField(verbose_name="field title", max_length=100)),
+                ("name", models.CharField(verbose_name="field name", max_length=100)),
                 (
                     "type",
                     models.CharField(
-                        verbose_name="type", choices=field_types, max_length=20
+                        verbose_name="field type", choices=field_types, max_length=20
                     ),
                 ),
                 (
