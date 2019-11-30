@@ -9,4 +9,8 @@
 .form-row.dynamic-fields input[name$=-name] { width: 10em; }
 
 .form-row.dynamic-fields select[name$=-type],
-.form-row.dynamic-fields input[name$=-default_value] { width: 5em; }
+.form-row.dynamic-fields input[name$=-default_value] { width: 8em; }
+
+.inline-group {
+    overflow: auto;
+}
