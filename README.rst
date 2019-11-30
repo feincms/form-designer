@@ -38,7 +38,7 @@ Install the package using pip::
 Setting up the form designer
 ============================
 
-- Add ``'form_designer'`` and ``'admin_ordering'`` to ``INSTALLED_APPS``.
+- Add ``"form_designer"`` and ``"admin_ordering"`` to ``INSTALLED_APPS``.
 - Run ``./manage.py migrate form_designer``
 - Go into Django's admin panel and add one or more forms with the fields you
   require. Also select at least one action in the configuration options
@@ -60,7 +60,7 @@ a view)::
     form_class = instance.form()
 
     # Standard form processing:
-    if request.method == 'POST':
+    if request.method == "POST":
         form = form_class(request.POST)
 
         if form.is_valid():
@@ -92,18 +92,18 @@ Custom actions can be added by appending them to
         pass
 
     Form.CONFIG_OPTIONS.append(
-        ('do_thing', {
-            'title': _('Do a thing'),
-            'form_fields': [
-                ('optional_form_field', forms.CharField(
-                    label=_('Optional form field'),
+        ("do_thing", {
+            "title": _("Do a thing"),
+            "form_fields": [
+                ("optional_form_field", forms.CharField(
+                    label=_("Optional form field"),
                     required=False,
                     # validators...
                     # help_text...
                 )),
             ],
-            'process': do_thing,
-            'validate': do_validate,
+            "process": do_thing,
+            "validate": do_validate,
         })
     )
 
@@ -116,7 +116,7 @@ additional arguments added in the future:
 - ``request``: The current HTTP request
 - ``config``: The config options (keys and values defined through
   ``form_fields``; for example the ``email`` action defines an ``email``
-  char field, and accesses its value using ``config['email']``.
+  char field, and accesses its value using ``config["email"]``.
 
 
 ReCaptcha
@@ -134,7 +134,7 @@ Override field types
 
 Define ``FORM_DESIGNER_FIELD_TYPES`` in your settings file like::
 
-    FORM_DESIGNER_FIELD_TYPES = 'your_project.form_designer_config.FIELD_TYPES'
+    FORM_DESIGNER_FIELD_TYPES = "your_project.form_designer_config.FIELD_TYPES"
 
 In ``your_project.form_designer_config.py`` something like::
 

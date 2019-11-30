@@ -5,6 +5,7 @@ Next version
 ------------
 
 * Fixed the config fieldsets code to work when using Django 3.0.
+* Added an unit test and docs for the ``"validate"`` config option.
 
 
 0.15
