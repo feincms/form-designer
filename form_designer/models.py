@@ -159,10 +159,10 @@ class FormField(models.Model):
     )
     ordering = models.IntegerField(_("ordering"), default=0)
 
-    title = models.CharField(_("title"), max_length=100)
-    name = models.CharField(_("name"), max_length=100)
+    title = models.CharField(_("field title"), max_length=100)
+    name = models.CharField(_("field name"), max_length=100)
     type = models.CharField(
-        _("type"),
+        _("field type"),
         max_length=20,
         choices=[(type["type"], type["verbose_name"]) for type in FIELD_TYPES],
     )

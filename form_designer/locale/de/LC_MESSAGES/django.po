@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-29 13:41+0200\n"
+"POT-Creation-Date: 2019-11-30 13:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:89
+#: admin.py:40
 msgid "Options"
 msgstr "Optionen"
 
-#: admin.py:90
+#: admin.py:41
 msgid "Save and continue editing to configure options."
 msgstr "Speichern und weiter bearbeiten um die Optionen zu bearbeiten."
 
-#: admin.py:111
+#: admin.py:63
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Formulareinstellungen: %s"
 
-#: admin.py:177
+#: admin.py:132
 msgid "Configuration"
 msgstr "Einstellungen"
 
-#: apps.py:9
+#: apps.py:7
 msgid "Form Designer"
 msgstr "Form-Designer"
 
-#: contents.py:21 contents.py:33 models.py:78 models.py:141 models.py:206
+#: contents.py:20 contents.py:34 models.py:81 models.py:158 models.py:237
 msgid "form"
 msgstr "Formular"
 
@@ -57,55 +57,65 @@ msgstr ""
 "Mitteilung, welche angezeigt wird, wenn ein gültiges Formular abgeschickt "
 "wird"
 
-#: contents.py:34 models.py:79
+#: contents.py:35 models.py:82
 msgid "forms"
 msgstr "Formulare"
 
-#: default_field_types.py:10
+#: default_field_types.py:11
+#, python-format
+msgid "You can't specify choices for %s fields"
+msgstr "Sie können keine Wahlmöglichkeiten für %s-Felder angeben"
+
+#: default_field_types.py:18
+#, python-format
+msgid "Please specify choices for %s fields"
+msgstr "Bitte geben Sie Wahlmöglichkeiten für %s-Felder an"
+
+#: default_field_types.py:25
 msgid "text"
 msgstr "Text"
 
-#: default_field_types.py:11 models.py:62
+#: default_field_types.py:31 models.py:62
 msgid "e-mail address"
 msgstr "E-Mail-Adresse"
 
-#: default_field_types.py:12
+#: default_field_types.py:37
 msgid "long text"
 msgstr "Langer Text"
 
-#: default_field_types.py:16
+#: default_field_types.py:43
 msgid "checkbox"
 msgstr "Checkbox"
 
-#: default_field_types.py:20
+#: default_field_types.py:49
 msgid "select"
 msgstr "Auswahlbox"
 
-#: default_field_types.py:24
+#: default_field_types.py:55
 msgid "radio"
 msgstr "Auswahl (Radiobuttons)"
 
-#: default_field_types.py:28
+#: default_field_types.py:61
 msgid "multiple select"
 msgstr "Mehrfachauswahl"
 
-#: default_field_types.py:32
+#: default_field_types.py:69
 msgid "hidden"
 msgstr "versteckt"
 
-#: default_field_types.py:47
+#: default_field_types.py:86
 msgid "recaptcha"
 msgstr "ReCaptcha"
 
-#: models.py:43
+#: models.py:40
 msgid "Thank you, your input has been received."
 msgstr "Vielen Dank"
 
-#: models.py:55
+#: models.py:52
 msgid "Save form submission"
 msgstr "Formulardaten sichern"
 
-#: models.py:59
+#: models.py:57
 msgid "Send e-mail"
 msgstr "E-Mail versenden"
 
@@ -113,72 +123,71 @@ msgstr "E-Mail versenden"
 msgid "Separate multiple e-mail addresses with commas."
 msgstr "Mehrere E-Mailadressen mit Kommas trennen."
 
-#: models.py:72 models.py:145
+#: models.py:75
 msgid "title"
 msgstr "Titel"
 
-#: models.py:74
+#: models.py:77
 msgid "config"
 msgstr "Konfiguration"
 
-#: models.py:143
+#: models.py:160
 msgid "ordering"
 msgstr "Sortierung"
 
-#: models.py:146
-msgid "name"
-msgstr "Name"
+#: models.py:162
+msgid "field title"
+msgstr "Feldtitel"
 
-#: models.py:148
-msgid "type"
-msgstr "Typ"
+#: models.py:163
+msgid "field name"
+msgstr "Feldname"
 
-#: models.py:150
+#: models.py:165
+msgid "field type"
+msgstr "Feldtyp"
+
+#: models.py:170
 msgid "choices"
 msgstr "Wahlmöglichkeiten"
 
-#: models.py:151
+#: models.py:170
 msgid "Comma-separated"
 msgstr "Durch Kommata getrennt"
 
-#: models.py:153
+#: models.py:173
 msgid "help text"
 msgstr "Hilfstext"
 
-#: models.py:154
+#: models.py:176
 msgid "Optional extra explanatory text beside the field"
 msgstr "Optionaler zusätzlicher Erklärungstext neben dem Feld"
 
-#: models.py:156
+#: models.py:179
 msgid "default value"
 msgstr "Standardwert"
 
-#: models.py:157
+#: models.py:182
 msgid "Optional default value of the field"
 msgstr "Optionaler Standardwert des Feldes"
 
-#: models.py:158
+#: models.py:184
 msgid "is required"
 msgstr "Wird benötigt"
 
-#: models.py:163
+#: models.py:189
 msgid "form field"
 msgstr "Formularfeld"
 
-#: models.py:164
+#: models.py:190
 msgid "form fields"
 msgstr "Formularfelder"
 
-#: models.py:172
-#, python-format
-msgid "You can't specify choices for %s fields"
-msgstr "Sie können keine Wahlmöglichkeiten für %s-Felder angeben"
-
-#: models.py:213
+#: models.py:246
 msgid "form submission"
 msgstr "Formulardaten"
 
-#: models.py:214
+#: models.py:247
 msgid "form submissions"
 msgstr "Formulardaten"
 
@@ -189,3 +198,9 @@ msgstr "Formulardaten exportieren"
 #: templates/content/form/form.html:13
 msgid "Submit"
 msgstr "Abschicken"
+
+#~ msgid "name"
+#~ msgstr "Name"
+
+#~ msgid "type"
+#~ msgstr "Typ"
