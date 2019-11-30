@@ -88,6 +88,9 @@ Custom actions can be added by appending them to
     def do_thing(model_instance, form_instance, request, config, **kwargs):
         pass
 
+    def do_validate(form_instance, data):
+        pass
+
     Form.CONFIG_OPTIONS.append(
         ('do_thing', {
             'title': _('Do a thing'),
@@ -100,6 +103,7 @@ Custom actions can be added by appending them to
                 )),
             ],
             'process': do_thing,
+            'validate': do_validate,
         })
     )
 

@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
@@ -5,6 +6,16 @@ from django.test import TestCase
 from feincms.module.page.models import Page
 
 from form_designer.models import Form, FormSubmission, FIELD_TYPES
+
+
+def validate_honeypot(form, data):
+    if data.get("honeypot"):
+        raise forms.ValidationError("Hello honeypot")
+
+
+Form.CONFIG_OPTIONS.append(
+    ("honeypot", {"title": "Honeypot", "validate": validate_honeypot})
+)
 
 
 class FormsTest(TestCase):
@@ -195,3 +206,35 @@ class FormsTest(TestCase):
         )
         self.assertContains(response, 'id="id_email_email"')
         self.assertContains(response, "blabbb@example.com")
+
+    def test_honeypot(self):
+        form = Form.objects.create(
+            title="Test honeypot form", config_json=('{"honeypot": {}}'),
+        )
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(
+            ordering=0,
+            title="honeypot",
+            name="honeypot",
+            type="hidden",
+            is_required=False,
+        )
+
+        page = Page.objects.create(override_url="/", title="")
+        page.formcontent_set.create(
+            region="main",
+            ordering=0,
+            form=form,
+            success_message="Thanks, we will get back to you",
+        )
+
+        response = self.client.post(
+            "/",
+            {
+                "_formcontent".format(form.id): form.id,
+                "fc{0}-subject".format(form.id): "Test",
+                "fc{0}-honeypot".format(form.id): "honey",
+            },
+        )
+
+        self.assertContains(response, "Hello honeypot")
