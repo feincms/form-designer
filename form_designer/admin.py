@@ -38,10 +38,7 @@ class FormAdminForm(forms.ModelForm):
         )
 
         self.fields["config_options"] = forms.MultipleChoiceField(
-            choices=choices,
-            label=_("Options"),
-            help_text=_("Save and continue editing to configure options."),
-            widget=forms.CheckboxSelectMultiple,
+            choices=choices, label=_("Options"), widget=forms.CheckboxSelectMultiple,
         )
 
         config_fieldsets = []
