@@ -4,6 +4,10 @@ Change log
 Next version
 ------------
 
+* Fixed a typo and changed e-mail to email. Removed the help text from
+  config options which isn't correct anymore.
+
+
 0.16
 ----
 
