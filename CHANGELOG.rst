@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+0.16
+----
+
 * Fixed the config fieldsets code to work when using Django 3.0.
 * Added an unit test and docs for the ``"validate"`` config option.
 * Passed additional data to the ``"validate"`` config option. Not
