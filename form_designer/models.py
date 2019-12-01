@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from functools import partial
 import json
 import warnings
 
@@ -10,6 +11,7 @@ from django.core.validators import validate_email
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.html import format_html, format_html_join
+from django.utils.inspect import func_accepts_kwargs
 from django.utils.module_loading import import_string
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -106,9 +108,18 @@ class Form(models.Model):
         cfg = dict(self.CONFIG_OPTIONS)
         for key, config in self.config.items():
             try:
-                validators.append(cfg[key]["validate"])
+                validator = cfg[key]["validate"]
             except KeyError:
                 pass
+            else:
+                if func_accepts_kwargs(validator):
+                    validator = partial(validator, config=config, model_instance=self)
+                else:
+                    warnings.warn(
+                        "validate of %r should accept **kwargs" % (key,),
+                        DeprecationWarning,
+                    )
+                validators.append(validator)
 
         class Form(forms.Form):
             def clean(self):

@@ -8,7 +8,7 @@ from feincms.module.page.models import Page
 from form_designer.models import Form, FormSubmission, FIELD_TYPES
 
 
-def validate_honeypot(form, data):
+def validate_honeypot(form, data, **kwargs):
     if data.get("honeypot"):
         raise forms.ValidationError("Hello honeypot")
 

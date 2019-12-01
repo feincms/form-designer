@@ -6,6 +6,8 @@ Next version
 
 * Fixed the config fieldsets code to work when using Django 3.0.
 * Added an unit test and docs for the ``"validate"`` config option.
+* Passed additional data to the ``"validate"`` config option. Not
+  accepting arbitrary keyword arguments is now deprecated.
 * Changed the forms administration interface to show all form options
   from the beginning. This requires a change to the ``form_fields``
   configuration option: Instead of a list it has to be a callable
