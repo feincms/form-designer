@@ -6,6 +6,11 @@ Next version
 
 * Fixed the config fieldsets code to work when using Django 3.0.
 * Added an unit test and docs for the ``"validate"`` config option.
+* Changed the forms administration interface to show all form options
+  from the beginning. This requires a change to the ``form_fields``
+  configuration option: Instead of a list it has to be a callable
+  accepting the form instance now.
+* Added support for specifying a description for config options.
 
 
 0.15

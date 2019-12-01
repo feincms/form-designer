@@ -94,7 +94,7 @@ Custom actions can be added by appending them to
     Form.CONFIG_OPTIONS.append(
         ("do_thing", {
             "title": _("Do a thing"),
-            "form_fields": [
+            "form_fields": lambda form: [
                 ("optional_form_field", forms.CharField(
                     label=_("Optional form field"),
                     required=False,

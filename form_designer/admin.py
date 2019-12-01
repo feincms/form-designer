@@ -1,5 +1,6 @@
 import json
 import six
+import warnings
 
 from django import forms
 from django.conf.urls import url
@@ -32,7 +33,8 @@ class FormAdminForm(forms.ModelForm):
         super(FormAdminForm, self).__init__(*args, **kwargs)
 
         choices = (
-            (key, cfg.get("title", key)) for key, cfg in self._meta.model.CONFIG_OPTIONS
+            (cfg_key, cfg.get("title", cfg_key))
+            for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS
         )
 
         self.fields["config_options"] = forms.MultipleChoiceField(
@@ -56,19 +58,25 @@ class FormAdminForm(forms.ModelForm):
 
         self.fields["config_options"].initial = list(selected)
 
-        for s in selected:
-            cfg = dict(self._meta.model.CONFIG_OPTIONS)[s]
+        for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS:
+            is_optional = cfg_key not in selected
 
             fieldset = [
-                _("Form configuration: %s") % cfg.get("title", s),
-                {"fields": [], "classes": ("form-designer",)},
+                _("Form configuration: %s") % cfg.get("title", cfg_key),
+                {
+                    "fields": [],
+                    "classes": ("form-designer",),
+                    "description": cfg.get("description"),
+                },
             ]
 
-            for k, f in cfg.get("form_fields", []):
-                self.fields["%s_%s" % (s, k)] = f
-                if k in self.instance.config.get(s, {}):
-                    f.initial = self.instance.config[s].get(k)
-                fieldset[1]["fields"].append("%s_%s" % (s, k))
+            for k, f in self._form_fields(cfg_key, cfg):
+                self.fields["%s_%s" % (cfg_key, k)] = f
+                if k in self.instance.config.get(cfg_key, {}):
+                    f.initial = self.instance.config[cfg_key].get(k)
+                fieldset[1]["fields"].append("%s_%s" % (cfg_key, k))
+                if is_optional:
+                    f.required = False
 
             config_fieldsets.append(fieldset)
 
@@ -87,7 +95,7 @@ class FormAdminForm(forms.ModelForm):
             cfg = dict(self._meta.model.CONFIG_OPTIONS)[s]
 
             option_item = {}
-            for k, f in cfg.get("form_fields", []):
+            for k, f in self._form_fields(s, cfg):
                 key = "%s_%s" % (s, k)
                 if key in data:
                     option_item[k] = data.get(key)
@@ -96,6 +104,17 @@ class FormAdminForm(forms.ModelForm):
 
         data["config_json"] = json.dumps(jsonize(config_options))
         return data
+
+    def _form_fields(self, cfg_key, cfg):
+        form_fields = cfg.get("form_fields")
+        if not form_fields:
+            return []
+        if callable(form_fields):
+            return form_fields(self)  # TODO arguments?
+        warnings.warn(
+            "form_fields of %r should be a callable" % (cfg_key,), DeprecationWarning,
+        )
+        return form_fields() if callable(form_fields) else form_fields
 
 
 class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
