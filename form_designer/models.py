@@ -63,7 +63,7 @@ class Form(models.Model):
         (
             "email",
             {
-                "title": _("Send e-mail"),
+                "title": _("Send email"),
                 "description": _(
                     "Send the submitted form data to a list of email addresses."
                 ),
@@ -71,10 +71,10 @@ class Form(models.Model):
                     (
                         "email",
                         forms.CharField(
-                            label=_("e-mail address"),
+                            label=_("email address"),
                             validators=[validate_comma_separated_emails],
                             help_text=_(
-                                "Separate multiple e-mail addresses with commas."
+                                "Separate multiple email addresses with commas."
                             ),
                         ),
                     )

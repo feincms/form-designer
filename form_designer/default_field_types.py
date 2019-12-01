@@ -28,7 +28,7 @@ FIELD_TYPES = [
     },
     {
         "type": "email",
-        "verbose_name": _("e-mail address"),
+        "verbose_name": _("email address"),
         "field": forms.EmailField,
         "clean_field": [disallow_choices],
     },

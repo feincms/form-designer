@@ -4,7 +4,7 @@ from django.db import models, migrations
 
 field_types = [
     ("text", "text"),
-    ("email", "e-mail address"),
+    ("email", "email address"),
     ("longtext", "long text"),
     ("checkbox", "checkbox"),
     ("select", "select"),
