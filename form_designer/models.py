@@ -302,4 +302,7 @@ class FormSubmission(models.Model):
         return "".join("%s: %s\n" % item for item in self.sorted_data().items())
 
     def formatted_data_html(self):
-        return self.formatted_data(html=True)
+        try:
+            return self.formatted_data(html=True)
+        except Exception:
+            return "BROKEN: %s" % self.data
