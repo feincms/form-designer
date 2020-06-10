@@ -74,7 +74,7 @@ class FormsTest(TestCase):
         response = self.client.post(
             "/",
             {
-                "_formcontent".format(form.id): form.id,
+                "_formcontent": form.id,
                 "fc{0}-subject".format(form.id): "Test",
                 "fc{0}-email".format(form.id): "invalid",
                 "fc{0}-body".format(form.id): "Hello World",
@@ -90,7 +90,7 @@ class FormsTest(TestCase):
         response = self.client.post(
             "/",
             {
-                "_formcontent".format(form.id): form.id,
+                "_formcontent": form.id,
                 "fc{0}-subject".format(form.id): "Test",
                 "fc{0}-email".format(form.id): "valid@example.com",
                 "fc{0}-body".format(form.id): "Hello World",
@@ -231,7 +231,7 @@ class FormsTest(TestCase):
         response = self.client.post(
             "/",
             {
-                "_formcontent".format(form.id): form.id,
+                "_formcontent": form.id,
                 "fc{0}-subject".format(form.id): "Test",
                 "fc{0}-honeypot".format(form.id): "honey",
             },
