@@ -209,7 +209,8 @@ class FormsTest(TestCase):
 
     def test_honeypot(self):
         form = Form.objects.create(
-            title="Test honeypot form", config_json=('{"honeypot": {}}'),
+            title="Test honeypot form",
+            config_json=('{"honeypot": {}}'),
         )
         form.fields.create(ordering=0, title="Subject", name="subject", type="text")
         form.fields.create(
