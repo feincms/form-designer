@@ -186,7 +186,6 @@ class FormsTest(TestCase):
 
         data["fields-0-choices"] = ""
         response = self.client.post("/admin/form_designer/form/add/", data)
-        print(response.content)
         self.assertRedirects(response, "/admin/form_designer/form/")
 
         data["fields-4-type"] = ""  # No crash, but no success either

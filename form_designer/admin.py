@@ -14,10 +14,10 @@ from admin_ordering.admin import OrderableAdmin
 from form_designer import models
 from xlsxdocument import XLSXDocument
 
-from .models import FIELD_TYPES
 
-
-FIELD_TYPE_CHOICES = ((type["type"], type["verbose_name"]) for type in FIELD_TYPES)
+FIELD_TYPE_CHOICES = (
+    (type["type"], type["verbose_name"]) for type in models.FIELD_TYPES
+)
 
 
 def jsonize(v):
