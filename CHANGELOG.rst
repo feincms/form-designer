@@ -10,6 +10,7 @@ Next version
   cannot be deserialized and/or rendered.
 * Worked around changes in the initialization of change forms in the
   administration interface.
+* Added Django 3.1 and Python 3.8 to the Travis CI matrix.
 
 
 0.16
