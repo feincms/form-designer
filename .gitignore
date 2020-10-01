@@ -5,6 +5,7 @@
 /secrets.py
 .DS_Store
 ._*
+/.idea
 /docs/_build
 /dist
 /form_designer.egg-info
