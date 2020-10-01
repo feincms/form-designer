@@ -135,18 +135,23 @@ class FormAdmin(admin.ModelAdmin):
         css = {"all": ("form_designer/admin.css",)}
 
     def get_form(self, request, obj=None, **kwargs):
-        form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
-        # Generate a new type to be sure that the request stays inside this
-        # request/response cycle.
-        return type(form_class.__name__, (form_class,), {"request": request})
+        if not hasattr(request, "_formdesigner_form_class"):
+            # Generate a new type to be sure that the request stays inside this
+            # request/response cycle.
+            form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
+            request._formdesigner_form_class = type(
+                form_class.__name__, (form_class,), {"request": request}
+            )
+
+        return request._formdesigner_form_class
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(FormAdmin, self).get_fieldsets(request, obj)
-        if not hasattr(request, "_formdesigner_config_fieldsets"):
-            return fieldsets
+
+        # Instantiate the form once to initialize the config options
+        self.get_form(request)()
 
         fieldsets[0][1]["fields"].remove("config_json")
-
         fieldsets.append(
             (_("Configuration"), {"fields": ("config_json", "config_options")})
         )

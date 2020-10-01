@@ -6,8 +6,10 @@ Next version
 
 * Fixed a typo and changed e-mail to email. Removed the help text from
   config options which isn't correct anymore.
- * Added code to avoid crashing the admin interface if form submissions
-   cannot be deserialized and/or rendered.
+* Added code to avoid crashing the admin interface if form submissions
+  cannot be deserialized and/or rendered.
+* Worked around changes in the initialization of change forms in the
+  administration interface.
 
 
 0.16
