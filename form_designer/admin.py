@@ -14,6 +14,11 @@ from admin_ordering.admin import OrderableAdmin
 from form_designer import models
 from xlsxdocument import XLSXDocument
 
+from .models import FIELD_TYPES
+
+
+FIELD_TYPE_CHOICES = ((type["type"], type["verbose_name"]) for type in FIELD_TYPES)
+
 
 def jsonize(v):
     if isinstance(v, dict):
@@ -38,7 +43,9 @@ class FormAdminForm(forms.ModelForm):
         )
 
         self.fields["config_options"] = forms.MultipleChoiceField(
-            choices=choices, label=_("Options"), widget=forms.CheckboxSelectMultiple,
+            choices=choices,
+            label=_("Options"),
+            widget=forms.CheckboxSelectMultiple,
         )
 
         config_fieldsets = []
@@ -109,12 +116,18 @@ class FormAdminForm(forms.ModelForm):
         if callable(form_fields):
             return form_fields(self)  # TODO arguments?
         warnings.warn(
-            "form_fields of %r should be a callable" % (cfg_key,), DeprecationWarning,
+            "form_fields of %r should be a callable" % (cfg_key,),
+            DeprecationWarning,
         )
         return form_fields() if callable(form_fields) else form_fields
 
 
+class FormFieldAdminForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=FIELD_TYPE_CHOICES)
+
+
 class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
+    form = FormFieldAdminForm
     extra = 0
     model = models.FormField
     prepopulated_fields = {"name": ("title",)}

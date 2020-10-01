@@ -186,6 +186,7 @@ class FormsTest(TestCase):
 
         data["fields-0-choices"] = ""
         response = self.client.post("/admin/form_designer/form/add/", data)
+        print(response.content)
         self.assertRedirects(response, "/admin/form_designer/form/")
 
         data["fields-4-type"] = ""  # No crash, but no success either
@@ -209,7 +210,8 @@ class FormsTest(TestCase):
 
     def test_honeypot(self):
         form = Form.objects.create(
-            title="Test honeypot form", config_json=('{"honeypot": {}}'),
+            title="Test honeypot form",
+            config_json=('{"honeypot": {}}'),
         )
         form.fields.create(ordering=0, title="Subject", name="subject", type="text")
         form.fields.create(

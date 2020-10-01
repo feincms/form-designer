@@ -1,6 +1,6 @@
 import os
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
+DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "dev.db"}}
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     "form_designer",
 ]
 
+DEBUG = True
 MEDIA_ROOT = "/media/"
 STATIC_URL = "/static/"
 BASEDIR = os.path.dirname(__file__)

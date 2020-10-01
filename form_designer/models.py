@@ -185,7 +185,7 @@ class FormField(models.Model):
     type = models.CharField(
         _("field type"),
         max_length=20,
-        choices=[(type["type"], type["verbose_name"]) for type in FIELD_TYPES],
+        choices=(("", ""),),
     )
     choices = models.CharField(
         _("choices"), max_length=1024, blank=True, help_text=_("Comma-separated")
@@ -268,7 +268,7 @@ class FormSubmission(models.Model):
         verbose_name_plural = _("form submissions")
 
     def sorted_data(self, include=()):
-        """ Return OrderedDict by field ordering and using names as keys.
+        """Return OrderedDict by field ordering and using names as keys.
 
         `include` can be a tuple containing any or all of 'date', 'time',
         'datetime', or 'path' to include additional meta data.
