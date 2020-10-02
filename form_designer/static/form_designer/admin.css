@@ -3,7 +3,7 @@
 }
 
 .form-row.dynamic-fields .vTextField { width: 15em; }
-.form-row.dynamic-fields .vIntegerField { width: 2.5em; }
+.form-row.dynamic-fields .vIntegerField { width: 3.5em; }
 
 .form-row.dynamic-fields input[name$=-title],
 .form-row.dynamic-fields input[name$=-name] { width: 10em; }
