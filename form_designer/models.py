@@ -13,7 +13,7 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.html import format_html, format_html_join
 from django.utils.inspect import func_accepts_kwargs
 from django.utils.module_loading import import_string
-from django.utils.text import slugify
+from django.utils.text import capfirst, slugify
 from django.utils.translation import gettext_lazy as _
 
 from form_designer.utils import JSONFieldDescriptor
@@ -71,7 +71,7 @@ class Form(models.Model):
                     (
                         "email",
                         forms.CharField(
-                            label=_("email address"),
+                            label=capfirst(_("email address")),
                             validators=[validate_comma_separated_emails],
                             help_text=_(
                                 "Separate multiple email addresses with commas."

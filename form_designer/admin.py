@@ -3,11 +3,12 @@ import six
 import warnings
 
 from django import forms
+from django.forms.models import modelform_factory
 from django.conf.urls import url
 from django.contrib import admin
 from django.db.models import Model
 from django.shortcuts import get_object_or_404
-from django.utils.text import slugify
+from django.utils.text import capfirst, slugify
 from django.utils.translation import gettext_lazy as _
 
 from admin_ordering.admin import OrderableAdmin
@@ -32,30 +33,21 @@ class FormAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FormAdminForm, self).__init__(*args, **kwargs)
 
-        choices = (
-            (cfg_key, cfg.get("title", cfg_key))
-            for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS
-        )
-
-        self.fields["config_options"] = forms.MultipleChoiceField(
-            choices=choices,
-            label=_("Options"),
-            widget=forms.CheckboxSelectMultiple,
-        )
-
         config_fieldsets = []
 
         selected = []
         if self.data:
             try:
-                selected = self.data.getlist("config_options", ())
-            except AttributeError:
+                selected = [
+                    cfg_key
+                    for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS
+                    if "_is_active_%s" % cfg_key in self.data
+                ]
+            except KeyError:
                 pass
 
         if not selected and self.instance.pk:
             selected = self.instance.config.keys()
-
-        self.fields["config_options"].initial = list(selected)
 
         for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS:
             is_optional = cfg_key not in selected
@@ -68,6 +60,12 @@ class FormAdminForm(forms.ModelForm):
                     "description": cfg.get("description"),
                 },
             ]
+
+            self.fields["_is_active_%s" % cfg_key] = forms.BooleanField(
+                label=capfirst(_("is active")),
+                required=False,
+                initial=cfg_key in selected,
+            )
 
             for k, f in self._form_fields(cfg_key, cfg):
                 self.fields["%s_%s" % (cfg_key, k)] = f
@@ -87,8 +85,12 @@ class FormAdminForm(forms.ModelForm):
         if "config_json" in self.changed_data:
             return data
 
-        selected = data.get("config_options", [])
-        config_options = {}
+        selected = [
+            cfg_key
+            for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS
+            if "_is_active_%s" % cfg_key in self.data
+        ]
+        config = {}
 
         for s in selected:
             cfg = dict(self._meta.model.CONFIG_OPTIONS)[s]
@@ -99,9 +101,9 @@ class FormAdminForm(forms.ModelForm):
                 if key in data:
                     option_item[k] = data.get(key)
 
-            config_options[s] = option_item
+            config[s] = option_item
 
-        data["config_json"] = json.dumps(jsonize(config_options))
+        data["config_json"] = json.dumps(jsonize(config))
         return data
 
     def _form_fields(self, cfg_key, cfg):
@@ -136,28 +138,54 @@ class FormAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if not hasattr(request, "_formdesigner_form_class"):
-            # Generate a new type to be sure that the request stays inside this
-            # request/response cycle.
-            form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
-            request._formdesigner_form_class = type(
-                form_class.__name__, (form_class,), {"request": request}
+            # Generate a new class with the _current_ request as a class variable
+            # form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
+            form_class = modelform_factory(
+                models.Form, form=FormAdminForm, fields="__all__"
             )
-
+            request._formdesigner_form_class = type(
+                "FormAdminForm",
+                (form_class,),
+                {"request": request},
+            )
         return request._formdesigner_form_class
 
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = super(FormAdmin, self).get_fieldsets(request, obj)
-
-        # Instantiate the form once to initialize the config options
-        self.get_form(request)()
-
-        fieldsets[0][1]["fields"].remove("config_json")
-        fieldsets.append(
-            (_("Configuration"), {"fields": ("config_json", "config_options")})
+    def _form_fields(self, cfg_key, cfg):
+        form_fields = cfg.get("form_fields")
+        if not form_fields:
+            return []
+        if callable(form_fields):
+            return form_fields(self)  # TODO arguments?
+        warnings.warn(
+            "form_fields of %r should be a callable" % (cfg_key,),
+            DeprecationWarning,
         )
+        return form_fields() if callable(form_fields) else form_fields
 
-        fieldsets.extend(request._formdesigner_config_fieldsets)
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = [
+            (None, {"fields": ["title"]}),
+        ]
 
+        for cfg_key, cfg in self.model.CONFIG_OPTIONS:
+            fields = ["_is_active_%s" % cfg_key]
+            fields.extend(
+                "%s_%s" % (cfg_key, row[0]) for row in self._form_fields(cfg_key, cfg)
+            )
+            fieldsets.append(
+                (
+                    _("Form configuration: %s") % cfg.get("title", cfg_key),
+                    {
+                        "fields": fields,
+                        "classes": ["form-designer"],
+                        "description": cfg.get("description"),
+                    },
+                ),
+            )
+
+        fieldsets.append(
+            (_("Configuration"), {"fields": ["config_json"], "classes": ["collapse"]}),
+        )
         return fieldsets
 
     def export_submissions(self, request, form_id):

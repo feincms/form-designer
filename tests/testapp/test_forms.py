@@ -157,7 +157,8 @@ class FormsTest(TestCase):
         data = {
             "title": "Test form",
             # "config_json": '{"save_fs": {}}',
-            "config_options": ["save_fs", "email"],
+            "_is_active_save_fs": "on",
+            "_is_active_email": "on",
             "email_email": "bla@example.com,blabbb@example.com",
             "fields-TOTAL_FORMS": 7,
             "fields-INITIAL_FORMS": 0,
