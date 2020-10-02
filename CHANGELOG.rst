@@ -4,6 +4,10 @@ Change log
 Next version
 ------------
 
+
+0.17
+----
+
 * Fixed a typo and changed e-mail to email. Removed the help text from
   config options which isn't correct anymore.
 * Added code to avoid crashing the admin interface if form submissions
@@ -11,6 +15,12 @@ Next version
 * Worked around changes in the initialization of change forms in the
   administration interface.
 * Added Django 3.1 and Python 3.8 to the Travis CI matrix.
+* Reordered the configuration options in the administration panel; moved
+  activation of processors closer to their configuration.
+* Fixed a recurring bug where migrations would be created when changing
+  field types.
+* Made the ordering field a bit wider so that the value is still visible
+  even on small screens.
 
 
 0.16
