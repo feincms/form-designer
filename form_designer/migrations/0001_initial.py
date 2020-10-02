@@ -2,24 +2,6 @@
 from django.db import models, migrations
 
 
-field_types = [
-    ("text", "text"),
-    ("email", "email address"),
-    ("longtext", "long text"),
-    ("checkbox", "checkbox"),
-    ("select", "select"),
-    ("radio", "radio"),
-    ("multiple-select", "multiple select"),
-    ("hidden", "hidden"),
-]
-try:
-    from form_designer.models import FIELD_TYPES
-
-    field_types = [type[:2] for type in FIELD_TYPES]
-except Exception:
-    pass
-
-
 class Migration(migrations.Migration):
 
     dependencies = []
@@ -61,7 +43,7 @@ class Migration(migrations.Migration):
                 (
                     "type",
                     models.CharField(
-                        verbose_name="field type", choices=field_types, max_length=20
+                        verbose_name="field type", choices=[("", "")], max_length=20
                     ),
                 ),
                 (

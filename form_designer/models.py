@@ -174,6 +174,15 @@ for index, field_type in enumerate(FIELD_TYPES[:]):
     }
 
 
+class _StaticChoicesCharField(models.CharField):
+    """Does not detect changes to "choices", ever"""
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(_StaticChoicesCharField, self).deconstruct()
+        kwargs["choices"] = [("", "")]
+        return name, "django.db.models.CharField", args, kwargs
+
+
 class FormField(models.Model):
     form = models.ForeignKey(
         Form, related_name="fields", verbose_name=_("form"), on_delete=models.CASCADE
@@ -182,7 +191,7 @@ class FormField(models.Model):
 
     title = models.CharField(_("field title"), max_length=100)
     name = models.CharField(_("field name"), max_length=100)
-    type = models.CharField(
+    type = _StaticChoicesCharField(
         _("field type"),
         max_length=20,
         choices=[(type["type"], type["verbose_name"]) for type in FIELD_TYPES],
