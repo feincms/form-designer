@@ -116,7 +116,7 @@ class FormAdminForm(forms.ModelForm):
             "form_fields of %r should be a callable" % (cfg_key,),
             DeprecationWarning,
         )
-        return form_fields() if callable(form_fields) else form_fields
+        return form_fields
 
 
 class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
@@ -155,12 +155,12 @@ class FormAdmin(admin.ModelAdmin):
         if not form_fields:
             return []
         if callable(form_fields):
-            return form_fields(self)  # TODO arguments?
+            return form_fields(None)  # TODO arguments?
         warnings.warn(
             "form_fields of %r should be a callable" % (cfg_key,),
             DeprecationWarning,
         )
-        return form_fields() if callable(form_fields) else form_fields
+        return form_fields
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
