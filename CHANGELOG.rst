@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+* Stopped hardcoding the admin base form class. Overriding the ``form``
+  attribute on the ``ModelAdmin`` class for forms now works as expected.
+
 
 0.17
 ----
