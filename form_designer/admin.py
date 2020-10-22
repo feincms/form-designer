@@ -140,9 +140,7 @@ class FormAdmin(admin.ModelAdmin):
         if not hasattr(request, "_formdesigner_form_class"):
             # Generate a new class with the _current_ request as a class variable
             # form_class = super(FormAdmin, self).get_form(request, obj, **kwargs)
-            form_class = modelform_factory(
-                self.model, form=self.form, fields="__all__"
-            )
+            form_class = modelform_factory(self.model, form=self.form, fields="__all__")
             request._formdesigner_form_class = type(
                 self.form.__name__,
                 (form_class,),
