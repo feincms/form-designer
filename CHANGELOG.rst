@@ -6,6 +6,9 @@ Next version
 
 * Stopped hardcoding the admin base form class. Overriding the ``form``
   attribute on the ``ModelAdmin`` class for forms now works as expected.
+* Raised the minimum requirements to Python 3.6, Django 2.2.
+* Switched to a declarative setup.
+* Switched to GitHub actions.
 
 
 0.17

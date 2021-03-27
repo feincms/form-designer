@@ -2,7 +2,6 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_text
 from django.utils.translation import gettext_lazy as _
-
 from feincms.admin.item_editor import FeinCMSInline
 
 from form_designer.models import Form

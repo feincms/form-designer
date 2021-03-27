@@ -1,7 +1,7 @@
-from collections import OrderedDict
-from functools import partial
 import json
 import warnings
+from collections import OrderedDict
+from functools import partial
 
 from django import forms
 from django.conf import settings

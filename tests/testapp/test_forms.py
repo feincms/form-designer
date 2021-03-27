@@ -2,10 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
-
 from feincms.module.page.models import Page
 
-from form_designer.models import Form, FormSubmission, FIELD_TYPES
+from form_designer.models import FIELD_TYPES, Form, FormSubmission
 
 
 def validate_honeypot(form, data, **kwargs):

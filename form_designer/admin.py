@@ -1,19 +1,19 @@
 import json
-import six
 import warnings
 
+import six
+from admin_ordering.admin import OrderableAdmin
 from django import forms
-from django.forms.models import modelform_factory
-from django.conf.urls import url
 from django.contrib import admin
 from django.db.models import Model
+from django.forms.models import modelform_factory
 from django.shortcuts import get_object_or_404
+from django.urls import re_path
 from django.utils.text import capfirst, slugify
 from django.utils.translation import gettext_lazy as _
-
-from admin_ordering.admin import OrderableAdmin
-from form_designer import models
 from xlsxdocument import XLSXDocument
+
+from form_designer import models
 
 
 def jsonize(v):
@@ -205,7 +205,7 @@ class FormAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         return [
-            url(
+            re_path(
                 r"(?P<form_id>\d+)/export_submissions/",
                 self.admin_site.admin_view(self.export_submissions),
                 name="form_designer_formsubmission_export",
