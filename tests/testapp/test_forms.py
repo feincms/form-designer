@@ -69,7 +69,9 @@ class FormsTest(TestCase):
             9,  # csrf, subject, email, checkbox, _formcontent, submit, radio*3
         )
         self.assertContains(response, "<textarea", 1)
-        self.assertContains(response, 'value="two what" required id="id_fc1-radio_1" checked', 1)
+        self.assertContains(
+            response, 'value="two-what" required id="id_fc1-radio_1" checked', 1
+        )
 
         response = self.client.post("/")
 

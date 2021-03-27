@@ -257,6 +257,7 @@ class FormField(models.Model):
         )
         if self.choices:
             kwargs["choices"] = self.get_choices()
+            kwargs["initial"] = slugify(self.default_value)
         return self.get_type(**kwargs)
 
 
