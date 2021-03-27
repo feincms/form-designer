@@ -1,6 +1,6 @@
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils.translation import gettext_lazy as _
 from feincms.admin.item_editor import FeinCMSInline
 
@@ -50,7 +50,7 @@ class FormContent(models.Model):
         formcontent = self.request.POST.get("_formcontent")
 
         if self.request.method == "POST" and (
-            not formcontent or formcontent == smart_text(self.id)
+            not formcontent or formcontent == smart_str(self.id)
         ):
             form_instance = form_class(self.request.POST, prefix=prefix)
 
