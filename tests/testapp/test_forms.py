@@ -33,13 +33,21 @@ class FormsTest(TestCase):
             type="checkbox",
             is_required=False,
         )
+        form.fields.create(
+            ordering=4,
+            title="Radio Select",
+            name="radio",
+            type="radio",
+            choices="one,two what,three",
+            default_value="two what",
+        )
 
         form_class = form.form_class()
         form_instance = form_class()
 
         self.assertListEqual(
             [field.name for field in form_instance],
-            ["subject", "email", "body", "please-call-me"],
+            ["subject", "email", "body", "please-call-me", "radio"],
         )
 
         page = Page.objects.create(override_url="/", title="")
@@ -57,13 +65,16 @@ class FormsTest(TestCase):
         self.assertContains(
             response,
             "<input",
-            6,  # csrf, subject, email, checkbox, _formcontent, submit
+            9,  # csrf, subject, email, checkbox, _formcontent, submit, radio*3
         )
         self.assertContains(response, "<textarea", 1)
+        self.assertContains(
+            response, 'value="two-what" required id="id_fc1-radio_1" checked', 1
+        )
 
         response = self.client.post("/")
 
-        self.assertContains(response, "This field is required", 3)
+        self.assertContains(response, "This field is required", 4)
 
         # Not this form
         response = self.client.post("/", {"_formcontent": -1})
@@ -77,6 +88,7 @@ class FormsTest(TestCase):
                 "fc{0}-subject".format(form.id): "Test",
                 "fc{0}-email".format(form.id): "invalid",
                 "fc{0}-body".format(form.id): "Hello World",
+                "fc{0}-radio".format(form.id): "one",
             },
         )
 
@@ -93,6 +105,7 @@ class FormsTest(TestCase):
                 "fc{0}-subject".format(form.id): "Test",
                 "fc{0}-email".format(form.id): "valid@example.com",
                 "fc{0}-body".format(form.id): "Hello World",
+                "fc{0}-radio".format(form.id): "one",
             },
         )
 
@@ -117,13 +130,14 @@ class FormsTest(TestCase):
 
         self.assertEqual(
             submission.sorted_data(
-                include=("subject", "email", "body", "please-call-me")
+                include=("subject", "email", "body", "please-call-me", "radio")
             ),
             {
                 "subject": "Test",
                 "email": "valid@example.com",
                 "body": "Hello World",
                 "please-call-me": False,
+                "radio": "one",
             },
         )
 

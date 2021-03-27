@@ -257,6 +257,8 @@ class FormField(models.Model):
         )
         if self.choices:
             kwargs["choices"] = self.get_choices()
+            # The value of individual choices is slugified too.
+            kwargs["initial"] = slugify(self.default_value)
         return self.get_type(**kwargs)
 
 
