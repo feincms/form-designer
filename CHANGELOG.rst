@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+* Specified the default ``AutoField`` for the form designer to avoid
+  migrations.
+
 
 0.18
 ----
