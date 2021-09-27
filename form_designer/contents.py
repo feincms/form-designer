@@ -34,7 +34,7 @@ class FormContent(models.Model):
         verbose_name_plural = _("forms")
 
     def process_valid_form(self, request, form_instance, **kwargs):
-        """ Process form and return response (hook method). """
+        """Process form and return response (hook method)."""
         process_result = self.form.process(form_instance, request)
         return render_to_string(
             self.template,
