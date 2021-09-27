@@ -6,6 +6,8 @@ Next version
 
 * Specified the default ``AutoField`` for the form designer to avoid
   migrations.
+* Added a reCAPTCHA v3 field to the default field types.
+* Added Django 4.0a1 to the CI matrix.
 
 
 0.18
