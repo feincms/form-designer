@@ -76,14 +76,21 @@ FIELD_TYPES = [
 if apps.is_installed("captcha"):  # pragma: no cover
     try:
         from captcha.fields import ReCaptchaField
-        from captcha.widgets import ReCaptchaV2Checkbox
+        from captcha.widgets import ReCaptchaV2Checkbox, ReCaptchaV3
     except ImportError:
         pass
     else:
         FIELD_TYPES.append(
             {
                 "type": "recaptcha",
-                "verbose_name": _("recaptcha"),
+                "verbose_name": _("reCAPTCHA v2"),
                 "field": partial(ReCaptchaField, widget=ReCaptchaV2Checkbox),
+            }
+        )
+        FIELD_TYPES.append(
+            {
+                "type": "recaptcha-v3",
+                "verbose_name": _("reCAPTCHA v3"),
+                "field": partial(ReCaptchaField, widget=ReCaptchaV3),
             }
         )
