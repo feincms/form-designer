@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     "testapp",
     "feincms",
     "feincms.module.page",
+    "admin_ordering",
     "form_designer",
 ]
 
