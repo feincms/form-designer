@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import migrations, models
 
 
@@ -95,7 +94,7 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
-            name="formfield", unique_together=set([("form", "name")])
+            name="formfield", unique_together={("form", "name")}
         ),
         migrations.CreateModel(
             name="FormSubmission",

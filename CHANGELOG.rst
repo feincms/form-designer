@@ -8,6 +8,9 @@ Next version
   migrations.
 * Added a reCAPTCHA v3 field to the default field types.
 * Added Django 4.0a1 to the CI matrix.
+* Disallowed non-sluggy contents on the name field. The old field name is
+  preserved for exporting form submissions etc. so the change *should* be
+  backwards compatible but don't rely on it too much.
 
 
 0.18

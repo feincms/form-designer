@@ -7,7 +7,7 @@ from django import forms
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.validators import validate_email
+from django.core.validators import RegexValidator, validate_email
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.html import format_html, format_html_join
@@ -116,14 +116,14 @@ class Form(models.Model):
                     validator = partial(validator, config=config, model_instance=self)
                 else:
                     warnings.warn(
-                        "validate of %r should accept **kwargs" % (key,),
+                        f"validate of {key!r} should accept **kwargs",
                         DeprecationWarning,
                     )
                 validators.append(validator)
 
         class Form(forms.Form):
             def clean(self):
-                data = super(Form, self).clean()
+                data = super().clean()
                 for validator in validators:
                     validator(self, data)
                 return data
@@ -178,9 +178,41 @@ class _StaticChoicesCharField(models.CharField):
     """Does not detect changes to "choices", ever"""
 
     def deconstruct(self):
-        name, path, args, kwargs = super(_StaticChoicesCharField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         kwargs["choices"] = [("", "")]
         return name, "django.db.models.CharField", args, kwargs
+
+
+class NameField(models.CharField):
+    def __init__(self, **kwargs):
+        kwargs.setdefault(
+            "validators",
+            [
+                RegexValidator(
+                    r"^[-a-z0-9_]+$",
+                    message=_(
+                        "Enter a value consisting only of lowercase letters,"
+                        " numbers, dashes and the underscore."
+                    ),
+                ),
+            ],
+        )
+        kwargs.setdefault(
+            "help_text",
+            _(
+                "Data is saved using this name. Changing it may result in data loss."
+                " This field only allows a-z, 0-9, - and _ as characters."
+            ),
+        )
+        super().__init__(**kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        return name, "django.db.models.CharField", args, kwargs
+
+    def formfield(self, **kwargs):
+        kwargs.setdefault("required", False)
+        return super().formfield(**kwargs)
 
 
 class FormField(models.Model):
@@ -190,7 +222,8 @@ class FormField(models.Model):
     ordering = models.IntegerField(_("ordering"), default=0)
 
     title = models.CharField(_("field title"), max_length=100)
-    name = models.CharField(_("field name"), max_length=100)
+    name = NameField(verbose_name=_("field name"), max_length=100)
+    _old_name = models.CharField(editable=False, null=True, max_length=100)
     type = _StaticChoicesCharField(
         _("field type"),
         max_length=20,
@@ -224,7 +257,7 @@ class FormField(models.Model):
 
     def clean(self):
         try:
-            cfg = next((type for type in FIELD_TYPES if type["type"] == self.type))
+            cfg = next(type for type in FIELD_TYPES if type["type"] == self.type)
         except StopIteration:
             # Fine. The model will not validate anyway.
             return
@@ -287,7 +320,10 @@ class FormSubmission(models.Model):
         data_dict = json.loads(self.data)
         data = OrderedDict()
         for field in self.form.fields.all():
-            data[field.name] = data_dict.get(field.name)
+            if field._old_name is not None and field._old_name in data_dict:
+                data[field.name] = data_dict.get(field.name)
+            else:
+                data[field.name] = data_dict.get(field.name)
         # append any extra data (form may have changed since submission, etc)
         for field_name in data_dict:
             if field_name not in data:

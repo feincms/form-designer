@@ -61,7 +61,7 @@ class FormsTest(TestCase):
         response = self.client.get("/")
 
         self.assertContains(response, 'method="post"', 1)
-        self.assertContains(response, 'action="#form{0}"'.format(form.id), 1)
+        self.assertContains(response, f'action="#form{form.id}"', 1)
         self.assertContains(
             response,
             "<input",
@@ -85,10 +85,10 @@ class FormsTest(TestCase):
             "/",
             {
                 "_formcontent": form.id,
-                "fc{0}-subject".format(form.id): "Test",
-                "fc{0}-email".format(form.id): "invalid",
-                "fc{0}-body".format(form.id): "Hello World",
-                "fc{0}-radio".format(form.id): "one",
+                f"fc{form.id}-subject": "Test",
+                f"fc{form.id}-email": "invalid",
+                f"fc{form.id}-body": "Hello World",
+                f"fc{form.id}-radio": "one",
             },
         )
 
@@ -102,10 +102,10 @@ class FormsTest(TestCase):
             "/",
             {
                 "_formcontent": form.id,
-                "fc{0}-subject".format(form.id): "Test",
-                "fc{0}-email".format(form.id): "valid@example.com",
-                "fc{0}-body".format(form.id): "Hello World",
-                "fc{0}-radio".format(form.id): "one",
+                f"fc{form.id}-subject": "Test",
+                f"fc{form.id}-email": "valid@example.com",
+                f"fc{form.id}-body": "Hello World",
+                f"fc{form.id}-radio": "one",
             },
         )
 
@@ -156,7 +156,7 @@ class FormsTest(TestCase):
         )
 
         response = self.client.get(
-            "/admin/form_designer/formsubmission/{}/change/".format(submission.id)
+            f"/admin/form_designer/formsubmission/{submission.id}/change/"
         )
         self.assertContains(response, "<dt>body</dt>")
 
@@ -179,11 +179,11 @@ class FormsTest(TestCase):
             "fields-MAX_NUM_FORMS": 1000,
         }
         for i in range(7):
-            data["fields-{}-ordering".format(i)] = (i + 1) * 10
-            data["fields-{}-title".format(i)] = "title-{}".format(i)
-            data["fields-{}-name".format(i)] = "name-{}".format(i)
-            data["fields-{}-type".format(i)] = FIELD_TYPES[i]["type"]
-            data["fields-{}-choices".format(i)] = ""
+            data[f"fields-{i}-ordering"] = (i + 1) * 10
+            data[f"fields-{i}-title"] = f"title-{i}"
+            data[f"fields-{i}-name"] = f"name-{i}"
+            data[f"fields-{i}-type"] = FIELD_TYPES[i]["type"]
+            data[f"fields-{i}-choices"] = ""
 
         # Validation failure because of missing choices
         response = self.client.post("/admin/form_designer/form/add/", data)
@@ -191,7 +191,7 @@ class FormsTest(TestCase):
 
         for i in range(7):
             if FIELD_TYPES[i]["type"] in {"select", "radio", "multiple-select"}:
-                data["fields-{}-choices".format(i)] = "a,b,c,d"
+                data[f"fields-{i}-choices"] = "a,b,c,d"
 
         data["fields-0-choices"] = "invalid"
         # Validation failure because of choices where there should be none
@@ -215,9 +215,7 @@ class FormsTest(TestCase):
         self.assertEqual(len(form_class().fields), 7)
 
         # The additional formsets exist
-        response = self.client.get(
-            "/admin/form_designer/form/{}/change/".format(form.id)
-        )
+        response = self.client.get(f"/admin/form_designer/form/{form.id}/change/")
         self.assertContains(response, 'id="id_email_email"')
         self.assertContains(response, "blabbb@example.com")
 
@@ -247,8 +245,8 @@ class FormsTest(TestCase):
             "/",
             {
                 "_formcontent": form.id,
-                "fc{0}-subject".format(form.id): "Test",
-                "fc{0}-honeypot".format(form.id): "honey",
+                f"fc{form.id}-subject": "Test",
+                f"fc{form.id}-honeypot": "honey",
             },
         )
 

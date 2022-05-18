@@ -1,16 +1,24 @@
-.form-designer input[type=text] {
-    width: 20em;
+.form-designer input[type="text"] {
+  width: 20em;
 }
 
-.form-row.dynamic-fields .vTextField { width: 15em; }
-.form-row.dynamic-fields .vIntegerField { width: 3.5em; }
+.form-row.dynamic-fields .vTextField {
+  width: 15em;
+}
+.form-row.dynamic-fields .vIntegerField {
+  width: 3.5em;
+}
 
-.form-row.dynamic-fields input[name$=-title],
-.form-row.dynamic-fields input[name$=-name] { width: 10em; }
+.form-row.dynamic-fields input[name$="-title"],
+.form-row.dynamic-fields input[name$="-name"] {
+  width: 10em;
+}
 
-.form-row.dynamic-fields select[name$=-type],
-.form-row.dynamic-fields input[name$=-default_value] { width: 8em; }
+.form-row.dynamic-fields select[name$="-type"],
+.form-row.dynamic-fields input[name$="-default_value"] {
+  width: 8em;
+}
 
 .inline-group {
-    overflow: auto;
+  overflow: auto;
 }

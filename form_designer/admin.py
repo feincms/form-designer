@@ -1,7 +1,6 @@
 import json
 import warnings
 
-import six
 from admin_ordering.admin import OrderableAdmin
 from django import forms
 from django.contrib import admin
@@ -18,8 +17,8 @@ from form_designer import models
 
 def jsonize(v):
     if isinstance(v, dict):
-        return dict((i1, jsonize(i2)) for i1, i2 in v.items())
-    if hasattr(v, "__iter__") and not isinstance(v, six.string_types):
+        return {i1: jsonize(i2) for i1, i2 in v.items()}
+    if hasattr(v, "__iter__") and not isinstance(v, str):
         return [jsonize(i) for i in v]
     if isinstance(v, Model):
         return v.pk
@@ -31,7 +30,7 @@ class FormAdminForm(forms.ModelForm):
         widgets = {"config_json": forms.Textarea(attrs={"rows": 3})}
 
     def __init__(self, *args, **kwargs):
-        super(FormAdminForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         config_fieldsets = []
 
@@ -68,10 +67,10 @@ class FormAdminForm(forms.ModelForm):
             )
 
             for k, f in self._form_fields(cfg_key, cfg):
-                self.fields["%s_%s" % (cfg_key, k)] = f
+                self.fields[f"{cfg_key}_{k}"] = f
                 if k in self.instance.config.get(cfg_key, {}):
                     f.initial = self.instance.config[cfg_key].get(k)
-                fieldset[1]["fields"].append("%s_%s" % (cfg_key, k))
+                fieldset[1]["fields"].append(f"{cfg_key}_{k}")
                 if is_optional:
                     f.required = False
 
@@ -97,7 +96,7 @@ class FormAdminForm(forms.ModelForm):
 
             option_item = {}
             for k, f in self._form_fields(s, cfg):
-                key = "%s_%s" % (s, k)
+                key = f"{s}_{k}"
                 if key in data:
                     option_item[k] = data.get(key)
 
@@ -113,7 +112,7 @@ class FormAdminForm(forms.ModelForm):
         if callable(form_fields):
             return form_fields(self)  # TODO arguments?
         warnings.warn(
-            "form_fields of %r should be a callable" % (cfg_key,),
+            f"form_fields of {cfg_key!r} should be a callable",
             DeprecationWarning,
         )
         return form_fields
@@ -155,7 +154,7 @@ class FormAdmin(admin.ModelAdmin):
         if callable(form_fields):
             return form_fields(None)  # TODO arguments?
         warnings.warn(
-            "form_fields of %r should be a callable" % (cfg_key,),
+            f"form_fields of {cfg_key!r} should be a callable",
             DeprecationWarning,
         )
         return form_fields
@@ -168,7 +167,7 @@ class FormAdmin(admin.ModelAdmin):
         for cfg_key, cfg in self.model.CONFIG_OPTIONS:
             fields = ["_is_active_%s" % cfg_key]
             fields.extend(
-                "%s_%s" % (cfg_key, row[0]) for row in self._form_fields(cfg_key, cfg)
+                f"{cfg_key}_{row[0]}" for row in self._form_fields(cfg_key, cfg)
             )
             fieldsets.append(
                 (
@@ -210,7 +209,7 @@ class FormAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.export_submissions),
                 name="form_designer_formsubmission_export",
             )
-        ] + super(FormAdmin, self).get_urls()
+        ] + super().get_urls()
 
 
 class FormSubmissionAdmin(admin.ModelAdmin):
