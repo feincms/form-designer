@@ -4,6 +4,10 @@ Change log
 Next version
 ------------
 
+
+0.19
+----
+
 * Specified the default ``AutoField`` for the form designer to avoid
   migrations.
 * Added a reCAPTCHA v3 field to the default field types.
