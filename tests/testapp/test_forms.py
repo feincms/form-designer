@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
@@ -251,3 +253,47 @@ class FormsTest(TestCase):
         )
 
         self.assertContains(response, "Hello honeypot")
+
+    def test_submission(self):
+        form = Form.objects.create(
+            title="Test contact form",
+            config_json=('{"email": {"email": "info@example.com"}, "save_fs": {}}'),
+        )
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(
+            ordering=1, title="Email", name="email", _old_name="e mail", type="email"
+        )
+
+        submission = FormSubmission.objects.create(
+            form=form,
+            data=json.dumps(
+                {
+                    "subject": "blub",
+                    "email": "a@example.com",
+                }
+            ),
+        )
+        self.assertEqual(
+            dict(submission.sorted_data()),
+            {
+                "subject": "blub",
+                "email": "a@example.com",
+            },
+        )
+
+        submission = FormSubmission.objects.create(
+            form=form,
+            data=json.dumps(
+                {
+                    "subject": "blub",
+                    "e mail": "a@example.com",
+                }
+            ),
+        )
+        self.assertEqual(
+            dict(submission.sorted_data()),
+            {
+                "subject": "blub",
+                "email": "a@example.com",
+            },
+        )

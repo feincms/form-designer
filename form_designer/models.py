@@ -319,14 +319,16 @@ class FormSubmission(models.Model):
         """
         data_dict = json.loads(self.data)
         data = OrderedDict()
+        old_names = set()
         for field in self.form.fields.all():
             if field._old_name is not None and field._old_name in data_dict:
-                data[field.name] = data_dict.get(field.name)
+                data[field.name] = data_dict.get(field._old_name)
+                old_names.add(field._old_name)
             else:
                 data[field.name] = data_dict.get(field.name)
         # append any extra data (form may have changed since submission, etc)
         for field_name in data_dict:
-            if field_name not in data:
+            if field_name not in data and field_name not in old_names:
                 data[field_name] = data_dict[field_name]
         if "datetime" in include:
             data["submitted"] = self.submitted
