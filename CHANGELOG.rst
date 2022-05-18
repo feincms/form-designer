@@ -11,6 +11,7 @@ Next version
 * Disallowed non-sluggy contents on the name field. The old field name is
   preserved for exporting form submissions etc. so the change *should* be
   backwards compatible but don't rely on it too much.
+* Raised the minimum requirements to Python 3.8, Django 3.2.
 
 
 0.18
