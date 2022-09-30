@@ -95,7 +95,7 @@ class FormAdminForm(forms.ModelForm):
             cfg = dict(self._meta.model.CONFIG_OPTIONS)[s]
 
             option_item = {}
-            for k, f in self._form_fields(s, cfg):
+            for k, _f in self._form_fields(s, cfg):
                 key = f"{s}_{k}"
                 if key in data:
                     option_item[k] = data.get(key)
