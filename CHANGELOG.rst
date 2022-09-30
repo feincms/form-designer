@@ -4,6 +4,8 @@ Change log
 Next version
 ------------
 
+* Added Django 4.1 to the CI matrix.
+
 
 0.19
 ----
