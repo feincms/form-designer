@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-01 12:18+0100\n"
+"POT-Creation-Date: 2022-10-01 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,46 +18,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:42
-msgid "Options"
-msgstr "Optionen"
-
-#: admin.py:43
-msgid "Save and continue editing to configure options."
-msgstr "Speichern und weiter bearbeiten um die Optionen zu bearbeiten."
-
-#: admin.py:65
+#: admin.py:55 admin.py:174
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Formulareinstellungen: %s"
 
-#: admin.py:151
+#: admin.py:64
+msgid "is active"
+msgstr "ist aktiv"
+
+#: admin.py:184
 msgid "Configuration"
 msgstr "Einstellungen"
 
-#: apps.py:7
+#: apps.py:9
 msgid "Form Designer"
 msgstr "Form-Designer"
 
-#: contents.py:20 contents.py:34 models.py:93 models.py:179 models.py:258
+#: contents.py:19 contents.py:33 models.py:110 models.py:238 models.py:320
 msgid "form"
 msgstr "Formular"
 
-#: contents.py:24
+#: contents.py:23
 msgid "show form title"
 msgstr "Formulartitel anzeigen"
 
-#: contents.py:26
+#: contents.py:25
 msgid "success message"
 msgstr "Mitteilung bei Erfolg"
 
-#: contents.py:27
+#: contents.py:26
 msgid "Custom message to display after valid form is submitted"
 msgstr ""
 "Mitteilung, welche angezeigt wird, wenn ein gültiges Formular abgeschickt "
 "wird"
 
-#: contents.py:35 models.py:94
+#: contents.py:34 models.py:111
 msgid "forms"
 msgstr "Formulare"
 
@@ -75,7 +71,7 @@ msgstr "Bitte geben Sie Wahlmöglichkeiten für %s-Felder an"
 msgid "text"
 msgstr "Text"
 
-#: default_field_types.py:31 models.py:74
+#: default_field_types.py:31 models.py:81
 msgid "email address"
 msgstr "E-Mail-Adresse"
 
@@ -104,103 +100,160 @@ msgid "hidden"
 msgstr "versteckt"
 
 #: default_field_types.py:86
-msgid "recaptcha"
-msgstr "ReCaptcha"
+msgid "reCAPTCHA v2"
+msgstr "reCAPTCHA v2"
 
-#: models.py:42
+#: default_field_types.py:93
+msgid "reCAPTCHA v3"
+msgstr "reCAPTCHA v3"
+
+#: models.py:49
 msgid "Thank you, your input has been received."
 msgstr "Vielen Dank"
 
-#: models.py:55
+#: models.py:62
 msgid "Save form submission"
 msgstr "Formulardaten sichern"
 
-#: models.py:57
+#: models.py:64
 msgid ""
 "Save form submissions in the database so that they may be exported later."
 msgstr ""
 "Speichert die Formulardaten in der Datenbank, so dass sie später exportiert "
 "werden können."
 
-#: models.py:66
+#: models.py:73
 msgid "Send email"
 msgstr "E-Mail versenden"
 
-#: models.py:68
+#: models.py:75
 msgid "Send the submitted form data to a list of email addresses."
 msgstr "Versendet die Formulardaten an eine Liste von Emailadressen."
 
-#: models.py:77
+#: models.py:84
 msgid "Separate multiple email addresses with commas."
 msgstr "Mehrere E-Mailadressen mit Kommas trennen."
 
-#: models.py:87
+#: models.py:91
+msgid "author's email field"
+msgstr "Autoren-E-Mail-Feld"
+
+#: models.py:93
+msgid ""
+"The author of the submission will be added to the Cc: if this is set to an "
+"existing form field below."
+msgstr ""
+"Die Autor*innen der Formulardaten werden zum Cc: hinzugefügt wenn ein Name eines unten existierenden Formularfelds eingefügt wird."
+
+#: models.py:104
 msgid "title"
 msgstr "Titel"
 
-#: models.py:89
+#: models.py:106
 msgid "config"
 msgstr "Konfiguration"
 
-#: models.py:181
+#: models.py:212
+msgid ""
+"Enter a value consisting only of lowercase letters, numbers, dashes and the "
+"underscore."
+msgstr ""
+"Einen Wert eingeben, welcher nur aus Kleinbuchstaben, Ziffern, Strichen und dem Unterstrich besteht."
+
+#: models.py:221
+msgid ""
+"Data is saved using this name. Changing it may result in data loss. This "
+"field only allows a-z, 0-9, - and _ as characters."
+msgstr ""
+"Daten werden mit diesem Namen gespeichert. Eine Änderung kann zu Datenverlust führen. Dieses Feld erlaubt nur a-z, 0-9, - und _ als Zeichen."
+
+#: models.py:240
 msgid "ordering"
 msgstr "Sortierung"
 
-#: models.py:183
+#: models.py:242
 msgid "field title"
 msgstr "Feldtitel"
 
-#: models.py:184
+#: models.py:243
 msgid "field name"
 msgstr "Feldname"
 
-#: models.py:186
+#: models.py:246
 msgid "field type"
 msgstr "Feldtyp"
 
-#: models.py:191
+#: models.py:251
 msgid "choices"
 msgstr "Wahlmöglichkeiten"
 
-#: models.py:191
+#: models.py:251
 msgid "Comma-separated"
 msgstr "Durch Kommata getrennt"
 
-#: models.py:194
+#: models.py:254
 msgid "help text"
 msgstr "Hilfstext"
 
-#: models.py:197
+#: models.py:257
 msgid "Optional extra explanatory text beside the field"
 msgstr "Optionaler zusätzlicher Erklärungstext neben dem Feld"
 
-#: models.py:200
+#: models.py:260
 msgid "default value"
 msgstr "Standardwert"
 
-#: models.py:203
+#: models.py:263
 msgid "Optional default value of the field"
 msgstr "Optionaler Standardwert des Feldes"
 
-#: models.py:205
+#: models.py:265
 msgid "is required"
 msgstr "Wird benötigt"
 
-#: models.py:210
+#: models.py:270
 msgid "form field"
 msgstr "Formularfeld"
 
-#: models.py:211
+#: models.py:271
 msgid "form fields"
 msgstr "Formularfelder"
 
-#: models.py:267
+#: models.py:317
+msgid "submitted at"
+msgstr "abgeschickt um"
+
+#: models.py:324
+msgid "data"
+msgstr "Daten"
+
+#: models.py:325
+msgid "URL"
+msgstr "URL"
+
+#: models.py:329
 msgid "form submission"
 msgstr "Formulardaten"
 
-#: models.py:268
+#: models.py:330
 msgid "form submissions"
 msgstr "Formulardaten"
+
+#: models.py:364
+msgid "submitted"
+msgstr "abgeschickt"
+
+#: models.py:365
+msgid "date submitted"
+msgstr "abgeschickt am"
+
+#: models.py:366
+msgid "time submitted"
+msgstr "abgeschickt um"
+
+#: models.py:367
+msgid "form URL"
+msgstr "Formular-URL"
 
 #: templates/admin/form_designer/form/change_form.html:6
 msgid "Export submissions"
@@ -209,9 +262,3 @@ msgstr "Formulardaten exportieren"
 #: templates/content/form/form.html:13
 msgid "Submit"
 msgstr "Abschicken"
-
-#~ msgid "name"
-#~ msgstr "Name"
-
-#~ msgid "type"
-#~ msgstr "Typ"

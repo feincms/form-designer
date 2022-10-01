@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-01 12:18+0100\n"
+"POT-Creation-Date: 2022-10-01 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,44 +18,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: admin.py:42
-msgid "Options"
-msgstr "Možnosti"
-
-#: admin.py:43
-msgid "Save and continue editing to configure options."
-msgstr "Pro nastavení možností klikněte na talčítko uložit."
-
-#: admin.py:65
+#: admin.py:55 admin.py:174
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Konfigurace formuláře: %s"
 
-#: admin.py:151
+#: admin.py:64
+msgid "is active"
+msgstr ""
+
+#: admin.py:184
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: apps.py:7
+#: apps.py:9
 msgid "Form Designer"
 msgstr "Formuláře"
 
-#: contents.py:20 contents.py:34 models.py:93 models.py:179 models.py:258
+#: contents.py:19 contents.py:33 models.py:110 models.py:238 models.py:320
 msgid "form"
 msgstr "formulář"
 
-#: contents.py:24
+#: contents.py:23
 msgid "show form title"
 msgstr "Zobrazit titulek formuláře"
 
-#: contents.py:26
+#: contents.py:25
 msgid "success message"
 msgstr "Zpráva po úspěšném vyplnení"
 
-#: contents.py:27
+#: contents.py:26
 msgid "Custom message to display after valid form is submitted"
 msgstr "Vlastní zpráva, která se zobrazí po úspěšném vyplnení"
 
-#: contents.py:35 models.py:94
+#: contents.py:34 models.py:111
 msgid "forms"
 msgstr "formuláře"
 
@@ -74,7 +70,7 @@ msgstr "Nemůžete specifikovat možnosti pro %s pole"
 msgid "text"
 msgstr "text"
 
-#: default_field_types.py:31 models.py:74
+#: default_field_types.py:31 models.py:81
 #, fuzzy
 #| msgid "e-mail address"
 msgid "email address"
@@ -105,107 +101,167 @@ msgid "hidden"
 msgstr ""
 
 #: default_field_types.py:86
-msgid "recaptcha"
+msgid "reCAPTCHA v2"
 msgstr ""
 
-#: models.py:42
+#: default_field_types.py:93
+msgid "reCAPTCHA v3"
+msgstr ""
+
+#: models.py:49
 msgid "Thank you, your input has been received."
 msgstr "Děkujeme za vyplnění."
 
-#: models.py:55
+#: models.py:62
 msgid "Save form submission"
 msgstr "Uložit vyplený formulář"
 
-#: models.py:57
+#: models.py:64
 msgid ""
 "Save form submissions in the database so that they may be exported later."
 msgstr ""
 
-#: models.py:66
+#: models.py:73
 #, fuzzy
 #| msgid "Send e-mail"
 msgid "Send email"
 msgstr "Poslat email"
 
-#: models.py:68
+#: models.py:75
 msgid "Send the submitted form data to a list of email addresses."
 msgstr ""
 
-#: models.py:77
+#: models.py:84
 #, fuzzy
 #| msgid "Separate multiple e-mail addresses with commas."
 msgid "Separate multiple email addresses with commas."
 msgstr "Více emailových adres oddělte čárkou."
 
-#: models.py:87
+#: models.py:91
+#, fuzzy
+#| msgid "form field"
+msgid "author's email field"
+msgstr "pole formuláře"
+
+#: models.py:93
+msgid ""
+"The author of the submission will be added to the Cc: if this is set to an "
+"existing form field below."
+msgstr ""
+
+#: models.py:104
 msgid "title"
 msgstr "titulek"
 
-#: models.py:89
+#: models.py:106
 msgid "config"
 msgstr "konfigurace"
 
-#: models.py:181
+#: models.py:212
+msgid ""
+"Enter a value consisting only of lowercase letters, numbers, dashes and the "
+"underscore."
+msgstr ""
+
+#: models.py:221
+msgid ""
+"Data is saved using this name. Changing it may result in data loss. This "
+"field only allows a-z, 0-9, - and _ as characters."
+msgstr ""
+
+#: models.py:240
 msgid "ordering"
 msgstr "řazení"
 
-#: models.py:183
+#: models.py:242
 #, fuzzy
 #| msgid "title"
 msgid "field title"
 msgstr "titulek"
 
-#: models.py:184
+#: models.py:243
 msgid "field name"
 msgstr ""
 
-#: models.py:186
+#: models.py:246
 msgid "field type"
 msgstr ""
 
-#: models.py:191
+#: models.py:251
 msgid "choices"
 msgstr "možnosti"
 
-#: models.py:191
+#: models.py:251
 msgid "Comma-separated"
 msgstr "Oddělené čárkou"
 
-#: models.py:194
+#: models.py:254
 msgid "help text"
 msgstr "nápověda"
 
-#: models.py:197
+#: models.py:257
 msgid "Optional extra explanatory text beside the field"
 msgstr "Volitelně extra vysvětlující text"
 
-#: models.py:200
+#: models.py:260
 msgid "default value"
 msgstr "výchozí hodnota"
 
-#: models.py:203
+#: models.py:263
 msgid "Optional default value of the field"
 msgstr "Volitelně výchozí hodnota položky"
 
-#: models.py:205
+#: models.py:265
 msgid "is required"
 msgstr "je povinný"
 
-#: models.py:210
+#: models.py:270
 msgid "form field"
 msgstr "pole formuláře"
 
-#: models.py:211
+#: models.py:271
 msgid "form fields"
 msgstr "pole formuláře"
 
-#: models.py:267
+#: models.py:317
+msgid "submitted at"
+msgstr ""
+
+#: models.py:324
+msgid "data"
+msgstr ""
+
+#: models.py:325
+msgid "URL"
+msgstr ""
+
+#: models.py:329
 msgid "form submission"
 msgstr "uložený formuláře"
 
-#: models.py:268
+#: models.py:330
 msgid "form submissions"
 msgstr "uložené formuláře"
+
+#: models.py:364
+#, fuzzy
+#| msgid "Submit"
+msgid "submitted"
+msgstr "Potvrdit"
+
+#: models.py:365
+msgid "date submitted"
+msgstr ""
+
+#: models.py:366
+msgid "time submitted"
+msgstr ""
+
+#: models.py:367
+#, fuzzy
+#| msgid "form"
+msgid "form URL"
+msgstr "formulář"
 
 #: templates/admin/form_designer/form/change_form.html:6
 msgid "Export submissions"
@@ -214,6 +270,12 @@ msgstr "Exportovat uložené formuláře"
 #: templates/content/form/form.html:13
 msgid "Submit"
 msgstr "Potvrdit"
+
+#~ msgid "Options"
+#~ msgstr "Možnosti"
+
+#~ msgid "Save and continue editing to configure options."
+#~ msgstr "Pro nastavení možností klikněte na talčítko uložit."
 
 #~ msgid "name"
 #~ msgstr "jméno"
