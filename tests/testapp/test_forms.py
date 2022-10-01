@@ -131,9 +131,7 @@ class FormsTest(TestCase):
         submission = FormSubmission.objects.get()
 
         self.assertEqual(
-            submission.sorted_data(
-                include=("subject", "email", "body", "please-call-me", "radio")
-            ),
+            submission.sorted_data(),
             {
                 "subject": "Test",
                 "email": "valid@example.com",

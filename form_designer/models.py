@@ -43,9 +43,7 @@ def process_email(model_instance, form_instance, request, config, **kwargs):
 
     EmailMessage(
         model_instance.title,
-        submission.formatted_data(
-            titles=dict(model_instance.fields.values_list("name", "title"))
-        ),
+        submission.formatted_data(titles=submission.titles()),
         **recipients,
     ).send(fail_silently=True)
     return _("Thank you, your input has been received.")
@@ -334,8 +332,9 @@ class FormSubmission(models.Model):
     def sorted_data(self, include=()):
         """Return dict by field ordering and using names as keys.
 
-        `include` can be a tuple containing any or all of 'date', 'time',
-        'datetime', or 'path' to include additional meta data.
+        `include` can be a tuple containing any or all of 'meta:date',
+        'meta:time', 'meta:datetime', or 'meta:path' to include additional meta
+        data.
         """
         data_dict = json.loads(self.data)
         data = {}
@@ -350,15 +349,25 @@ class FormSubmission(models.Model):
         for field_name in data_dict:
             if field_name not in data and field_name not in old_names:
                 data[field_name] = data_dict[field_name]
-        if "datetime" in include:
-            data["submitted"] = self.submitted
-        if "date" in include:
-            data["date submitted"] = self.submitted.date()
-        if "time" in include:
-            data["time submitted"] = self.submitted.time()
-        if "path" in include:
-            data["form path"] = self.path
+        if "meta:datetime" in include:
+            data["meta:datetime"] = self.submitted
+        if "meta:date" in include:
+            data["meta:date"] = self.submitted.date()
+        if "meta:time" in include:
+            data["meta:time"] = self.submitted.time()
+        if "meta:path" in include:
+            data["meta:path"] = self.path
         return data
+
+    def titles(self):
+        titles = {
+            "meta:datetime": _("submitted"),
+            "meta:date": _("date submitted"),
+            "meta:time": _("time submitted"),
+            "meta:path": _("form path"),
+        }
+        titles.update(dict(self.form.fields.values_list("name", "title")))
+        return titles
 
     def formatted_data(self, *, html=False, titles=None):
         titles = {} if titles is None else titles
