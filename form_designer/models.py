@@ -1,6 +1,5 @@
 import json
 import warnings
-from collections import OrderedDict
 from functools import partial
 
 from django import forms
@@ -117,9 +116,10 @@ class Form(models.Model):
         return self.title
 
     def form_class(self):
-        fields = OrderedDict(
-            (("required_css_class", "required"), ("error_css_class", "error"))
-        )
+        fields = {
+            "required_css_class": "required",
+            "error_css_class": "error",
+        }
 
         for field in self.fields.all():
             field.add_formfield(fields, self)
@@ -332,13 +332,13 @@ class FormSubmission(models.Model):
         verbose_name_plural = _("form submissions")
 
     def sorted_data(self, include=()):
-        """Return OrderedDict by field ordering and using names as keys.
+        """Return dict by field ordering and using names as keys.
 
         `include` can be a tuple containing any or all of 'date', 'time',
         'datetime', or 'path' to include additional meta data.
         """
         data_dict = json.loads(self.data)
-        data = OrderedDict()
+        data = {}
         old_names = set()
         for field in self.form.fields.all():
             if field._old_name is not None and field._old_name in data_dict:

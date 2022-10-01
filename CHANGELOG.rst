@@ -9,6 +9,7 @@ Next version
   the sibmission to the Cc: of the sent email.
 * Changed mails to prefer the titles of fields instead of their name.
 * Included field titles in the XLSX export when possible.
+* Removed our usage of ``collections.OrderedDict``, not necessary anymore.
 
 
 0.19
