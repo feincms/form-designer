@@ -4,6 +4,7 @@ from functools import partial
 
 from django import forms
 from django.conf import settings
+from django.contrib.admin import widgets
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import RegexValidator, validate_email
@@ -83,6 +84,7 @@ class Form(models.Model):
                             help_text=_(
                                 "Separate multiple email addresses with commas."
                             ),
+                            widget=widgets.AdminTextInputWidget,
                         ),
                     ),
                     (
@@ -93,6 +95,7 @@ class Form(models.Model):
                                 "The author of the submission will be added to the Cc: if this is set to an existing form field below."
                             ),
                             required=False,
+                            widget=widgets.AdminEmailInputWidget,
                         ),
                     ),
                 ],
