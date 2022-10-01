@@ -10,6 +10,8 @@ Next version
 * Changed mails to prefer the titles of fields instead of their name.
 * Included field titles in the XLSX export when possible.
 * Removed our usage of ``collections.OrderedDict``, not necessary anymore.
+* Changed submissions to save the full URL, not just the path. Cleaned up the
+  form submissions model while at it.
 
 
 0.19

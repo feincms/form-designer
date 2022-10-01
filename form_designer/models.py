@@ -22,7 +22,7 @@ def process_save_fs(model_instance, form_instance, request, **kwargs):
     return FormSubmission.objects.create(
         form=model_instance,
         data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
-        path=request.path,
+        url=request.build_absolute_uri(request.get_full_path()),
     )
 
 
@@ -30,7 +30,7 @@ def process_email(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
         data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
-        path=request.path,
+        url=request.build_absolute_uri(request.get_full_path()),
     )
 
     recipients = {
@@ -314,18 +314,18 @@ class FormField(models.Model):
 
 
 class FormSubmission(models.Model):
-    submitted = models.DateTimeField(auto_now_add=True)
+    submitted_at = models.DateTimeField(_("submitted at"), auto_now_add=True)
     form = models.ForeignKey(
         Form,
         verbose_name=_("form"),
         related_name="submissions",
         on_delete=models.CASCADE,
     )
-    data = models.TextField()
-    path = models.CharField(max_length=255)
+    data = models.TextField(_("data"))
+    url = models.CharField(_("URL"), max_length=2000)
 
     class Meta:
-        ordering = ("-submitted",)
+        ordering = ["-submitted_at"]
         verbose_name = _("form submission")
         verbose_name_plural = _("form submissions")
 
@@ -333,7 +333,7 @@ class FormSubmission(models.Model):
         """Return dict by field ordering and using names as keys.
 
         `include` can be a tuple containing any or all of 'meta:date',
-        'meta:time', 'meta:datetime', or 'meta:path' to include additional meta
+        'meta:time', 'meta:datetime', or 'meta:url' to include additional meta
         data.
         """
         data_dict = json.loads(self.data)
@@ -350,13 +350,13 @@ class FormSubmission(models.Model):
             if field_name not in data and field_name not in old_names:
                 data[field_name] = data_dict[field_name]
         if "meta:datetime" in include:
-            data["meta:datetime"] = self.submitted
+            data["meta:datetime"] = self.submitted_at
         if "meta:date" in include:
-            data["meta:date"] = self.submitted.date()
+            data["meta:date"] = self.submitted_at.date()
         if "meta:time" in include:
-            data["meta:time"] = self.submitted.time()
-        if "meta:path" in include:
-            data["meta:path"] = self.path
+            data["meta:time"] = self.submitted_at.time()
+        if "meta:url" in include:
+            data["meta:url"] = self.url
         return data
 
     def titles(self):
@@ -364,7 +364,7 @@ class FormSubmission(models.Model):
             "meta:datetime": _("submitted"),
             "meta:date": _("date submitted"),
             "meta:time": _("time submitted"),
-            "meta:path": _("form path"),
+            "meta:url": _("form URL"),
         }
         titles.update(dict(self.form.fields.values_list("name", "title")))
         return titles

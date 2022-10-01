@@ -192,7 +192,7 @@ class FormAdmin(admin.ModelAdmin):
         field_names = None
         for submission in form.submissions.all():
             data = submission.sorted_data(
-                include=("meta:date", "meta:time", "meta:path")
+                include=("meta:date", "meta:time", "meta:url")
             )
             if field_names is None:
                 field_names = list(data.keys())
@@ -219,9 +219,9 @@ class FormAdmin(admin.ModelAdmin):
 
 
 class FormSubmissionAdmin(admin.ModelAdmin):
-    list_display = ("form", "path", "submitted", "data_summary")
-    list_filter = ("form",)
-    fields = ("form", "path", "submitted")
+    list_display = ["form", "url", "submitted_at", "data_summary"]
+    list_filter = ["form"]
+    fields = ["form", "url", "submitted_at"]
     readonly_fields = fields
 
     def data_summary(self, submission):
