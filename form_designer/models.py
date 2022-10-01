@@ -19,7 +19,7 @@ from django.utils.translation import gettext_lazy as _
 from form_designer.utils import JSONFieldDescriptor
 
 
-def create_form_submission(model_instance, form_instance, request, **kwargs):
+def process_save_fs(model_instance, form_instance, request, **kwargs):
     return FormSubmission.objects.create(
         form=model_instance,
         data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
@@ -27,17 +27,25 @@ def create_form_submission(model_instance, form_instance, request, **kwargs):
     )
 
 
-def send_as_mail(model_instance, form_instance, request, config, **kwargs):
+def process_email(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
         data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
         path=request.path,
     )
 
+    recipients = {
+        "to": [email.strip() for email in config["email"].split(",")],
+    }
+    if (author_email_field := config.get("author_email_field")) and (
+        email := form_instance.cleaned_data.get(author_email_field)
+    ):
+        recipients["cc"] = [email]
+
     EmailMessage(
         model_instance.title,
         submission.formatted_data(),
-        to=[email.strip() for email in config["email"].split(",")],
+        **recipients,
     ).send(fail_silently=True)
     return _("Thank you, your input has been received.")
 
@@ -57,7 +65,7 @@ class Form(models.Model):
                     "Save form submissions in the database"
                     " so that they may be exported later."
                 ),
-                "process": create_form_submission,
+                "process": process_save_fs,
             },
         ),
         (
@@ -77,9 +85,19 @@ class Form(models.Model):
                                 "Separate multiple email addresses with commas."
                             ),
                         ),
-                    )
+                    ),
+                    (
+                        "author_email_field",
+                        forms.EmailField(
+                            label=capfirst(_("author's email field")),
+                            help_text=_(
+                                "The author of the submission will be added to the Cc: if this is set to an existing form field below."
+                            ),
+                            required=False,
+                        ),
+                    ),
                 ],
-                "process": send_as_mail,
+                "process": process_email,
             },
         ),
     ]

@@ -5,6 +5,8 @@ Next version
 ------------
 
 * Added Django 4.1 to the CI matrix.
+* Extended the ``email`` action with the optional ability to add the author of
+  the sibmission to the Cc: of the sent email.
 
 
 0.19

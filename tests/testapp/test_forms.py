@@ -297,3 +297,42 @@ class FormsTest(TestCase):
                 "email": "a@example.com",
             },
         )
+
+    def test_email_to_author(self):
+        form = Form.objects.create(
+            title="Test contact form",
+            config_json=(
+                '{"email": {"email": "info@example.com", "author_email_field": "mmm"}}'
+            ),
+        )
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(ordering=1, title="Email", name="mmm", type="email")
+
+        page = Page.objects.create(override_url="/", title="")
+        page.formcontent_set.create(
+            region="main",
+            ordering=0,
+            form=form,
+            success_message="Thanks, we will get back to you",
+        )
+
+        response = self.client.post(
+            "/",
+            {
+                "_formcontent": form.id,
+                f"fc{form.id}-subject": "Test",
+                f"fc{form.id}-mmm": "test@example.org",
+            },
+        )
+        self.assertContains(response, "Thanks, we will get back to you", 1)
+
+        self.assertEqual(len(mail.outbox), 1)
+
+        message = mail.outbox[0]
+
+        self.assertListEqual(message.to, ["info@example.com"])
+        self.assertListEqual(message.cc, ["test@example.org"])
+        self.assertEqual(message.from_email, "no-reply@example.com")
+        self.assertEqual(message.subject, "Test contact form")
+        self.assertIn("subject: Test\n", message.body)
+        self.assertIn("mmm: test@example.org\n", message.body)
