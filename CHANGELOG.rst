@@ -7,6 +7,8 @@ Next version
 * Added Django 4.1 to the CI matrix.
 * Extended the ``email`` action with the optional ability to add the author of
   the sibmission to the Cc: of the sent email.
+* Changed mails to prefer the titles of fields instead of their name.
+* Included field titles in the XLSX export when possible.
 
 
 0.19

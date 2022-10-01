@@ -187,13 +187,17 @@ class FormAdmin(admin.ModelAdmin):
 
     def export_submissions(self, request, form_id):
         form = get_object_or_404(models.Form, pk=form_id)
+        titles = dict(form.fields.values_list("name", "title"))
 
         rows = []
+        field_names = None
         for submission in form.submissions.all():
             data = submission.sorted_data(include=("date", "time", "path"))
-            if not rows:
-                rows.append(list(data.keys()))
-            rows.append([data.get(field_name) for field_name in rows[0]])
+            if field_names is None:
+                field_names = list(data.keys())
+                rows.append([titles.get(name, name) for name in field_names])
+                rows.append(field_names)
+            rows.append([data.get(name) for name in field_names])
             # (fairly gracefully handles changes in form fields between
             #  submissions)
 
