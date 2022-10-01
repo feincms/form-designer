@@ -122,10 +122,10 @@ class FormsTest(TestCase):
         self.assertListEqual(message.to, ["info@example.com"])
         self.assertEqual(message.from_email, "no-reply@example.com")
         self.assertEqual(message.subject, "Test contact form")
-        self.assertIn("subject: Test\n", message.body)
-        self.assertIn("email: valid@example.com\n", message.body)
-        self.assertIn("body: Hello World\n", message.body)
-        self.assertIn("please-call-me: False\n", message.body)
+        self.assertIn("Subject:\nTest\n", message.body)
+        self.assertIn("Email:\nvalid@example.com\n", message.body)
+        self.assertIn("Body:\nHello World\n", message.body)
+        self.assertIn("Please call me:\nFalse\n", message.body)
 
         # Exactly one submission
         submission = FormSubmission.objects.get()
@@ -334,5 +334,5 @@ class FormsTest(TestCase):
         self.assertListEqual(message.cc, ["test@example.org"])
         self.assertEqual(message.from_email, "no-reply@example.com")
         self.assertEqual(message.subject, "Test contact form")
-        self.assertIn("subject: Test\n", message.body)
-        self.assertIn("mmm: test@example.org\n", message.body)
+        self.assertIn("Subject:\nTest\n", message.body)
+        self.assertIn("Email:\ntest@example.org\n", message.body)

@@ -44,7 +44,9 @@ def process_email(model_instance, form_instance, request, config, **kwargs):
 
     EmailMessage(
         model_instance.title,
-        submission.formatted_data(),
+        submission.formatted_data(
+            titles=dict(model_instance.fields.values_list("name", "title"))
+        ),
         **recipients,
     ).send(fail_silently=True)
     return _("Thank you, your input has been received.")
@@ -358,15 +360,17 @@ class FormSubmission(models.Model):
             data["form path"] = self.path
         return data
 
-    def formatted_data(self, html=False):
+    def formatted_data(self, *, html=False, titles=None):
+        titles = {} if titles is None else titles
+        data = (
+            (titles.get(key, key), value) for key, value in self.sorted_data().items()
+        )
         if html:
             return format_html(
                 "<dl>{}</dl>",
-                format_html_join(
-                    "", "<dt>{}</dt><dd>{}</dd>", self.sorted_data().items()
-                ),
+                format_html_join("", "<dt>{}</dt><dd>{}</dd>", data),
             )
-        return "".join("%s: %s\n" % item for item in self.sorted_data().items())
+        return "\n".join("%s:\n%s\n" % item for item in data)
 
     def formatted_data_html(self):
         try:
