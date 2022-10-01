@@ -369,10 +369,11 @@ class FormSubmission(models.Model):
         titles.update(dict(self.form.fields.values_list("name", "title")))
         return titles
 
-    def formatted_data(self, *, html=False, titles=None):
+    def formatted_data(self, *, html=False, titles=None, default="Ø"):
         titles = {} if titles is None else titles
         data = (
-            (titles.get(key, key), value) for key, value in self.sorted_data().items()
+            (titles.get(key, key), value or default)
+            for key, value in self.sorted_data().items()
         )
         if html:
             return format_html(
@@ -380,9 +381,3 @@ class FormSubmission(models.Model):
                 format_html_join("", "<dt>{}</dt><dd>{}</dd>", data),
             )
         return "\n".join("%s:\n%s\n" % item for item in data)
-
-    def formatted_data_html(self):
-        try:
-            return self.formatted_data(html=True)
-        except Exception:
-            return "BROKEN: %s" % self.data

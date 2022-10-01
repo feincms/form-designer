@@ -233,6 +233,16 @@ class FormSubmissionAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+    def render_change_form(self, request, context, **kwargs):
+        if obj := kwargs.get("obj"):
+            try:
+                context["formatted_data"] = obj.formatted_data(
+                    html=True, titles=obj.titles()
+                )
+            except Exception:
+                context["formatted_data"] = f"BROKEN: {obj.data}"
+        return super().render_change_form(request, context, **kwargs)
+
 
 admin.site.register(models.Form, FormAdmin)
 admin.site.register(models.FormSubmission, FormSubmissionAdmin)

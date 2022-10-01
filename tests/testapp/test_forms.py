@@ -125,7 +125,7 @@ class FormsTest(TestCase):
         self.assertIn("Subject:\nTest\n", message.body)
         self.assertIn("Email:\nvalid@example.com\n", message.body)
         self.assertIn("Body:\nHello World\n", message.body)
-        self.assertIn("Please call me:\nFalse\n", message.body)
+        self.assertIn("Please call me:\nØ\n", message.body)
 
         # Exactly one submission
         submission = FormSubmission.objects.get()
@@ -158,7 +158,7 @@ class FormsTest(TestCase):
         response = self.client.get(
             f"/admin/form_designer/formsubmission/{submission.id}/change/"
         )
-        self.assertContains(response, "<dt>body</dt>")
+        self.assertContains(response, "<dt>Body</dt>")
 
     def test_admin(self):
         User.objects.create_superuser("admin", "admin@example.com", "password")
