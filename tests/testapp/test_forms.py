@@ -169,6 +169,16 @@ class FormsTest(TestCase):
         )
         self.assertContains(response, "<dt>Body</dt>")
 
+        FormSubmission.objects.all().delete()
+        response = self.client.get(
+            "/admin/form_designer/form/{}/export_submissions/".format(
+                submission.form_id
+            )
+        )
+        self.assertRedirects(
+            response, f"/admin/form_designer/form/{submission.form_id}/change/"
+        )
+
     def test_admin(self):
         User.objects.create_superuser("admin", "admin@example.com", "password")
         self.client.login(username="admin", password="password")
