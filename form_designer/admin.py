@@ -67,7 +67,7 @@ class FormAdminForm(forms.ModelForm):
                     f.required = False
 
     def clean(self):
-        data = self.cleaned_data
+        data = super().clean()
 
         if "config" in self.changed_data:
             return data
