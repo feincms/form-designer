@@ -203,13 +203,15 @@ class FormsTest(TestCase):
             "title": "Test form",
             "_is_active_save_fs": "on",
             "_is_active_email": "on",
+            "initial-config": "{}",
+            "config": "{}",
             "email_email": "bla@example.com,blabbb@example.com",
-            "fields-TOTAL_FORMS": 7,
+            "fields-TOTAL_FORMS": 9,
             "fields-INITIAL_FORMS": 0,
             "fields-MIN_NUM_FORMS": 0,
             "fields-MAX_NUM_FORMS": 1000,
         }
-        for i in range(7):
+        for i in range(9):
             data[f"fields-{i}-ordering"] = (i + 1) * 10
             data[f"fields-{i}-title"] = f"title-{i}"
             data[f"fields-{i}-name"] = f"name-{i}"
@@ -220,7 +222,7 @@ class FormsTest(TestCase):
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertEqual(response.status_code, 200)
 
-        for i in range(7):
+        for i in range(9):
             if FIELD_TYPES[i]["type"] in {"select", "radio", "multiple-select"}:
                 data[f"fields-{i}-choices"] = "a,b,c,d"
 
@@ -243,7 +245,7 @@ class FormsTest(TestCase):
         form_class = form.form_class()
 
         self.assertEqual(form.title, "Test form")
-        self.assertEqual(len(form_class().fields), 7)
+        self.assertEqual(len(form_class().fields), 9)
 
         # The additional formsets exist
         response = self.client.get(f"/admin/form_designer/form/{form.id}/change/")
