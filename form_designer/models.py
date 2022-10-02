@@ -1,4 +1,3 @@
-import json
 import warnings
 from functools import partial
 
@@ -16,13 +15,11 @@ from django.utils.module_loading import import_string
 from django.utils.text import capfirst, slugify
 from django.utils.translation import gettext_lazy as _
 
-from form_designer.utils import JSONFieldDescriptor
-
 
 def process_save_fs(model_instance, form_instance, request, **kwargs):
     return FormSubmission.objects.create(
         form=model_instance,
-        data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
+        data=form_instance.cleaned_data,
         url=request.build_absolute_uri(request.get_full_path()),
     )
 
@@ -30,7 +27,7 @@ def process_save_fs(model_instance, form_instance, request, **kwargs):
 def process_email(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
-        data=json.dumps(form_instance.cleaned_data, cls=DjangoJSONEncoder),
+        data=form_instance.cleaned_data,
         url=request.build_absolute_uri(request.get_full_path()),
     )
 
@@ -105,9 +102,7 @@ class Form(models.Model):
     ]
 
     title = models.CharField(_("title"), max_length=100)
-
-    config_json = models.TextField(_("config"), blank=True)
-    config = JSONFieldDescriptor("config_json")
+    config = models.JSONField(_("config"), default=dict, blank=True)
 
     class Meta:
         verbose_name = _("form")
@@ -324,7 +319,7 @@ class FormSubmission(models.Model):
         related_name="submissions",
         on_delete=models.CASCADE,
     )
-    data = models.TextField(_("data"))
+    data = models.JSONField(_("data"), encoder=DjangoJSONEncoder)
     url = models.CharField(_("URL"), max_length=2000)
 
     class Meta:
@@ -339,19 +334,18 @@ class FormSubmission(models.Model):
         'meta:time', 'meta:datetime', or 'meta:url' to include additional meta
         data.
         """
-        data_dict = json.loads(self.data)
         data = {}
         old_names = set()
         for field in self.form.fields.all():
-            if field._old_name is not None and field._old_name in data_dict:
-                data[field.name] = data_dict.get(field._old_name)
+            if field._old_name is not None and field._old_name in self.data:
+                data[field.name] = self.data.get(field._old_name)
                 old_names.add(field._old_name)
             else:
-                data[field.name] = data_dict.get(field.name)
+                data[field.name] = self.data.get(field.name)
         # append any extra data (form may have changed since submission, etc)
-        for field_name in data_dict:
+        for field_name in self.data:
             if field_name not in data and field_name not in old_names:
-                data[field_name] = data_dict[field_name]
+                data[field_name] = self.data[field_name]
         if "meta:datetime" in include:
             data["meta:datetime"] = self.submitted_at
         if "meta:date" in include:

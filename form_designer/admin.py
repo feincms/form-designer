@@ -1,4 +1,3 @@
-import json
 import warnings
 
 from admin_ordering.admin import OrderableAdmin
@@ -26,9 +25,6 @@ def jsonize(v):
 
 
 class FormAdminForm(forms.ModelForm):
-    class Meta:
-        widgets = {"config_json": forms.Textarea(attrs={"rows": 3})}
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -78,7 +74,7 @@ class FormAdminForm(forms.ModelForm):
     def clean(self):
         data = self.cleaned_data
 
-        if "config_json" in self.changed_data:
+        if "config" in self.changed_data:
             return data
 
         selected = [
@@ -99,7 +95,7 @@ class FormAdminForm(forms.ModelForm):
 
             config[s] = option_item
 
-        data["config_json"] = json.dumps(jsonize(config))
+        data["config"] = jsonize(config)
         return data
 
     def _form_fields(self, cfg_key, cfg):
@@ -118,7 +114,7 @@ class FormAdminForm(forms.ModelForm):
 class FormFieldAdmin(OrderableAdmin, admin.TabularInline):
     extra = 0
     model = models.FormField
-    prepopulated_fields = {"name": ("title",)}
+    prepopulated_fields = {"name": ["title"]}
     fk_name = "form"
     ordering_field = "ordering"
 
@@ -178,7 +174,7 @@ class FormAdmin(admin.ModelAdmin):
             )
 
         fieldsets.append(
-            (_("Configuration"), {"fields": ["config_json"], "classes": ["collapse"]}),
+            (_("Configuration"), {"fields": ["config"], "classes": ["collapse"]}),
         )
         return fieldsets
 

@@ -1,5 +1,3 @@
-import json
-
 from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
@@ -23,7 +21,7 @@ class FormsTest(TestCase):
     def test_forms(self):
         form = Form.objects.create(
             title="Test contact form",
-            config_json=('{"email": {"email": "info@example.com"}, "save_fs": {}}'),
+            config={"email": {"email": "info@example.com"}, "save_fs": {}},
         )
         form.fields.create(ordering=0, title="Subject", name="subject", type="text")
         form.fields.create(ordering=1, title="Email", name="email", type="email")
@@ -169,7 +167,6 @@ class FormsTest(TestCase):
 
         data = {
             "title": "Test form",
-            # "config_json": '{"save_fs": {}}',
             "_is_active_save_fs": "on",
             "_is_active_email": "on",
             "email_email": "bla@example.com,blabbb@example.com",
@@ -222,7 +219,7 @@ class FormsTest(TestCase):
     def test_honeypot(self):
         form = Form.objects.create(
             title="Test honeypot form",
-            config_json=('{"honeypot": {}}'),
+            config={"honeypot": {}},
         )
         form.fields.create(ordering=0, title="Subject", name="subject", type="text")
         form.fields.create(
@@ -255,7 +252,7 @@ class FormsTest(TestCase):
     def test_submission(self):
         form = Form.objects.create(
             title="Test contact form",
-            config_json=('{"email": {"email": "info@example.com"}, "save_fs": {}}'),
+            config={"email": {"email": "info@example.com"}, "save_fs": {}},
         )
         form.fields.create(ordering=0, title="Subject", name="subject", type="text")
         form.fields.create(
@@ -264,12 +261,10 @@ class FormsTest(TestCase):
 
         submission = FormSubmission.objects.create(
             form=form,
-            data=json.dumps(
-                {
-                    "subject": "blub",
-                    "email": "a@example.com",
-                }
-            ),
+            data={
+                "subject": "blub",
+                "email": "a@example.com",
+            },
         )
         self.assertEqual(
             dict(submission.sorted_data()),
@@ -281,12 +276,10 @@ class FormsTest(TestCase):
 
         submission = FormSubmission.objects.create(
             form=form,
-            data=json.dumps(
-                {
-                    "subject": "blub",
-                    "e mail": "a@example.com",
-                }
-            ),
+            data={
+                "subject": "blub",
+                "e mail": "a@example.com",
+            },
         )
         self.assertEqual(
             dict(submission.sorted_data()),
@@ -299,9 +292,9 @@ class FormsTest(TestCase):
     def test_email_to_author(self):
         form = Form.objects.create(
             title="Test contact form",
-            config_json=(
-                '{"email": {"email": "info@example.com", "author_email_field": "mmm"}}'
-            ),
+            config={
+                "email": {"email": "info@example.com", "author_email_field": "mmm"}
+            },
         )
         form.fields.create(ordering=0, title="Subject", name="subject", type="text")
         form.fields.create(ordering=1, title="Email", name="mmm", type="email")
