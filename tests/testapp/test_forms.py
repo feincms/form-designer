@@ -310,6 +310,8 @@ class FormsTest(TestCase):
             },
         )
 
+        form.fields.create(ordering=2, title="test", name="test", type="text")
+
         self.assertEqual(
             form.submissions_data(),
             [
@@ -318,6 +320,7 @@ class FormsTest(TestCase):
                     "data": [
                         {"name": "subject", "title": "Subject", "value": "blub"},
                         {"name": "email", "title": "Email", "value": "a@example.com"},
+                        {"name": "test", "title": "test", "value": None},
                         {
                             "name": "e mail",
                             "title": "e mail (removed field)",
@@ -330,6 +333,7 @@ class FormsTest(TestCase):
                     "data": [
                         {"name": "subject", "title": "Subject", "value": "blub"},
                         {"name": "email", "title": "Email", "value": "a@example.com"},
+                        {"name": "test", "title": "test", "value": None},
                         {
                             "name": "e mail",
                             "title": "e mail (removed field)",
