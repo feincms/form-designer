@@ -41,13 +41,20 @@ class FormsTest(TestCase):
             choices="one,two what,three",
             default_value="two what",
         )
+        form.fields.create(
+            ordering=5,
+            title="Date",
+            name="date",
+            type="date",
+            is_required=False,
+        )
 
         form_class = form.form_class()
         form_instance = form_class()
 
         self.assertListEqual(
             [field.name for field in form_instance],
-            ["subject", "email", "body", "please-call-me", "radio"],
+            ["subject", "email", "body", "please-call-me", "radio", "date"],
         )
 
         page = Page.objects.create(override_url="/", title="")
@@ -65,12 +72,13 @@ class FormsTest(TestCase):
         self.assertContains(
             response,
             "<input",
-            9,  # csrf, subject, email, checkbox, _formcontent, submit, radio*3
+            10,  # csrf, subject, email, checkbox, _formcontent, submit, radio*3, date
         )
         self.assertContains(response, "<textarea", 1)
         self.assertContains(
             response, 'value="two-what" required id="id_fc1-radio_1" checked', 1
         )
+        self.assertContains(response, 'type="date"', 1)
 
         response = self.client.post("/")
 
@@ -106,6 +114,7 @@ class FormsTest(TestCase):
                 f"fc{form.id}-email": "valid@example.com",
                 f"fc{form.id}-body": "Hello World",
                 f"fc{form.id}-radio": "one",
+                f"fc{form.id}-date": "2022-10-02",
             },
         )
 
@@ -124,6 +133,7 @@ class FormsTest(TestCase):
         self.assertIn("Email:\nvalid@example.com\n", message.body)
         self.assertIn("Body:\nHello World\n", message.body)
         self.assertIn("Please call me:\nØ\n", message.body)
+        self.assertIn("Date:\n2022-10-02\n", message.body)
 
         # Exactly one submission
         submission = FormSubmission.objects.get()
@@ -136,6 +146,7 @@ class FormsTest(TestCase):
                 "body": "Hello World",
                 "please-call-me": False,
                 "radio": "one",
+                "date": "2022-10-02",
             },
         )
 

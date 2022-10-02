@@ -65,6 +65,14 @@ FIELD_TYPES = [
         "clean_field": [require_choices],
     },
     {
+        "type": "date",
+        "verbose_name": _("date"),
+        "field": partial(
+            forms.DateField, widget=forms.DateInput(attrs={"type": "date"})
+        ),
+        "clean_field": [disallow_choices],
+    },
+    {
         "type": "hidden",
         "verbose_name": _("hidden"),
         "field": partial(forms.CharField, widget=forms.HiddenInput),

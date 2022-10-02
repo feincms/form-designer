@@ -8,6 +8,7 @@ Next version
   instead of stringifying the JSON explicitly. A side effect of this change may
   be that the JSON object key order isn't preserved but it was a bad idea to
   rely on this anyway.
+* Added a date field type to the list to the default fields.
 
 
 0.20
