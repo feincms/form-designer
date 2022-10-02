@@ -2,13 +2,14 @@ import warnings
 
 from admin_ordering.admin import OrderableAdmin
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Model
 from django.forms.models import modelform_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import re_path
 from django.utils.text import capfirst, slugify
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 from xlsxdocument import XLSXDocument
 
 from form_designer import models
@@ -180,21 +181,33 @@ class FormAdmin(admin.ModelAdmin):
 
     def export_submissions(self, request, form_id):
         form = get_object_or_404(models.Form, pk=form_id)
+        submissions = form.submissions.all()
 
-        rows = []
-        field_names = None
-        for submission in form.submissions.all():
-            data = submission.sorted_data(
-                include=("meta:date", "meta:time", "meta:url")
-            )
-            if field_names is None:
-                field_names = list(data.keys())
-                titles = submission.titles()
-                rows.append([titles.get(name, name) for name in field_names])
-                rows.append(field_names)
-            rows.append([data.get(name) for name in field_names])
-            # (fairly gracefully handles changes in form fields between
-            #  submissions)
+        if not submissions:
+            self.message_user(request, _("No submissions yet."), messages.WARNING)
+            return HttpResponseRedirect("../change/")
+
+        titles = submissions[0].titles()
+        t_datetime = titles.pop("meta:datetime")
+        t_url = titles.pop("meta:url")
+        titles.pop("meta:date")
+        titles.pop("meta:time")
+
+        # Construct the superset of all all submissions' data fields
+        for submission in submissions:
+            for field in submission.data.keys():
+                if field not in titles:
+                    titles[field] = "{} ({})".format(field, gettext("removed field"))
+
+        titles = list(titles.items())
+        rows = [
+            [title for field, title in titles] + [t_datetime, t_url],
+            [field for field, title in titles],
+        ] + [
+            [submission.data.get(field) for field, title in titles]
+            + [submission.submitted_at, submission.url]
+            for submission in submissions
+        ]
 
         xlsx = XLSXDocument()
         xlsx.add_sheet(slugify(form.title))

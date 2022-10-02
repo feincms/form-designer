@@ -357,13 +357,15 @@ class FormSubmission(models.Model):
         return data
 
     def titles(self):
-        titles = {
-            "meta:datetime": _("submitted"),
-            "meta:date": _("date submitted"),
-            "meta:time": _("time submitted"),
-            "meta:url": _("form URL"),
-        }
-        titles.update(dict(self.form.fields.values_list("name", "title")))
+        titles = dict(self.form.fields.values_list("name", "title"))
+        titles.update(
+            {
+                "meta:datetime": _("submitted"),
+                "meta:date": _("date submitted"),
+                "meta:time": _("time submitted"),
+                "meta:url": _("form URL"),
+            }
+        )
         return titles
 
     def formatted_data(self, *, html=False, titles=None, default="Ø"):
