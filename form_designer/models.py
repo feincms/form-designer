@@ -13,7 +13,7 @@ from django.utils.html import format_html, format_html_join
 from django.utils.inspect import func_accepts_kwargs
 from django.utils.module_loading import import_string
 from django.utils.text import capfirst, slugify
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 
 
 def process_save_fs(model_instance, form_instance, request, **kwargs):
@@ -41,7 +41,7 @@ def process_email(model_instance, form_instance, request, config, **kwargs):
 
     EmailMessage(
         model_instance.title,
-        submission.formatted_data(titles=submission.titles()),
+        submission.formatted_data(),
         **recipients,
     ).send(fail_silently=True)
     return _("Thank you, your input has been received.")
@@ -166,6 +166,56 @@ class Form(models.Model):
             )
 
         return ret
+
+    def submissions_data(self, *, submissions=None):
+        if submissions is None:
+            submissions = self.submissions.all()
+
+        def loader(submission, field):
+            if field.name in submission.data:
+                return submission.data[field.name]
+            if (old := field._old_name) is not None and old in submission.data:
+                return submission.data[old]
+            return None
+
+        def old_name_loader(submission, old_name):
+            return submission.data.get(old_name)
+
+        fields_and_loaders = [
+            (
+                {"name": field.name, "title": field.title},
+                partial(loader, field=field),
+            )
+            for field in self.fields.all()
+        ]
+        known = {field["name"] for field, loader in fields_and_loaders}
+
+        # Construct the superset of all all submissions' data fields
+        for submission in submissions:
+            if unknown := set(submission.data) - known:
+                for old_name in unknown:
+                    fields_and_loaders.append(
+                        (
+                            {
+                                "name": old_name,
+                                "title": "{} ({})".format(
+                                    old_name, gettext("removed field")
+                                ),
+                            },
+                            partial(old_name_loader, old_name=old_name),
+                        )
+                    )
+
+        return [
+            {
+                "submission": submission,
+                "data": [
+                    dict(field, value=loader(submission))
+                    for field, loader in fields_and_loaders
+                ],
+            }
+            for submission in submissions
+        ]
 
 
 FIELD_TYPES = import_string(
@@ -327,53 +377,9 @@ class FormSubmission(models.Model):
         verbose_name = _("form submission")
         verbose_name_plural = _("form submissions")
 
-    def sorted_data(self, include=()):
-        """Return dict by field ordering and using names as keys.
-
-        `include` can be a tuple containing any or all of 'meta:date',
-        'meta:time', 'meta:datetime', or 'meta:url' to include additional meta
-        data.
-        """
-        data = {}
-        old_names = set()
-        for field in self.form.fields.all():
-            if field._old_name is not None and field._old_name in self.data:
-                data[field.name] = self.data.get(field._old_name)
-                old_names.add(field._old_name)
-            else:
-                data[field.name] = self.data.get(field.name)
-        # append any extra data (form may have changed since submission, etc)
-        for field_name in self.data:
-            if field_name not in data and field_name not in old_names:
-                data[field_name] = self.data[field_name]
-        if "meta:datetime" in include:
-            data["meta:datetime"] = self.submitted_at
-        if "meta:date" in include:
-            data["meta:date"] = self.submitted_at.date()
-        if "meta:time" in include:
-            data["meta:time"] = self.submitted_at.time()
-        if "meta:url" in include:
-            data["meta:url"] = self.url
-        return data
-
-    def titles(self):
-        titles = dict(self.form.fields.values_list("name", "title"))
-        titles.update(
-            {
-                "meta:datetime": _("submitted"),
-                "meta:date": _("date submitted"),
-                "meta:time": _("time submitted"),
-                "meta:url": _("form URL"),
-            }
-        )
-        return titles
-
-    def formatted_data(self, *, html=False, titles=None, default="Ø"):
-        titles = {} if titles is None else titles
-        data = (
-            (titles.get(key, key), value or default)
-            for key, value in self.sorted_data().items()
-        )
+    def formatted_data(self, *, html=False, default="Ø"):
+        sd = self.form.submissions_data(submissions=[self])
+        data = ((field["title"], field["value"] or default) for field in sd[0]["data"])
         if html:
             return format_html(
                 "<dl>{}</dl>",

@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import re_path
 from django.utils.text import capfirst, slugify
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from xlsxdocument import XLSXDocument
 
 from form_designer import models
@@ -187,26 +187,15 @@ class FormAdmin(admin.ModelAdmin):
             self.message_user(request, _("No submissions yet."), messages.WARNING)
             return HttpResponseRedirect("../change/")
 
-        titles = submissions[0].titles()
-        t_datetime = titles.pop("meta:datetime")
-        t_url = titles.pop("meta:url")
-        titles.pop("meta:date")
-        titles.pop("meta:time")
+        sd = form.submissions_data(submissions=submissions)
 
-        # Construct the superset of all all submissions' data fields
-        for submission in submissions:
-            for field in submission.data.keys():
-                if field not in titles:
-                    titles[field] = "{} ({})".format(field, gettext("removed field"))
-
-        titles = list(titles.items())
         rows = [
-            [title for field, title in titles] + [t_datetime, t_url],
-            [field for field, title in titles],
+            [field["title"] for field in sd[0]["data"]] + [_("submitted at"), _("URL")],
+            [field["name"] for field in sd[0]["data"]],
         ] + [
-            [submission.data.get(field) for field, title in titles]
-            + [submission.submitted_at, submission.url]
-            for submission in submissions
+            [field["value"] for field in submission["data"]]
+            + [submission["submission"].submitted_at, submission["submission"].url]
+            for submission in sd
         ]
 
         xlsx = XLSXDocument()
@@ -242,9 +231,7 @@ class FormSubmissionAdmin(admin.ModelAdmin):
     def render_change_form(self, request, context, **kwargs):
         if obj := kwargs.get("obj"):
             try:
-                context["formatted_data"] = obj.formatted_data(
-                    html=True, titles=obj.titles()
-                )
+                context["formatted_data"] = obj.formatted_data(html=True)
             except Exception:
                 context["formatted_data"] = f"BROKEN: {obj.data}"
         return super().render_change_form(request, context, **kwargs)

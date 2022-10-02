@@ -11,6 +11,10 @@ Next version
 * Added a date field type to the list to the default fields.
 * Rewrote the submissions export to export all available data (also from
   removed fields) in order.
+* Replaced ``FormSubmission.sorted_data`` etc. with a centralized facility on
+  the form model which properly handles missing fields, titles, old names etc.
+  and which doesn't produce stupidly expensive 1+N queries when processing a
+  list of submissions.
 
 
 0.20

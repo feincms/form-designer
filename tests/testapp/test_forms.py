@@ -139,15 +139,28 @@ class FormsTest(TestCase):
         submission = FormSubmission.objects.get()
 
         self.assertEqual(
-            submission.sorted_data(),
-            {
-                "subject": "Test",
-                "email": "valid@example.com",
-                "body": "Hello World",
-                "please-call-me": False,
-                "radio": "one",
-                "date": "2022-10-02",
-            },
+            form.submissions_data(submissions=[submission]),
+            [
+                {
+                    "submission": submission,
+                    "data": [
+                        {"name": "subject", "title": "Subject", "value": "Test"},
+                        {
+                            "name": "email",
+                            "title": "Email",
+                            "value": "valid@example.com",
+                        },
+                        {"name": "body", "title": "Body", "value": "Hello World"},
+                        {
+                            "name": "please-call-me",
+                            "title": "Please call me",
+                            "value": False,
+                        },
+                        {"name": "radio", "title": "Radio Select", "value": "one"},
+                        {"name": "date", "title": "Date", "value": "2022-10-02"},
+                    ],
+                }
+            ],
         )
 
         # Export the submission
@@ -280,34 +293,49 @@ class FormsTest(TestCase):
             ordering=1, title="Email", name="email", _old_name="e mail", type="email"
         )
 
-        submission = FormSubmission.objects.create(
+        s1 = FormSubmission.objects.create(
             form=form,
             data={
                 "subject": "blub",
                 "email": "a@example.com",
             },
         )
-        self.assertEqual(
-            dict(submission.sorted_data()),
-            {
-                "subject": "blub",
-                "email": "a@example.com",
-            },
-        )
-
-        submission = FormSubmission.objects.create(
+        s2 = FormSubmission.objects.create(
             form=form,
             data={
                 "subject": "blub",
                 "e mail": "a@example.com",
             },
         )
+
         self.assertEqual(
-            dict(submission.sorted_data()),
-            {
-                "subject": "blub",
-                "email": "a@example.com",
-            },
+            form.submissions_data(),
+            [
+                {
+                    "submission": s2,
+                    "data": [
+                        {"name": "subject", "title": "Subject", "value": "blub"},
+                        {"name": "email", "title": "Email", "value": "a@example.com"},
+                        {
+                            "name": "e mail",
+                            "title": "e mail (removed field)",
+                            "value": "a@example.com",
+                        },
+                    ],
+                },
+                {
+                    "submission": s1,
+                    "data": [
+                        {"name": "subject", "title": "Subject", "value": "blub"},
+                        {"name": "email", "title": "Email", "value": "a@example.com"},
+                        {
+                            "name": "e mail",
+                            "title": "e mail (removed field)",
+                            "value": None,
+                        },
+                    ],
+                },
+            ],
         )
 
     def test_email_to_author(self):
