@@ -36,14 +36,11 @@ class FormAdminForm(forms.ModelForm):
 
         selected = []
         if self.data:
-            try:
-                selected = [
-                    cfg_key
-                    for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS
-                    if "_is_active_%s" % cfg_key in self.data
-                ]
-            except KeyError:
-                pass
+            selected = [
+                cfg_key
+                for cfg_key, cfg in self._meta.model.CONFIG_OPTIONS
+                if self.data.get(f"_is_active_{cfg_key}")
+            ]
 
         if not selected and self.instance.pk:
             selected = self.instance.config.keys()
