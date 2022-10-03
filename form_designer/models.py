@@ -16,7 +16,7 @@ from django.utils.text import capfirst, slugify
 from django.utils.translation import gettext, gettext_lazy as _
 
 
-def process_save_fs(model_instance, form_instance, request, **kwargs):
+def create_form_submission(model_instance, form_instance, request, **kwargs):
     return FormSubmission.objects.create(
         form=model_instance,
         data=form_instance.cleaned_data,
@@ -24,7 +24,7 @@ def process_save_fs(model_instance, form_instance, request, **kwargs):
     )
 
 
-def process_email(model_instance, form_instance, request, config, **kwargs):
+def send_as_mail(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
         data=form_instance.cleaned_data,
@@ -62,7 +62,7 @@ class Form(models.Model):
                     "Save form submissions in the database"
                     " so that they may be exported later."
                 ),
-                "process": process_save_fs,
+                "process": create_form_submission,
             },
         ),
         (
@@ -96,7 +96,7 @@ class Form(models.Model):
                         ),
                     ),
                 ],
-                "process": process_email,
+                "process": send_as_mail,
             },
         ),
     ]

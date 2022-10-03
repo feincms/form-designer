@@ -7,7 +7,9 @@ Next version
 * Started using real JSON fields for the configuration and submitted data
   instead of stringifying the JSON explicitly. A side effect of this change may
   be that the JSON object key order isn't preserved but it was a bad idea to
-  rely on this anyway.
+  rely on this anyway. **Please check carefully if the database migration
+  preserves past form submissions and form configurations. It worked when I
+  tested it but you probably want to check twice.**
 * Added a date field type to the list to the default fields.
 * Rewrote the submissions export to export all available data (also from
   removed fields) in order.
