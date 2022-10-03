@@ -23,9 +23,10 @@ It offers a small set of predefined input fields such as:
 Every field can optionally be declared mandatory, default values and help texts
 are available too. That's it.
 
-By default, form data is sent by e-mail to a freely definable e-mail address
-and stored in the database (a XLSX export of saved submissions is provided too).
-It is possible to add your own actions as well.
+The default actions (which can be enabled individually) are to send the form
+data to a list of freely definable email addresses and to store the data in the
+database so that it can be exported later. An XLSX export of saved submissions
+is provided too. It is possible to add your own actions as well.
 
 
 Installing the form designer
@@ -33,7 +34,7 @@ Installing the form designer
 
 Install the package using pip::
 
-    $ pip install form_designer
+    $ pip install form-designer
 
 Setting up the form designer
 ============================
@@ -43,21 +44,20 @@ Setting up the form designer
 - Go into Django's admin panel and add one or more forms with the fields you
   require. Also select at least one action in the configuration options
   selectbox, most often you'd want to select both the "E-mail" and the
-  "Save form submission" option. After saving once, you'll see additional
-  fields belonging to the selected configuration options, in this case
-  a field for entering an e-mail address where the submission results should
-  be sent to.
+  "Save form submission" option and fill in one ore more email addresses.
 
 If you're using the form designer with FeinCMS_, the content type can be
 imported from ``form_designer.contents.FormContent``. Otherwise, your
 code should use the following methods (the code would probably reside in
-a view)::
+a view):
+
+.. code-block:: python
 
     # Somehow fetch the form_designer.models.Form instance:
-    instance = ...
+    instance = get_object_or_404()
 
     # Build the form class:
-    form_class = instance.form()
+    form_class = instance.form_class()
 
     # Standard form processing:
     if request.method == "POST":
@@ -70,18 +70,20 @@ a view)::
             # Maybe there's something useful in here:
             pprint(result)
 
-            ...
+            return HttpResponseRedirect("thanks/")
     else:
         form = form_class()
 
-    return render(...)
+    return render(request, "form.html", {"form": form})
 
 
 Adding custom actions
 =====================
 
 Custom actions can be added by appending them to
-``Form.CONFIG_OPTIONS``::
+``Form.CONFIG_OPTIONS``:
+
+.. code-block:: python
 
     from form_designer.models import Form
 
@@ -92,22 +94,25 @@ Custom actions can be added by appending them to
         pass
 
     Form.CONFIG_OPTIONS.append(
-        ("do_thing", {
-            "title": _("Do a thing"),
-            "form_fields": lambda form: [
-                ("optional_form_field", forms.CharField(
-                    label=_("Optional form field"),
-                    required=False,
-                    # validators...
-                    # help_text...
-                )),
-            ],
-            "process": do_thing,
-            "validate": do_validate,
-        })
+        (
+            "do_thing",
+            {
+                "title": _("Do a thing"),
+                "form_fields": lambda form: [
+                    ("optional_form_field", forms.CharField(
+                        label=_("Optional form field"),
+                        required=False,
+                        # validators...
+                        # help_text...
+                    )),
+                ],
+                "process": do_thing,
+                "validate": do_validate,
+            },
+        )
     )
 
-The interesting part if the ``do_thing`` callable. It currently receives
+The interesting part is the ``do_thing`` callable. It currently receives
 four arguments, however you should also accept ``**kwargs`` to support
 additional arguments added in the future:
 
@@ -132,18 +137,22 @@ django-recaptcha readme.
 Override field types
 ====================
 
-Define ``FORM_DESIGNER_FIELD_TYPES`` in your settings file like::
+Define ``FORM_DESIGNER_FIELD_TYPES`` in your settings file like:
+
+.. code-block:: python
 
     FORM_DESIGNER_FIELD_TYPES = "your_project.form_designer_config.FIELD_TYPES"
 
-In ``your_project.form_designer_config.py`` something like::
+In ``your_project.form_designer_config.py`` something like:
+
+.. code-block:: python
 
     from django import forms
     from django.utils.translation import gettext_lazy as _
 
     FIELD_TYPES = [
         {"type": "text", "verbose_name": _("text"), "field": forms.CharField},
-        {"type": "email", "verbose_name": _("e-mail address"), "field": forms.EmailField},
+        {"type": "email", "verbose_name": _("email address"), "field": forms.EmailField},
     ]
 
 
