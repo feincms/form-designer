@@ -118,6 +118,7 @@ class FormAdmin(admin.ModelAdmin):
     form = FormAdminForm
     inlines = [FormFieldAdmin]
     list_display = ["title"]
+    ordering = ["title"]
     save_as = True
 
     class Media:

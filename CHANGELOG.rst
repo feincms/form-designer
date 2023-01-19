@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+* Changed the default ordering of forms in the admin change list to
+  alphabetical.
+
 0.21
 ----
 
