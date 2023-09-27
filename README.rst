@@ -2,7 +2,7 @@
 Form Designer - a simple form designer for Django
 =================================================
 
-.. image:: https://github.com/feincms/form_designer/workflows/Tests/badge.svg
+.. image:: https://github.com/feincms/form-designer/actions/workflows/tests.yml/badge.svg
     :target: https://github.com/feincms/form_designer
 
 This form designer does not try to offer every last configuration possibility
