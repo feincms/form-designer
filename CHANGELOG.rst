@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+0.22
+----
+
 * Changed the default ordering of forms in the admin change list to
   alphabetical.
 * Modernized the package, switched to ruff and hatchling.
