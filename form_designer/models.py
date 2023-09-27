@@ -134,6 +134,7 @@ class Form(models.Model):
                     warnings.warn(
                         f"validate of {key!r} should accept **kwargs",
                         DeprecationWarning,
+                        stacklevel=1,
                     )
                 validators.append(validator)
 
@@ -229,9 +230,11 @@ for index, field_type in enumerate(FIELD_TYPES[:]):
     if isinstance(field_type, dict):
         continue
     warnings.warn(
-        "Form designer field type %r still uses the old configuration format."
-        % (field_type,),
+        "Form designer field type {!r} still uses the old configuration format.".format(
+            field_type
+        ),
         DeprecationWarning,
+        stacklevel=1,
     )
     FIELD_TYPES[index] = {
         "type": field_type[0],
@@ -289,7 +292,11 @@ class FormField(models.Model):
 
     title = models.CharField(_("field title"), max_length=100)
     name = NameField(verbose_name=_("field name"), max_length=100)
-    _old_name = models.CharField(editable=False, null=True, max_length=100)
+    _old_name = models.CharField(  # noqa: DJ001
+        editable=False,
+        null=True,
+        max_length=100,
+    )
     type = _StaticChoicesCharField(
         _("field type"),
         max_length=20,
@@ -348,12 +355,12 @@ class FormField(models.Model):
         fields[slugify(self.name)] = self.formfield()
 
     def formfield(self):
-        kwargs = dict(
-            label=self.title,
-            required=self.is_required,
-            initial=self.default_value,
-            help_text=self.help_text,
-        )
+        kwargs = {
+            "label": self.title,
+            "required": self.is_required,
+            "initial": self.default_value,
+            "help_text": self.help_text,
+        }
         if self.choices:
             kwargs["choices"] = self.get_choices()
             # The value of individual choices is slugified too.
@@ -377,6 +384,9 @@ class FormSubmission(models.Model):
         verbose_name = _("form submission")
         verbose_name_plural = _("form submissions")
 
+    def __str__(self):
+        return str(self.submitted_at)
+
     def formatted_data(self, *, html=False, default="Ø"):
         sd = self.form.submissions_data(submissions=[self])
         data = ((field["title"], field["value"] or default) for field in sd[0]["data"])
@@ -385,4 +395,4 @@ class FormSubmission(models.Model):
                 "<dl>{}</dl>",
                 format_html_join("", "<dt>{}</dt><dd>{}</dd>", data),
             )
-        return "\n".join("%s:\n%s\n" % item for item in data)
+        return "\n".join("{}:\n{}\n".format(*item) for item in data)

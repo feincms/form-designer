@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("form_designer", "0004_alter_formsubmission_options_and_more"),
     ]

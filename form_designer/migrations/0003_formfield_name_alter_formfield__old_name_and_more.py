@@ -17,7 +17,6 @@ def forwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("form_designer", "0002_rename_name_formfield__old_name_and_more"),
     ]

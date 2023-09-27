@@ -167,9 +167,7 @@ class FormsTest(TestCase):
         User.objects.create_superuser("admin", "admin@example.com", "password")
         self.client.login(username="admin", password="password")
         response = self.client.get(
-            "/admin/form_designer/form/{}/export_submissions/".format(
-                submission.form_id
-            )
+            f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -184,9 +182,7 @@ class FormsTest(TestCase):
 
         FormSubmission.objects.all().delete()
         response = self.client.get(
-            "/admin/form_designer/form/{}/export_submissions/".format(
-                submission.form_id
-            )
+            f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
         )
         self.assertRedirects(
             response, f"/admin/form_designer/form/{submission.form_id}/change/"

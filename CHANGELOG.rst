@@ -6,6 +6,9 @@ Next version
 
 * Changed the default ordering of forms in the admin change list to
   alphabetical.
+* Modernized the package, switched to ruff and hatchling.
+* Dropped Python 3.8 support.
+* Added Django 4.2 to the CI.
 
 0.21
 ----

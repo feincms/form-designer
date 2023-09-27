@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("form_designer", "0003_formfield_name_alter_formfield__old_name_and_more"),
     ]

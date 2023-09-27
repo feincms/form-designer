@@ -102,6 +102,7 @@ class FormAdminForm(forms.ModelForm):
         warnings.warn(
             f"form_fields of {cfg_key!r} should be a callable",
             DeprecationWarning,
+            stacklevel=1,
         )
         return form_fields
 
@@ -136,6 +137,7 @@ class FormAdmin(admin.ModelAdmin):
         warnings.warn(
             f"form_fields of {cfg_key!r} should be a callable",
             DeprecationWarning,
+            stacklevel=1,
         )
         return form_fields
 
