@@ -103,7 +103,9 @@ class FormsTest(TestCase):
         self.assertNotContains(response, "This field is required")
 
         self.assertContains(
-            response, "Enter a valid e", 1  # Django 1.4 has e-mail, 1.5 and up email
+            response,
+            "Enter a valid e",
+            1,  # Django 1.4 has e-mail, 1.5 and up email
         )
 
         response = self.client.post(
