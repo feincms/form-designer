@@ -151,7 +151,7 @@ class Form(models.Model):
         warnings.warn("Use form_class instead", DeprecationWarning, stacklevel=2)
         return self.form_class()
 
-    def process(self, form, request):
+    def process(self, form, request, **kwargs):
         ret = {}
         cfg = dict(self.CONFIG_OPTIONS)
 
@@ -163,7 +163,11 @@ class Form(models.Model):
                 continue
 
             ret[key] = process(
-                model_instance=self, form_instance=form, request=request, config=config
+                model_instance=self,
+                form_instance=form,
+                request=request,
+                config=config,
+                **kwargs,
             )
 
         return ret
