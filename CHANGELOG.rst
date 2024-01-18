@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+0.23
+----
+
 * Added Django 5.0, Python 3.12.
 * Forwarded ``**kwargs`` to the ``process`` handlers.
 
