@@ -4,6 +4,8 @@ Change log
 Next version
 ------------
 
+* Raised the minimum django-recaptcha version to 4.0.
+
 0.23
 ----
 

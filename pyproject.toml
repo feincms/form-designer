@@ -40,7 +40,7 @@ dependencies = [
 tests = [
   "coverage",
   "django-mptt",
-  "django-recaptcha",
+  "django-recaptcha>=4",
   "FeinCMS",
 ]
 [project.urls]

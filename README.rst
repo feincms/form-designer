@@ -128,8 +128,8 @@ ReCaptcha
 =========
 
 To enable [ReCaptcha](http://www.google.com/recaptcha) install
-[django-recaptcha](https://github.com/praekelt/django-recaptcha) and add
-`captcha` to your `INSTALLED_APPS`. This will automatically add a ReCaptcha
+[django-recaptcha](https://github.com/django-recaptcha/django-recaptcha) and add
+`django_recaptcha` to your `INSTALLED_APPS`. This will automatically add a ReCaptcha
 field to the form designer. For everything else read through the
 django-recaptcha readme.
 

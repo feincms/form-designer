@@ -81,10 +81,10 @@ FIELD_TYPES = [
 ]
 
 # Add recaptcha field if available
-if apps.is_installed("captcha"):  # pragma: no cover
+if apps.is_installed("django_recaptcha"):  # pragma: no cover
     try:
-        from captcha.fields import ReCaptchaField
-        from captcha.widgets import ReCaptchaV2Checkbox, ReCaptchaV3
+        from django_recaptcha.fields import ReCaptchaField
+        from django_recaptcha.widgets import ReCaptchaV2Checkbox, ReCaptchaV3
     except ImportError:
         pass
     else:
