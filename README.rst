@@ -160,7 +160,7 @@ Visit these sites for more information
 ======================================
 
 * form_designer: https://github.com/feincms/form_designer
-* FeinCMS: http://www.feinheit.ch/labs/feincms-django-cms/
+* FeinCMS: https://feincms-django-cms.readthedocs.io/
 * feincms3: https://feincms3.readthedocs.io/
 
 .. _django-admin-ordering: https://github.com/matthiask/django-admin-ordering
