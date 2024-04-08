@@ -28,6 +28,9 @@ data to a list of freely definable email addresses and to store the data in the
 database so that it can be exported later. An XLSX export of saved submissions
 is provided too. It is possible to add your own actions as well.
 
+Aside: If you need more options you may want to check out
+`feincms3-forms <https://github.com/feincms/feincms3-forms>`__ as well.
+
 
 Installing the form designer
 ============================
@@ -127,9 +130,9 @@ additional arguments added in the future:
 ReCaptcha
 =========
 
-To enable [ReCaptcha](http://www.google.com/recaptcha) install
-[django-recaptcha](https://github.com/django-recaptcha/django-recaptcha) and add
-`django_recaptcha` to your `INSTALLED_APPS`. This will automatically add a ReCaptcha
+To enable `ReCaptcha <http://www.google.com/recaptcha>`__ install
+`django-recaptcha <https://github.com/django-recaptcha/django-recaptcha>`__ and add
+``django_recaptcha`` to your ``INSTALLED_APPS``. This will automatically add a ReCaptcha
 field to the form designer. For everything else read through the
 django-recaptcha readme.
 
