@@ -234,9 +234,7 @@ for index, field_type in enumerate(FIELD_TYPES[:]):
     if isinstance(field_type, dict):
         continue
     warnings.warn(
-        "Form designer field type {!r} still uses the old configuration format.".format(
-            field_type
-        ),
+        f"Form designer field type {field_type!r} still uses the old configuration format.",
         DeprecationWarning,
         stacklevel=1,
     )
