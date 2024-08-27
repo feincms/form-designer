@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+* Fixed an incorrect input type of the ``author_email_field`` field.
+* Added Django 5.1, dropped Django 4.1.
+
 0.24
 ----
 
