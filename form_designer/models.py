@@ -86,13 +86,13 @@ class Form(models.Model):
                     ),
                     (
                         "author_email_field",
-                        forms.EmailField(
+                        forms.CharField(
                             label=capfirst(_("author's email field")),
                             help_text=_(
                                 "The author of the submission will be added to the Cc: if this is set to an existing form field below."
                             ),
                             required=False,
-                            widget=widgets.AdminEmailInputWidget,
+                            widget=widgets.AdminTextInputWidget,
                         ),
                     ),
                 ],
