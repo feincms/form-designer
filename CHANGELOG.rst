@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+0.26
+----
+
 * Changed form submissions to convert choice values back to the unslugified
   variant.
 
