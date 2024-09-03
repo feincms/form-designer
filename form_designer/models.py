@@ -397,7 +397,15 @@ class FormSubmission(models.Model):
 
     def formatted_data(self, *, html=False, default="Ø"):
         sd = self.form.submissions_data(submissions=[self])
-        data = ((field["title"], field["value"] or default) for field in sd[0]["data"])
+        data = (
+            (
+                field["title"],
+                ", ".join(value)
+                if isinstance(value := field["value"] or default, list)
+                else value,
+            )
+            for field in sd[0]["data"]
+        )
         if html:
             return format_html(
                 "<dl>{}</dl>",

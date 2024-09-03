@@ -9,6 +9,8 @@ Next version
 
 * Changed form submissions to convert choice values back to the unslugified
   variant.
+* Changed ``FormSubmission.formatted_data`` to automatically comma-separate
+  list values instead of returning the list representation.
 
 0.25
 ----

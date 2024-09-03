@@ -18,6 +18,8 @@ Form.CONFIG_OPTIONS.append(
 
 
 class FormsTest(TestCase):
+    maxDiff = None
+
     def test_forms(self):
         form = Form.objects.create(
             title="Test contact form",
@@ -48,13 +50,29 @@ class FormsTest(TestCase):
             type="date",
             is_required=False,
         )
+        form.fields.create(
+            ordering=6,
+            title="Multiple Choice",
+            name="multiple-choice",
+            type="multiple-select",
+            choices="Choice A,Choice B,Choice C",
+            is_required=False,
+        )
 
         form_class = form.form_class()
         form_instance = form_class()
 
         self.assertListEqual(
             [field.name for field in form_instance],
-            ["subject", "email", "body", "please-call-me", "radio", "date"],
+            [
+                "subject",
+                "email",
+                "body",
+                "please-call-me",
+                "radio",
+                "date",
+                "multiple-choice",
+            ],
         )
 
         page = Page.objects.create(override_url="/", title="")
@@ -72,7 +90,7 @@ class FormsTest(TestCase):
         self.assertContains(
             response,
             "<input",
-            10,  # csrf, subject, email, checkbox, _formcontent, submit, radio*3, date
+            13,  # csrf, subject, email, checkbox, _formcontent, submit, radio*3, date, three multiple choice
         )
         self.assertContains(response, "<textarea", 1)
         self.assertContains(
@@ -104,8 +122,8 @@ class FormsTest(TestCase):
 
         self.assertContains(
             response,
-            "Enter a valid e",
-            1,  # Django 1.4 has e-mail, 1.5 and up email
+            "Enter a valid email",
+            1,
         )
 
         response = self.client.post(
@@ -117,6 +135,7 @@ class FormsTest(TestCase):
                 f"fc{form.id}-body": "Hello World",
                 f"fc{form.id}-radio": "two-what",
                 f"fc{form.id}-date": "2022-10-02",
+                f"fc{form.id}-multiple-choice": ["choice-a", "choice-c"],
             },
         )
 
@@ -160,10 +179,18 @@ class FormsTest(TestCase):
                         },
                         {"name": "radio", "title": "Radio Select", "value": "two what"},
                         {"name": "date", "title": "Date", "value": "2022-10-02"},
+                        {
+                            "name": "multiple-choice",
+                            "title": "Multiple Choice",
+                            "value": ["Choice A", "Choice C"],
+                        },
                     ],
                 }
             ],
         )
+
+        data = submission.formatted_data()
+        self.assertIn("Multiple Choice:\nChoice A, Choice C", data)
 
         # Export the submission
         User.objects.create_superuser("admin", "admin@example.com", "password")
