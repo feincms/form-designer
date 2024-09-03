@@ -158,7 +158,7 @@ class FormsTest(TestCase):
                             "title": "Please call me",
                             "value": False,
                         },
-                        {"name": "radio", "title": "Radio Select", "value": "two-what"},
+                        {"name": "radio", "title": "Radio Select", "value": "two what"},
                         {"name": "date", "title": "Date", "value": "2022-10-02"},
                     ],
                 }

@@ -176,12 +176,13 @@ class Form(models.Model):
         if submissions is None:
             submissions = self.submissions.all()
 
-        def loader(submission, field):
+        def loader(submission, field, choice_dict):
+            value = None
             if field.name in submission.data:
-                return submission.data[field.name]
-            if (old := field._old_name) is not None and old in submission.data:
-                return submission.data[old]
-            return None
+                value = submission.data[field.name]
+            elif (old := field._old_name) is not None and old in submission.data:
+                value = submission.data[old]
+            return choice_dict.get(value, value)
 
         def old_name_loader(submission, old_name):
             return submission.data.get(old_name)
@@ -189,7 +190,7 @@ class Form(models.Model):
         fields_and_loaders = [
             (
                 {"name": field.name, "title": field.title},
-                partial(loader, field=field),
+                partial(loader, field=field, choice_dict=dict(field.get_choices())),
             )
             for field in self.fields.all()
         ]
