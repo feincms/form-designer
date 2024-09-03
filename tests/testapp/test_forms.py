@@ -96,7 +96,7 @@ class FormsTest(TestCase):
                 f"fc{form.id}-subject": "Test",
                 f"fc{form.id}-email": "invalid",
                 f"fc{form.id}-body": "Hello World",
-                f"fc{form.id}-radio": "one",
+                f"fc{form.id}-radio": "two-what",
             },
         )
 
@@ -115,7 +115,7 @@ class FormsTest(TestCase):
                 f"fc{form.id}-subject": "Test",
                 f"fc{form.id}-email": "valid@example.com",
                 f"fc{form.id}-body": "Hello World",
-                f"fc{form.id}-radio": "one",
+                f"fc{form.id}-radio": "two-what",
                 f"fc{form.id}-date": "2022-10-02",
             },
         )
@@ -158,7 +158,7 @@ class FormsTest(TestCase):
                             "title": "Please call me",
                             "value": False,
                         },
-                        {"name": "radio", "title": "Radio Select", "value": "one"},
+                        {"name": "radio", "title": "Radio Select", "value": "two-what"},
                         {"name": "date", "title": "Date", "value": "2022-10-02"},
                     ],
                 }
