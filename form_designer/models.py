@@ -182,7 +182,12 @@ class Form(models.Model):
                 value = submission.data[field.name]
             elif (old := field._old_name) is not None and old in submission.data:
                 value = submission.data[old]
-            return choice_dict.get(value, value)
+            try:
+                if isinstance(value, list):
+                    return [choice_dict.get(v, v) for v in value]
+                return choice_dict.get(value, value)
+            except TypeError:  # unhashable types or other, unexpected circumstances
+                return value
 
         def old_name_loader(submission, old_name):
             return submission.data.get(old_name)
