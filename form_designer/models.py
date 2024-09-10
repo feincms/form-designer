@@ -52,7 +52,7 @@ def validate_comma_separated_emails(value):
         validate_email(v.strip())
 
 def email_field_choices(form: forms.ModelForm | None, required: bool=True) -> list[tuple[str, str]]:
-    if not form:
+    if not form or not form.instance or not form.instance.pk:
         return []
     email_fields = form.instance.fields.filter(type='email')
     choices = [] if required else [('', '--')]
