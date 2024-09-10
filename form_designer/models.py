@@ -1,7 +1,6 @@
-from typing import Optional
-
 import warnings
 from functools import partial
+from typing import Optional
 
 from django import forms
 from django.conf import settings
@@ -53,13 +52,17 @@ def validate_comma_separated_emails(value):
     for v in value.split(","):
         validate_email(v.strip())
 
-def email_field_choices(form: Optional[forms.ModelForm], required: bool=True) -> list[tuple[str, str]]:
+
+def email_field_choices(
+    form: Optional[forms.ModelForm], required: bool = True
+) -> list[tuple[str, str]]:
     if not form or not form.instance or not form.instance.pk:
         return []
-    email_fields = form.instance.fields.filter(type='email')
-    choices = [] if required else [('', '--')]
+    email_fields = form.instance.fields.filter(type="email")
+    choices = [] if required else [("", "--")]
     choices.extend([(_.name, _.title) for _ in email_fields])
     return choices
+
 
 class Form(models.Model):
     CONFIG_OPTIONS = [

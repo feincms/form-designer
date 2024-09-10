@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+* Limited the email field choices to email fields only when using the send
+  emails to authors option.
+
 0.26
 ----
 
