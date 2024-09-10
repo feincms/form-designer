@@ -124,7 +124,7 @@ additional arguments added in the future:
 - ``request``: The current HTTP request
 - ``config``: The config options (keys and values defined through
   ``form_fields``; for example the ``email`` action defines an ``email``
-  char field, and accesses its value using ``config["email"]``.
+  char field, and accesses its value using ``config["email"]``).
 
 
 ReCaptcha
