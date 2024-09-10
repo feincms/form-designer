@@ -51,6 +51,13 @@ def validate_comma_separated_emails(value):
     for v in value.split(","):
         validate_email(v.strip())
 
+def email_field_choices(form: forms.ModelForm | None, required: bool=True) -> list[tuple[str, str]]:
+    if not form:
+        return []
+    email_fields = form.instance.fields.filter(type='email')
+    choices = [] if required else [('', '--')]
+    choices.extend([(_.name, _.title) for _ in email_fields])
+    return choices
 
 class Form(models.Model):
     CONFIG_OPTIONS = [
@@ -86,13 +93,13 @@ class Form(models.Model):
                     ),
                     (
                         "author_email_field",
-                        forms.CharField(
+                        forms.ChoiceField(
                             label=capfirst(_("author's email field")),
                             help_text=_(
                                 "The author of the submission will be added to the Cc: if this is set to an existing form field below."
                             ),
                             required=False,
-                            widget=widgets.AdminTextInputWidget,
+                            choices=email_field_choices(form, required=False),
                         ),
                     ),
                 ],
