@@ -102,3 +102,19 @@ if apps.is_installed("django_recaptcha"):  # pragma: no cover
                 "field": partial(ReCaptchaField, widget=ReCaptchaV3),
             }
         )
+
+
+# Add django-simple-captcha field if available
+if apps.is_installed("captcha"):  # pragma: no cover
+    try:
+        from captcha.fields import CaptchaField
+    except ImportError:
+        pass
+    else:
+        FIELD_TYPES.append(
+            {
+                "type": "simple captcha",
+                "verbose_name": _("Simple CAPTCHA"),
+                "field": CaptchaField
+            }
+        )
