@@ -137,6 +137,16 @@ field to the form designer. For everything else read through the
 django-recaptcha readme.
 
 
+Simple Captcha
+==============
+
+To enable `django-simple-captcha <https://pypi.org/project/django-simple-captcha>`__ install
+`django-simple-captcha <https://pypi.org/project/django-simple-captcha>`__ and add
+``captcha`` to your ``INSTALLED_APPS`` as described in the documentation for
+``django-simple-captcha``. This will automatically add a "Simple Captcha"
+field to the form designer field types.
+
+
 Override field types
 ====================
 
