@@ -94,7 +94,7 @@ class FormsTest(TestCase):
         )
         self.assertContains(response, "<textarea", 1)
         self.assertContains(
-            response, 'value="two-what" required id="id_fc1-radio_1" checked', 1
+            response, 'value="two what" required id="id_fc1-radio_1" checked', 1
         )
         self.assertContains(response, 'type="date"', 1)
 
@@ -133,9 +133,9 @@ class FormsTest(TestCase):
                 f"fc{form.id}-subject": "Test",
                 f"fc{form.id}-email": "valid@example.com",
                 f"fc{form.id}-body": "Hello World",
-                f"fc{form.id}-radio": "two-what",
+                f"fc{form.id}-radio": "two what",
                 f"fc{form.id}-date": "2022-10-02",
-                f"fc{form.id}-multiple-choice": ["choice-a", "choice-c"],
+                f"fc{form.id}-multiple-choice": ["Choice A", "Choice C"],
             },
         )
 
@@ -407,3 +407,35 @@ class FormsTest(TestCase):
         self.assertEqual(message.subject, "Test contact form")
         self.assertIn("Subject:\nTest\n", message.body)
         self.assertIn("Email:\ntest@example.org\n", message.body)
+
+    def test_choices(self):
+        """Legacy slugified choices should also use the pretty format"""
+
+        form = Form.objects.create(
+            title="Test contact form",
+            config={"save_fs": {}},
+        )
+        form.fields.create(
+            ordering=6,
+            title="Multiple Choice",
+            name="multiple-choice",
+            type="multiple-select",
+            choices="Choice A,Choice B,Choice C",
+            is_required=False,
+        )
+
+        s1 = FormSubmission.objects.create(
+            form=form,
+            data={
+                "multiple-choice": ["Choice A", "Choice C"],
+            },
+        )
+        self.assertIn("Multiple Choice:\nChoice A, Choice C", s1.formatted_data())
+
+        s2 = FormSubmission.objects.create(
+            form=form,
+            data={
+                "multiple-choice": ["choice-a", "choice-c"],
+            },
+        )
+        self.assertIn("Multiple Choice:\nChoice A, Choice C", s2.formatted_data())

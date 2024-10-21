@@ -6,6 +6,8 @@ Next version
 
 * Limited the email field choices to email fields only when using the send
   emails to authors option.
+* Stopped slugifying choice values so that we properly support non-latin
+  characters.
 
 0.26
 ----

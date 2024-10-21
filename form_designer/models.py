@@ -204,10 +204,17 @@ class Form(models.Model):
         def old_name_loader(submission, old_name):
             return submission.data.get(old_name)
 
+        def include_slugified_choices(choices):
+            return dict(choices) | {slugify(value): label for value, label in choices}
+
         fields_and_loaders = [
             (
                 {"name": field.name, "title": field.title},
-                partial(loader, field=field, choice_dict=dict(field.get_choices())),
+                partial(
+                    loader,
+                    field=field,
+                    choice_dict=include_slugified_choices(field.get_choices()),
+                ),
             )
             for field in self.fields.all()
         ]
@@ -360,7 +367,7 @@ class FormField(models.Model):
 
     def get_choices(self):
         def get_tuple(value):
-            return (slugify(value.strip()), value.strip())
+            return (value.strip(), value.strip())
 
         choices = [get_tuple(value) for value in self.choices.split(",")]
         if not self.is_required and self.type == "select":
@@ -383,8 +390,7 @@ class FormField(models.Model):
         }
         if self.choices:
             kwargs["choices"] = self.get_choices()
-            # The value of individual choices is slugified too.
-            kwargs["initial"] = slugify(self.default_value)
+            kwargs["initial"] = self.default_value
         return self.get_type(**kwargs)
 
 
