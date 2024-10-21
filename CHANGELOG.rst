@@ -8,6 +8,7 @@ Next version
   emails to authors option.
 * Stopped slugifying choice values so that we properly support non-latin
   characters.
+- Added Python 3.13.
 
 0.26
 ----
