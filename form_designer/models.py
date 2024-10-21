@@ -54,7 +54,7 @@ def validate_comma_separated_emails(value):
 
 
 def email_field_choices(
-    form: Optional[forms.ModelForm], required: bool = True
+    form: Optional[forms.ModelForm], *, required: bool = True
 ) -> list[tuple[str, str]]:
     if not form or not form.instance or not form.instance.pk:
         return []

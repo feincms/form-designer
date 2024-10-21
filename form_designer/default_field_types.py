@@ -115,6 +115,6 @@ if apps.is_installed("captcha"):  # pragma: no cover
             {
                 "type": "simple captcha",
                 "verbose_name": _("Simple CAPTCHA"),
-                "field": CaptchaField
+                "field": CaptchaField,
             }
         )
