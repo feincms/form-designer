@@ -4,11 +4,16 @@ Change log
 Next version
 ------------
 
+0.27
+----
+
+* Avoided crashing when trying to prettify the data.
 * Limited the email field choices to email fields only when using the send
   emails to authors option.
 * Stopped slugifying choice values so that we properly support non-latin
   characters.
-- Added Python 3.13.
+* Added Python 3.13.
+* Added support for ``django-simple-captcha``.
 
 0.26
 ----
