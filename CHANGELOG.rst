@@ -4,6 +4,8 @@ Change log
 Next version
 ------------
 
+* Added out of the box support for ``mosparo-django``.
+
 0.27
 ----
 

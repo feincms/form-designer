@@ -118,3 +118,17 @@ if apps.is_installed("captcha"):  # pragma: no cover
                 "field": CaptchaField,
             }
         )
+
+if apps.is_installed("mosparo_django"):
+    try:
+        from mosparo_django.fields import MosparoField
+    except ImportError:
+        pass
+    else:
+        FIELD_TYPES.append(
+            {
+                "type": "mosparo captcha",
+                "verbose_name": _("Mosparo Captcha"),
+                "field": MosparoField,
+            }
+        )
