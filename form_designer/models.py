@@ -3,6 +3,7 @@ from functools import partial
 from typing import Optional
 
 from django import forms
+from django.apps import apps
 from django.conf import settings
 from django.contrib.admin import widgets
 from django.core.mail import EmailMessage
@@ -430,3 +431,22 @@ class FormSubmission(models.Model):
                 format_html_join("", "<dt>{}</dt><dd>{}</dd>", data),
             )
         return "\n".join("{}:\n{}\n".format(*item) for item in data)
+
+
+if apps.is_installed("mosparo_django"):
+    from mosparo_django.fields import MosparoField
+
+    def validate_mosparo(form_instance, data, **kwargs):
+        for field in form_instance.fields.values():
+            if isinstance(field, MosparoField):
+                field.verify_data(form_instance)
+
+    Form.CONFIG_OPTIONS.append(
+        (
+            "mosparo",
+            {
+                "title": _("Validate Mosparo captcha"),
+                "validate": validate_mosparo,
+            },
+        )
+    )
