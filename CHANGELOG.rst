@@ -7,6 +7,7 @@ Next version
 * Added out of the box support for ``mosparo-django``. Note that you need both
   to add the form field AND activate the validation action in the admin, just
   adding the field doesn't actually do anything.
+* Added Catalan and Spanish translations.
 
 0.27
 ----
