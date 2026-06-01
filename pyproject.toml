@@ -47,8 +47,8 @@ optional-dependencies.tests = [
 urls.Homepage = "https://github.com/feincms/form-designer/"
 
 [tool.hatch]
-build.include = [ "/form_designer" ]
 version.path = "form_designer/__init__.py"
+build.include = [ "/form_designer" ]
 
 [tool.ruff]
 target-version = "py39"
