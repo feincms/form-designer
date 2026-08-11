@@ -220,7 +220,7 @@ class FormSubmissionAdmin(admin.ModelAdmin):
         if obj := kwargs.get("obj"):
             try:
                 context["formatted_data"] = obj.formatted_data(html=True)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 context["formatted_data"] = f"BROKEN: {obj.data}"
         return super().render_change_form(request, context, **kwargs)
 

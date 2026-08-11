@@ -99,6 +99,7 @@ lint.extend-ignore = [
   "B905",
   # No line length errors
   "E501",
+  "RUF012",
   "UP031",
 ]
 lint.per-file-ignores."*/migrat*/*" = [

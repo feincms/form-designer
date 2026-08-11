@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import warnings
 from functools import partial
-from typing import Optional
 
 from django import forms
 from django.apps import apps
@@ -55,7 +56,7 @@ def validate_comma_separated_emails(value):
 
 
 def email_field_choices(
-    form: Optional[forms.ModelForm], *, required: bool = True
+    form: forms.ModelForm | None, *, required: bool = True
 ) -> list[tuple[str, str]]:
     if not form or not form.instance or not form.instance.pk:
         return []
@@ -275,7 +276,7 @@ class _StaticChoicesCharField(models.CharField):
     """Does not detect changes to "choices", ever"""
 
     def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
+        name, _path, args, kwargs = super().deconstruct()
         kwargs["choices"] = [("", "")]
         return name, "django.db.models.CharField", args, kwargs
 
@@ -304,7 +305,7 @@ class NameField(models.CharField):
         super().__init__(**kwargs)
 
     def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
+        name, _path, args, kwargs = super().deconstruct()
         return name, "django.db.models.CharField", args, kwargs
 
     def formfield(self, **kwargs):
