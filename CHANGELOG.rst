@@ -8,6 +8,7 @@ Next version
   to add the form field AND activate the validation action in the admin, just
   adding the field doesn't actually do anything.
 * Added Catalan and Spanish translations.
+* XLS exports are generated with a datestamp in the file name.
 
 0.27
 ----

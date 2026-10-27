@@ -10,6 +10,7 @@
 /dist
 /form_designer.egg-info
 venv
+.venv
 .tox
 .coverage
 htmlcov

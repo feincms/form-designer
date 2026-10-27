@@ -2,6 +2,7 @@ import warnings
 
 from admin_ordering.admin import OrderableAdmin
 from django import forms
+from django.conf import settings
 from django.contrib import admin, messages
 from django.db.models import Model
 from django.forms.models import modelform_factory
@@ -9,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import re_path
 from django.utils.text import capfirst, slugify
+from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
 from xlsxdocument import XLSXDocument
 
@@ -189,7 +191,10 @@ class FormAdmin(admin.ModelAdmin):
         xlsx = XLSXDocument()
         xlsx.add_sheet(slugify(form.title))
         xlsx.table([], rows)
-        return xlsx.to_response("%s.xlsx" % slugify(form.title))
+        # localtime() raises on naive datetimes, i.e. with USE_TZ = False
+        timestamp = localtime() if settings.USE_TZ else now()
+        outfile_name = f"{slugify(form.title)}_{timestamp.strftime('%Y%m%d_%H%M')}.xlsx"
+        return xlsx.to_response(outfile_name)
 
     def get_urls(self):
         return [

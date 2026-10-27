@@ -1,7 +1,11 @@
+from datetime import datetime
+from unittest import mock
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.utils.text import slugify
 from feincms.module.page.models import Page
 
 from form_designer.models import FIELD_TYPES, Form, FormSubmission
@@ -195,14 +199,29 @@ class FormsTest(TestCase):
         # Export the submission
         User.objects.create_superuser("admin", "admin@example.com", "password")
         self.client.login(username="admin", password="password")
-        response = self.client.get(
-            f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
-        )
+        with mock.patch(
+            "form_designer.admin.localtime",
+            return_value=datetime(2026, 10, 27, 17, 59),
+        ):
+            response = self.client.get(
+                f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
+            )
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            f"{slugify(submission.form.title)}_20261027_1759.xlsx",
+            response["Content-Disposition"],
+        )
         self.assertEqual(
             response["Content-type"],
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
+
+        # Without time zone support
+        with override_settings(USE_TZ=False):
+            response = self.client.get(
+                f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
+            )
+        self.assertEqual(response.status_code, 200)
 
         response = self.client.get(
             f"/admin/form_designer/formsubmission/{submission.id}/change/"
