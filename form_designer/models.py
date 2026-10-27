@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import re
 import warnings
 from collections.abc import Collection, Iterable
 from fnmatch import fnmatchcase
 from functools import partial
 from itertools import chain
+from typing import Literal
 
 from django import forms
 from django.apps import apps
@@ -30,6 +32,30 @@ def create_form_submission(model_instance, form_instance, request, **kwargs):
     )
 
 
+class _EmptyDefaultDict(dict):
+    def __missing__(self, key):
+        return ""
+
+
+def _format_subject(template, data, default):
+    """
+    Interpolate ``%(field)s`` placeholders in ``template`` with submitted data.
+    Falls back to ``default`` if there is no template or it is malformed.
+    """
+    if not template:
+        return default
+    # Only %(name)s style placeholders are supported, treat other % as literal
+    template = re.sub(r"%[%(]?", lambda m: m[0] if len(m[0]) == 2 else "%%", template)
+    try:
+        subject = template % _EmptyDefaultDict(
+            (k, "" if v is None else v) for k, v in data.items()
+        )
+    except (TypeError, ValueError):
+        return default
+    # Newlines in headers are rejected by Django
+    return " ".join(subject.splitlines()).strip() or default
+
+
 def send_as_mail(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
@@ -37,23 +63,32 @@ def send_as_mail(model_instance, form_instance, request, config, **kwargs):
         url=request.build_absolute_uri(request.get_full_path()),
     )
 
-    recipients = {
-        "to": [email.strip() for email in config["email"].split(",")],
-    }
-    if (author_email_field := config.get("author_email_field")) and (
-        email := form_instance.cleaned_data.get(author_email_field)
-    ):
-        recipients["cc"] = [email]
+    subject = _format_subject(
+        config.get("subject"), form_instance.cleaned_data, model_instance.title
+    )
+
+    # For integration testing, force mails to defined recipients to avoid
+    # spamming production recipients (including the author's Cc)
+    if force_recipient := getattr(settings, "FORCE_MAIL_RECIPIENT", None):
+        if isinstance(force_recipient, str):
+            force_recipient = [force_recipient]
+        recipients: dict[Literal["to", "cc"], list[str]] = {"to": list(force_recipient)}
+    else:
+        recipients = {"to": [email.strip() for email in config["email"].split(",")]}
+        if (author_email_field := config.get("author_email_field")) and (
+            email := form_instance.cleaned_data.get(author_email_field)
+        ):
+            recipients["cc"] = [email]
 
     EmailMessage(
-        model_instance.title,
+        subject,
         submission.formatted_data(),
         **recipients,
     ).send(fail_silently=True)
     return _("Thank you, your input has been received.")
 
 
-def validate_comma_separated_emails(value):
+def validate_comma_separated_emails(value: str) -> None:
     for v in value.split(","):
         validate_email(v.strip())
 
@@ -98,6 +133,17 @@ class Form(models.Model):
                             help_text=_(
                                 "Separate multiple email addresses with commas."
                             ),
+                            widget=widgets.AdminTextInputWidget,
+                        ),
+                    ),
+                    (
+                        "subject",
+                        forms.CharField(
+                            label=capfirst(_("subject")),
+                            help_text=_(
+                                "Defaults to the form title. Use %(fieldname)s to insert submitted values."
+                            ),
+                            required=False,
                             widget=widgets.AdminTextInputWidget,
                         ),
                     ),

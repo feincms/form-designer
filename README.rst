@@ -167,6 +167,22 @@ left out of the submission data and the XLSX export. The default omits
 Set it to ``()`` to include all fields, as in previous versions.
 
 
+Email action
+============
+
+The email action sends submissions to a comma separated list of addresses.
+The subject defaults to the form title, but can be set in the action config.
+``%(fieldname)s`` placeholders are replaced with submitted values
+(unknown fields become empty), other ``%`` signs are kept as-is.
+
+For testing and staging setups, set ``FORCE_MAIL_RECIPIENT`` in settings.py
+to an address to send all submission mails there instead.
+
+.. code-block:: python
+
+    FORCE_MAIL_RECIPIENT = "test@nowhere.example"
+
+
 Override field types
 ====================
 

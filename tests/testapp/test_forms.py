@@ -429,6 +429,71 @@ class FormsTest(TestCase):
         self.assertIn("Subject:\nTest\n", message.body)
         self.assertIn("Email:\ntest@example.org\n", message.body)
 
+    def _create_email_form(self, email_config):
+        form = Form.objects.create(
+            title="Test contact form", config={"email": email_config}
+        )
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(
+            ordering=1, title="Email", name="mmm", type="email", is_required=False
+        )
+        page = Page.objects.create(override_url="/", title="")
+        page.formcontent_set.create(
+            region="main", ordering=0, form=form, success_message="Thanks"
+        )
+        return form
+
+    def _post_email_form(self, form, data):
+        mail.outbox.clear()
+        response = self.client.post(
+            "/",
+            {"_formcontent": form.id}
+            | {f"fc{form.id}-{key}": value for key, value in data.items()},
+        )
+        self.assertContains(response, "Thanks", 1)
+        self.assertEqual(len(mail.outbox), 1)
+        return mail.outbox[0]
+
+    def test_email_subject(self):
+        cases = [
+            ("Contact: %(subject)s", {"subject": "Hello"}, "Contact: Hello"),
+            ("Contact: %(subject)s %(mmm)s", {"subject": "Hi"}, "Contact: Hi"),
+            ("Contact: %(nonexistent)s", {"subject": "Hi"}, "Contact:"),
+            ("100% sure", {"subject": "Hi"}, "100% sure"),
+            ("%(subject)d", {"subject": "Hi"}, "Test contact form"),
+            ("%(subject", {"subject": "Hi"}, "Test contact form"),
+            ("100%% sure", {"subject": "Hi"}, "100% sure"),
+            ("%(subject)s", {"subject": "a\nb"}, "a b"),
+            ("", {"subject": "Hi"}, "Test contact form"),
+        ]
+        form = self._create_email_form({"email": "info@example.com"})
+        for template, data, expected in cases:
+            with self.subTest(template=template, data=data):
+                form.config["email"]["subject"] = template
+                form.save()
+                message = self._post_email_form(form, data)
+                self.assertEqual(message.subject, expected)
+
+    @override_settings(FORCE_MAIL_RECIPIENT="test@example.net")
+    def test_email_force_recipient(self):
+        form = self._create_email_form(
+            {
+                "email": "info@example.com, other@example.com",
+                "author_email_field": "mmm",
+            }
+        )
+        message = self._post_email_form(
+            form, {"subject": "Test", "mmm": "author@example.org"}
+        )
+        self.assertListEqual(message.to, ["test@example.net"])
+        self.assertListEqual(message.cc, [])
+
+    @override_settings(FORCE_MAIL_RECIPIENT=["a@example.net", "b@example.net"])
+    def test_email_force_recipient_list(self):
+        form = self._create_email_form({"email": "info@example.com"})
+        message = self._post_email_form(form, {"subject": "Test"})
+        self.assertListEqual(message.to, ["a@example.net", "b@example.net"])
+
     def test_choices(self):
         """Legacy slugified choices should also use the pretty format"""
 

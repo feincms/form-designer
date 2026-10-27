@@ -14,6 +14,10 @@ Next version
   export. Use ``FORM_DESIGNER_OMIT_FIELDS`` setting if you need to change
   it from ``("captcha", "_*")``. Set it to ``()`` to restore the previous
   behaviour.
+* The email action accepts a configurable subject with ``%(fieldname)s``
+  placeholders for submitted values.
+* Added the ``FORCE_MAIL_RECIPIENT`` setting to redirect all submission mails
+  (no author Cc) for testing.
 
 0.27
 ----
