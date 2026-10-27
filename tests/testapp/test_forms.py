@@ -687,9 +687,7 @@ class FormsTest(TestCase):
         submission = FormSubmission.objects.create(
             form=form, data=form_instance.cleaned_data
         )
-        self.assertEqual(
-            submission.data, {"subject": "Hi", "intro": None, "para": None}
-        )
+        self.assertEqual(submission.data, {"subject": "Hi"})
 
         # No-data fields are neither shown as current nor as removed fields
         self.assertEqual(

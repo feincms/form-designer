@@ -180,8 +180,11 @@ class Form(models.Model):
             "error_css_class": "error",
         }
 
+        no_data = set()
         for field in self.fields.all():
             field.add_formfield(fields, self)
+            if not field.has_data():
+                no_data.add(slugify(field.name))
 
         validators = []
         cfg = dict(self.CONFIG_OPTIONS)
@@ -206,7 +209,8 @@ class Form(models.Model):
                 data = super().clean()
                 for validator in validators:
                     validator(self, data)
-                return data
+                # Static text etc. doesn't belong into the submission data
+                return {key: value for key, value in data.items() if key not in no_data}
 
         return type(str("Form%s" % self.pk), (Form,), fields)
 
