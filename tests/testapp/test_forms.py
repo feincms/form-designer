@@ -660,6 +660,15 @@ class FormsTest(TestCase):
             is_required=True,
         )
 
+        FormField(type="statictext", default_value="section").clean()
+        with self.assertRaises(forms.ValidationError):
+            FormField(type="statictext", default_value="p onclick=alert(1)").clean()
+
+        quoted = FormField(type="statictext", title="T", choices='a"b').formfield()
+        self.assertHTMLEqual(
+            quoted.widget.render("quoted", None), '<div class="a&quot;b">T</div>'
+        )
+
         form_instance = form.form_class()(data={"subject": "Hi"})
         self.assertTrue(form_instance.is_valid())
         self.assertFalse(form_instance.fields["para"].required)
@@ -669,7 +678,7 @@ class FormsTest(TestCase):
             str(form_instance["intro"]),
             '<div class="lead highlight">Hello <b>world</b></div>',
         )
-        self.assertHTMLEqual(str(form_instance["para"]), '<p class="">Paragraph</p>')
+        self.assertHTMLEqual(str(form_instance["para"]), "<p>Paragraph</p>")
         self.assertIn(
             '<div class="lead highlight">Hello <b>world</b></div>',
             form_instance.as_p(),

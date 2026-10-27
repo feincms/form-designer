@@ -1,7 +1,10 @@
+import re
 from functools import partial
 
 from django import forms
 from django.apps import apps
+from django.forms.utils import flatatt
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -20,6 +23,13 @@ def require_choices(field):
         )
 
 
+def validate_tag(field):
+    if field.default_value and not re.fullmatch(r"[a-z][a-z0-9]*", field.default_value):
+        raise forms.ValidationError(
+            _("The default value of %s fields has to be an HTML tag name") % field.type
+        )
+
+
 class DivWidget(forms.Widget):
     """Renders just a DIV"""
 
@@ -31,7 +41,13 @@ class DivWidget(forms.Widget):
 
     def render(self, name, value, attrs=None, renderer=None):
         classes = " ".join(value for value, label in self.classes)
-        return mark_safe(f'<{self.tag} class="{classes}">{self.text}</{self.tag}>')
+        return format_html(
+            "<{tag}{attrs}>{text}</{tag}>",
+            tag=self.tag,
+            attrs=flatatt({"class": classes} if classes else {}),
+            # The title is HTML on purpose, only administrators can edit it
+            text=mark_safe(self.text),
+        )
 
 
 class DIVField(forms.Field):
@@ -121,6 +137,7 @@ FIELD_TYPES = [
         "type": "statictext",
         "verbose_name": _("static text"),
         "field": DIVField,
+        "clean_field": [validate_tag],
         "no-data": True,
     },
 ]

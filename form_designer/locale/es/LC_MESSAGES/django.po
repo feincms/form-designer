@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 16:59+0100\n"
+"POT-Creation-Date: 2026-10-27 17:01+0100\n"
 "PO-Revision-Date: 2026-02-28 14:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -36,11 +36,11 @@ msgstr "Configuración"
 msgid "No submissions yet."
 msgstr "Aún no hay registros."
 
-#: admin.py:192 models.py:480
+#: admin.py:192 models.py:485
 msgid "submitted at"
 msgstr "Enviado a"
 
-#: admin.py:192 models.py:488
+#: admin.py:192 models.py:493
 msgid "URL"
 msgstr "URL"
 
@@ -48,7 +48,7 @@ msgstr "URL"
 msgid "Form Designer"
 msgstr "Form-Designer"
 
-#: contents.py:19 contents.py:33 models.py:171 models.py:375 models.py:483
+#: contents.py:19 contents.py:33 models.py:171 models.py:375 models.py:488
 msgid "form"
 msgstr "Formulario"
 
@@ -68,73 +68,78 @@ msgstr "Mensaje personalizado a mostrar después del registro del formulario"
 msgid "forms"
 msgstr "Formularios"
 
-#: default_field_types.py:12
+#: default_field_types.py:15
 #, python-format
 msgid "You can't specify choices for %s fields"
 msgstr "No se pueden especificar opciones para los campos %s"
 
-#: default_field_types.py:19
+#: default_field_types.py:22
 #, python-format
 msgid "Please specify choices for %s fields"
 msgstr "Por favor, especifique opciones para los campos %s"
 
-#: default_field_types.py:62
+#: default_field_types.py:29
+#, python-format
+msgid "The default value of %s fields has to be an HTML tag name"
+msgstr ""
+
+#: default_field_types.py:78
 msgid "text"
 msgstr "Texto"
 
-#: default_field_types.py:67 models.py:131
+#: default_field_types.py:83 models.py:131
 msgid "email address"
 msgstr "Dirección de correo electrónico"
 
-#: default_field_types.py:72
+#: default_field_types.py:88
 msgid "long text"
 msgstr "Texto largo"
 
-#: default_field_types.py:77
+#: default_field_types.py:93
 msgid "checkbox"
 msgstr "Casilla"
 
-#: default_field_types.py:83
+#: default_field_types.py:99
 msgid "select"
 msgstr "Selector"
 
-#: default_field_types.py:89
+#: default_field_types.py:105
 msgid "radio"
 msgstr "Botón de selección"
 
-#: default_field_types.py:95
+#: default_field_types.py:111
 msgid "multiple select"
 msgstr "Selector múltiple"
 
-#: default_field_types.py:103
+#: default_field_types.py:119
 msgid "date"
 msgstr "Fecha"
 
-#: default_field_types.py:111
+#: default_field_types.py:127
 msgid "hidden"
 msgstr "oculto"
 
-#: default_field_types.py:117
+#: default_field_types.py:133
 msgid "number"
 msgstr ""
 
-#: default_field_types.py:122
+#: default_field_types.py:138
 msgid "static text"
 msgstr ""
 
-#: default_field_types.py:139
+#: default_field_types.py:156
 msgid "reCAPTCHA v2"
 msgstr "reCAPTCHA v2"
 
-#: default_field_types.py:146
+#: default_field_types.py:163
 msgid "reCAPTCHA v3"
 msgstr "reCAPTCHA v3"
 
-#: default_field_types.py:162
+#: default_field_types.py:179
 msgid "Simple CAPTCHA"
 msgstr "Simple CAPTCHA"
 
-#: default_field_types.py:176
+#: default_field_types.py:193
 msgid "Mosparo Captcha"
 msgstr ""
 
@@ -274,19 +279,19 @@ msgstr "Campo del formulario"
 msgid "form fields"
 msgstr "Campos del formulario"
 
-#: models.py:487
+#: models.py:492
 msgid "data"
 msgstr "Datos"
 
-#: models.py:492
+#: models.py:497
 msgid "form submission"
 msgstr "Registro del formulario"
 
-#: models.py:493
+#: models.py:498
 msgid "form submissions"
 msgstr "Registros del formulario"
 
-#: models.py:540
+#: models.py:545
 msgid "Validate Mosparo captcha"
 msgstr ""
 
