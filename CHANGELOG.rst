@@ -8,7 +8,7 @@ Next version
   to add the form field AND activate the validation action in the admin, just
   adding the field doesn't actually do anything.
 * Added Catalan and Spanish translations.
-* XLS exports are generated with a datestamp in the file name.
+* XLSX exports are generated with a datestamp in the file name.
 * **Behaviour change:** Omitted noisy fields from
   ``FormSubmission.formatted_data`` (notification emails, admin) and the XLSX
   export. Use ``FORM_DESIGNER_OMIT_FIELDS`` setting if you need to change
