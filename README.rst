@@ -136,6 +136,9 @@ To enable `ReCaptcha <http://www.google.com/recaptcha>`__ install
 field to the form designer. For everything else read through the
 django-recaptcha readme.
 
+Name the field ``captcha`` to omit it from submission data, see
+`Omitted fields`_.
+
 
 Simple Captcha
 ==============
@@ -145,6 +148,23 @@ To enable `django-simple-captcha <https://pypi.org/project/django-simple-captcha
 ``captcha`` to your ``INSTALLED_APPS`` as described in the documentation for
 ``django-simple-captcha``. This will automatically add a "Simple Captcha"
 field to the form designer field types.
+
+Name the field ``captcha`` to omit it from submission data, see
+`Omitted fields`_.
+
+
+Omitted fields
+==============
+
+Fields matching any of the glob patterns in ``FORM_DESIGNER_OMIT_FIELDS`` are
+left out of the submission data and the XLSX export. The default omits
+``captcha`` and fields starting with ``_``:
+
+.. code-block:: python
+
+    FORM_DESIGNER_OMIT_FIELDS = ("captcha", "_*")
+
+Set it to ``()`` to include all fields, as in previous versions.
 
 
 Override field types

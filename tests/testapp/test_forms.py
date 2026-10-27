@@ -1,6 +1,8 @@
+import io
 from datetime import datetime
 from unittest import mock
 
+import openpyxl
 from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
@@ -458,3 +460,66 @@ class FormsTest(TestCase):
             },
         )
         self.assertIn("Multiple Choice:\nChoice A, Choice C", s2.formatted_data())
+
+    def test_omitted_fields(self):
+        form = Form.objects.create(title="Omit form", config={"save_fs": {}})
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(ordering=1, title="Secret", name="secret", type="text")
+        form.fields.create(ordering=2, title="Captcha", name="captcha", type="text")
+        form.fields.create(ordering=3, title="Private", name="_private", type="text")
+        submission = FormSubmission.objects.create(
+            form=form,
+            data={
+                "subject": "Hello",
+                "secret": "s3cr3t",
+                "captcha": "token",
+                "_private": "hidden",
+            },
+        )
+
+        data = submission.formatted_data()
+        self.assertIn("Subject:\nHello\n", data)
+        self.assertIn("Secret:\ns3cr3t\n", data)
+        self.assertNotIn("Captcha", data)
+        self.assertNotIn("Private", data)
+
+        data = submission.formatted_data(omit_fields=["secret"])
+        self.assertIn("Subject:\nHello\n", data)
+        self.assertNotIn("Secret", data)
+
+        data = submission.formatted_data(omit_fields=["sub*"])
+        self.assertNotIn("Subject", data)
+        self.assertIn("Secret:\ns3cr3t\n", data)
+
+        data = submission.formatted_data(html=True, omit_fields=("secret",))
+        self.assertIn("<dt>Subject</dt>", data)
+        self.assertNotIn("Secret", data)
+        self.assertNotIn("Captcha", data)
+
+        with override_settings(FORM_DESIGNER_OMIT_FIELDS=["secret"]):
+            data = submission.formatted_data()
+        self.assertIn("Captcha:\ntoken\n", data)
+        self.assertIn("Private:\nhidden\n", data)
+        self.assertNotIn("Secret", data)
+
+        # Old behaviour: nothing omitted
+        with override_settings(FORM_DESIGNER_OMIT_FIELDS=()):
+            data = submission.formatted_data()
+        self.assertIn("Captcha:\ntoken\n", data)
+        self.assertIn("Private:\nhidden\n", data)
+        self.assertIn("Secret:\ns3cr3t\n", data)
+
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+        response = self.client.get(
+            f"/admin/form_designer/form/{form.id}/export_submissions/"
+        )
+        self.assertEqual(response.status_code, 200)
+        sheet = openpyxl.load_workbook(io.BytesIO(response.content)).active
+        rows = [[cell.value for cell in row] for row in sheet.iter_rows()]
+        self.assertEqual(rows[0][:2], ["Subject", "Secret"])
+        self.assertEqual(rows[1][:2], ["subject", "secret"])
+        self.assertEqual(rows[2][:2], ["Hello", "s3cr3t"])
+        self.assertEqual(len(rows[0]), 4)  # + submitted at, URL
+        self.assertNotIn("captcha", rows[1])
+        self.assertNotIn("_private", rows[1])

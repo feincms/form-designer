@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import warnings
+from collections.abc import Collection, Iterable
+from fnmatch import fnmatchcase
 from functools import partial
+from itertools import chain
 
 from django import forms
 from django.apps import apps
@@ -122,7 +125,7 @@ class Form(models.Model):
         verbose_name = _("form")
         verbose_name_plural = _("forms")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     def form_class(self):
@@ -396,6 +399,11 @@ class FormField(models.Model):
         return self.get_type(**kwargs)
 
 
+# Glob patterns (fnmatch) of field names to leave out of the formatted data and
+# the XLSX export; override using the FORM_DESIGNER_OMIT_FIELDS setting.
+DEFAULT_OMIT_FIELDS: Collection[str] = ("captcha", "_*")
+
+
 class FormSubmission(models.Model):
     submitted_at = models.DateTimeField(_("submitted at"), auto_now_add=True)
     form = models.ForeignKey(
@@ -415,7 +423,17 @@ class FormSubmission(models.Model):
     def __str__(self):
         return str(self.submitted_at)
 
-    def formatted_data(self, *, html=False, default="Ø"):
+    @classmethod
+    def is_omitted(cls, name: str, omit_fields: Collection[str] = ()) -> bool:
+        patterns = getattr(settings, "FORM_DESIGNER_OMIT_FIELDS", DEFAULT_OMIT_FIELDS)
+        return any(
+            fnmatchcase(name, pattern) for pattern in chain(patterns, omit_fields)
+        )
+
+    def formatted_data(
+        self, *, html=False, default="Ø", omit_fields: Iterable[str] = ()
+    ):
+        omit_fields = tuple(omit_fields)
         sd = self.form.submissions_data(submissions=[self])
         data = (
             (
@@ -425,6 +443,7 @@ class FormSubmission(models.Model):
                 else value,
             )
             for field in sd[0]["data"]
+            if not self.is_omitted(field["name"], omit_fields)
         )
         if html:
             return format_html(

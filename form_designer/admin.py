@@ -169,6 +169,13 @@ class FormAdmin(admin.ModelAdmin):
         )
         return fieldsets
 
+    def filter_exported(self, data):
+        return [
+            field
+            for field in data
+            if not models.FormSubmission.is_omitted(field["name"])
+        ]
+
     def export_submissions(self, request, form_id):
         form = get_object_or_404(models.Form, pk=form_id)
         submissions = form.submissions.all()
@@ -179,11 +186,13 @@ class FormAdmin(admin.ModelAdmin):
 
         sd = form.submissions_data(submissions=submissions)
 
+        field_defs = self.filter_exported(sd[0]["data"])
+
         rows = [
-            [field["title"] for field in sd[0]["data"]] + [_("submitted at"), _("URL")],
-            [field["name"] for field in sd[0]["data"]],
+            [field["title"] for field in field_defs] + [_("submitted at"), _("URL")],
+            [field["name"] for field in field_defs],
         ] + [
-            [field["value"] for field in submission["data"]]
+            [field["value"] for field in self.filter_exported(submission["data"])]
             + [submission["submission"].submitted_at, submission["submission"].url]
             for submission in sd
         ]
