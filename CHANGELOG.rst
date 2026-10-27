@@ -4,6 +4,7 @@ Change log
 Next version
 ------------
 
+* Dropped Python 3.9.
 * Added out of the box support for ``mosparo-django``. Note that you need both
   to add the form field AND activate the validation action in the admin, just
   adding the field doesn't actually do anything.
