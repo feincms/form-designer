@@ -139,6 +139,17 @@ To enable `ReCaptcha <http://www.google.com/recaptcha>`__ install
 field to the form designer. For everything else read through the
 django-recaptcha readme.
 
+reCAPTCHA keys only work with either v2 or v3. Both field types are offered by
+default; set ``FORM_DESIGNER_RECAPTCHA_VERSION`` to ``"v2"`` or ``"v3"`` to only
+offer the one matching your keys:
+
+.. code-block:: python
+
+    FORM_DESIGNER_RECAPTCHA_VERSION = "v3"
+
+Existing form fields using the other field type will crash, so change them
+first.
+
 Name the field ``captcha`` to omit it from submission data, see
 `Omitted fields`_.
 

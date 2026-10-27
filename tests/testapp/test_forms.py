@@ -6,10 +6,12 @@ import openpyxl
 from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 from django.utils.text import slugify
 from feincms.module.page.models import Page
 
+from form_designer.default_field_types import recaptcha_versions
 from form_designer.models import FIELD_TYPES, Form, FormField, FormSubmission
 
 
@@ -540,6 +542,18 @@ class FormsTest(TestCase):
             },
             {"select", "radio", "multiple-select", "statictext"},
         )
+
+    def test_recaptcha_versions(self):
+        self.assertEqual(recaptcha_versions(), {"v2", "v3"})
+        with override_settings(FORM_DESIGNER_RECAPTCHA_VERSION="v2"):
+            self.assertEqual(recaptcha_versions(), {"v2"})
+        with override_settings(FORM_DESIGNER_RECAPTCHA_VERSION="v3"):
+            self.assertEqual(recaptcha_versions(), {"v3"})
+        with (
+            override_settings(FORM_DESIGNER_RECAPTCHA_VERSION="v4"),
+            self.assertRaises(ImproperlyConfigured),
+        ):
+            recaptcha_versions()
 
     def test_pipe_choices(self):
         """Choices are split on pipes if present, so they may contain commas"""

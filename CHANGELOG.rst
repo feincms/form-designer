@@ -27,6 +27,8 @@ Next version
   wrapper tag.
 * Fixed submitted values of fields whose name changes when slugified (e.g.
   ``_private``) showing up as removed fields.
+* Added the ``FORM_DESIGNER_RECAPTCHA_VERSION`` setting to only offer the
+  reCAPTCHA field type matching the configured keys.
 
 0.27
 ----

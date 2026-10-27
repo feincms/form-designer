@@ -3,6 +3,8 @@ from functools import partial
 
 from django import forms
 from django.apps import apps
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.forms.utils import flatatt
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -142,6 +144,19 @@ FIELD_TYPES = [
     },
 ]
 
+
+def recaptcha_versions():
+    # The keys only work with one version, but nothing tells us which
+    version = getattr(settings, "FORM_DESIGNER_RECAPTCHA_VERSION", None)
+    if version is None:
+        return {"v2", "v3"}
+    if version not in {"v2", "v3"}:
+        raise ImproperlyConfigured(
+            f'FORM_DESIGNER_RECAPTCHA_VERSION must be "v2" or "v3", not {version!r}'
+        )
+    return {version}
+
+
 # Add recaptcha field if available
 if apps.is_installed("django_recaptcha"):  # pragma: no cover
     try:
@@ -150,20 +165,23 @@ if apps.is_installed("django_recaptcha"):  # pragma: no cover
     except ImportError:
         pass
     else:
-        FIELD_TYPES.append(
-            {
-                "type": "recaptcha",
-                "verbose_name": _("reCAPTCHA v2"),
-                "field": partial(ReCaptchaField, widget=ReCaptchaV2Checkbox),
-            }
-        )
-        FIELD_TYPES.append(
-            {
-                "type": "recaptcha-v3",
-                "verbose_name": _("reCAPTCHA v3"),
-                "field": partial(ReCaptchaField, widget=ReCaptchaV3),
-            }
-        )
+        versions = recaptcha_versions()
+        if "v2" in versions:
+            FIELD_TYPES.append(
+                {
+                    "type": "recaptcha",
+                    "verbose_name": _("reCAPTCHA v2"),
+                    "field": partial(ReCaptchaField, widget=ReCaptchaV2Checkbox),
+                }
+            )
+        if "v3" in versions:
+            FIELD_TYPES.append(
+                {
+                    "type": "recaptcha-v3",
+                    "verbose_name": _("reCAPTCHA v3"),
+                    "field": partial(ReCaptchaField, widget=ReCaptchaV3),
+                }
+            )
 
 
 # Add django-simple-captcha field if available
