@@ -1,7 +1,13 @@
+import io
+from datetime import datetime
+from unittest import mock
+
+import openpyxl
 from django import forms
 from django.contrib.auth.models import User
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.utils.text import slugify
 from feincms.module.page.models import Page
 
 from form_designer.models import FIELD_TYPES, Form, FormSubmission
@@ -195,14 +201,29 @@ class FormsTest(TestCase):
         # Export the submission
         User.objects.create_superuser("admin", "admin@example.com", "password")
         self.client.login(username="admin", password="password")
-        response = self.client.get(
-            f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
-        )
+        with mock.patch(
+            "form_designer.admin.localtime",
+            return_value=datetime(2026, 10, 27, 17, 59),
+        ):
+            response = self.client.get(
+                f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
+            )
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            f"{slugify(submission.form.title)}_20261027_1759.xlsx",
+            response["Content-Disposition"],
+        )
         self.assertEqual(
             response["Content-type"],
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
+
+        # Without time zone support
+        with override_settings(USE_TZ=False):
+            response = self.client.get(
+                f"/admin/form_designer/form/{submission.form_id}/export_submissions/"
+            )
+        self.assertEqual(response.status_code, 200)
 
         response = self.client.get(
             f"/admin/form_designer/formsubmission/{submission.id}/change/"
@@ -251,12 +272,14 @@ class FormsTest(TestCase):
             if FIELD_TYPES[i]["type"] in {"select", "radio", "multiple-select"}:
                 data[f"fields-{i}-choices"] = "a,b,c,d"
 
-        data["fields-0-choices"] = "invalid"
+        data["fields-3-choices"] = "invalid"
         # Validation failure because of choices where there should be none
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertEqual(response.status_code, 200)
 
-        data["fields-0-choices"] = ""
+        data["fields-3-choices"] = ""
+        # Text fields accept choices, used as placeholder
+        data["fields-0-choices"] = "Placeholder"
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertRedirects(response, "/admin/form_designer/form/")
 
@@ -271,6 +294,9 @@ class FormsTest(TestCase):
 
         self.assertEqual(form.title, "Test form")
         self.assertEqual(len(form_class().fields), 9)
+        self.assertEqual(
+            form_class().fields["name-0"].widget.attrs["placeholder"], "Placeholder"
+        )
 
         # The additional formsets exist
         response = self.client.get(f"/admin/form_designer/form/{form.id}/change/")
@@ -408,6 +434,71 @@ class FormsTest(TestCase):
         self.assertIn("Subject:\nTest\n", message.body)
         self.assertIn("Email:\ntest@example.org\n", message.body)
 
+    def _create_email_form(self, email_config):
+        form = Form.objects.create(
+            title="Test contact form", config={"email": email_config}
+        )
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(
+            ordering=1, title="Email", name="mmm", type="email", is_required=False
+        )
+        page = Page.objects.create(override_url="/", title="")
+        page.formcontent_set.create(
+            region="main", ordering=0, form=form, success_message="Thanks"
+        )
+        return form
+
+    def _post_email_form(self, form, data):
+        mail.outbox.clear()
+        response = self.client.post(
+            "/",
+            {"_formcontent": form.id}
+            | {f"fc{form.id}-{key}": value for key, value in data.items()},
+        )
+        self.assertContains(response, "Thanks", 1)
+        self.assertEqual(len(mail.outbox), 1)
+        return mail.outbox[0]
+
+    def test_email_subject(self):
+        cases = [
+            ("Contact: %(subject)s", {"subject": "Hello"}, "Contact: Hello"),
+            ("Contact: %(subject)s %(mmm)s", {"subject": "Hi"}, "Contact: Hi"),
+            ("Contact: %(nonexistent)s", {"subject": "Hi"}, "Contact:"),
+            ("100% sure", {"subject": "Hi"}, "100% sure"),
+            ("%(subject)d", {"subject": "Hi"}, "Test contact form"),
+            ("%(subject", {"subject": "Hi"}, "Test contact form"),
+            ("100%% sure", {"subject": "Hi"}, "100% sure"),
+            ("%(subject)s", {"subject": "a\nb"}, "a b"),
+            ("", {"subject": "Hi"}, "Test contact form"),
+        ]
+        form = self._create_email_form({"email": "info@example.com"})
+        for template, data, expected in cases:
+            with self.subTest(template=template, data=data):
+                form.config["email"]["subject"] = template
+                form.save()
+                message = self._post_email_form(form, data)
+                self.assertEqual(message.subject, expected)
+
+    @override_settings(FORCE_MAIL_RECIPIENT="test@example.net")
+    def test_email_force_recipient(self):
+        form = self._create_email_form(
+            {
+                "email": "info@example.com, other@example.com",
+                "author_email_field": "mmm",
+            }
+        )
+        message = self._post_email_form(
+            form, {"subject": "Test", "mmm": "author@example.org"}
+        )
+        self.assertListEqual(message.to, ["test@example.net"])
+        self.assertListEqual(message.cc, [])
+
+    @override_settings(FORCE_MAIL_RECIPIENT=["a@example.net", "b@example.net"])
+    def test_email_force_recipient_list(self):
+        form = self._create_email_form({"email": "info@example.com"})
+        message = self._post_email_form(form, {"subject": "Test"})
+        self.assertListEqual(message.to, ["a@example.net", "b@example.net"])
+
     def test_choices(self):
         """Legacy slugified choices should also use the pretty format"""
 
@@ -439,3 +530,162 @@ class FormsTest(TestCase):
             },
         )
         self.assertIn("Multiple Choice:\nChoice A, Choice C", s2.formatted_data())
+
+    def test_pipe_choices(self):
+        """Choices are split on pipes if present, so they may contain commas"""
+
+        form = Form.objects.create(title="Test pipe choices form")
+        comma = form.fields.create(
+            ordering=0,
+            title="Comma",
+            name="comma",
+            type="radio",
+            choices="A, B,C",
+        )
+        pipe = form.fields.create(
+            ordering=1,
+            title="Pipe",
+            name="pipe",
+            type="radio",
+            choices="Yes, please | No, thanks|Maybe",
+        )
+
+        self.assertEqual(comma.get_choices(), (("A", "A"), ("B", "B"), ("C", "C")))
+        self.assertEqual(
+            pipe.get_choices(),
+            (
+                ("Yes, please", "Yes, please"),
+                ("No, thanks", "No, thanks"),
+                ("Maybe", "Maybe"),
+            ),
+        )
+        self.assertEqual(
+            form.form_class()().fields["pipe"].choices, list(pipe.get_choices())
+        )
+
+    def test_omitted_fields(self):
+        form = Form.objects.create(title="Omit form", config={"save_fs": {}})
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(ordering=1, title="Secret", name="secret", type="text")
+        form.fields.create(ordering=2, title="Captcha", name="captcha", type="text")
+        form.fields.create(ordering=3, title="Private", name="_private", type="text")
+        submission = FormSubmission.objects.create(
+            form=form,
+            data={
+                "subject": "Hello",
+                "secret": "s3cr3t",
+                "captcha": "token",
+                "_private": "hidden",
+            },
+        )
+
+        data = submission.formatted_data()
+        self.assertIn("Subject:\nHello\n", data)
+        self.assertIn("Secret:\ns3cr3t\n", data)
+        self.assertNotIn("Captcha", data)
+        self.assertNotIn("Private", data)
+
+        data = submission.formatted_data(omit_fields=["secret"])
+        self.assertIn("Subject:\nHello\n", data)
+        self.assertNotIn("Secret", data)
+
+        data = submission.formatted_data(omit_fields=["sub*"])
+        self.assertNotIn("Subject", data)
+        self.assertIn("Secret:\ns3cr3t\n", data)
+
+        data = submission.formatted_data(html=True, omit_fields=("secret",))
+        self.assertIn("<dt>Subject</dt>", data)
+        self.assertNotIn("Secret", data)
+        self.assertNotIn("Captcha", data)
+
+        with override_settings(FORM_DESIGNER_OMIT_FIELDS=["secret"]):
+            data = submission.formatted_data()
+        self.assertIn("Captcha:\ntoken\n", data)
+        self.assertIn("Private:\nhidden\n", data)
+        self.assertNotIn("Secret", data)
+
+        # Old behaviour: nothing omitted
+        with override_settings(FORM_DESIGNER_OMIT_FIELDS=()):
+            data = submission.formatted_data()
+        self.assertIn("Captcha:\ntoken\n", data)
+        self.assertIn("Private:\nhidden\n", data)
+        self.assertIn("Secret:\ns3cr3t\n", data)
+
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+        response = self.client.get(
+            f"/admin/form_designer/form/{form.id}/export_submissions/"
+        )
+        self.assertEqual(response.status_code, 200)
+        sheet = openpyxl.load_workbook(io.BytesIO(response.content)).active
+        rows = [[cell.value for cell in row] for row in sheet.iter_rows()]
+        self.assertEqual(rows[0][:2], ["Subject", "Secret"])
+        self.assertEqual(rows[1][:2], ["subject", "secret"])
+        self.assertEqual(rows[2][:2], ["Hello", "s3cr3t"])
+        self.assertEqual(len(rows[0]), 4)  # + submitted at, URL
+        self.assertNotIn("captcha", rows[1])
+        self.assertNotIn("_private", rows[1])
+
+    def test_statictext(self):
+        form = Form.objects.create(title="Static form", config={"save_fs": {}})
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(
+            ordering=1,
+            title="Hello <b>world</b>",
+            name="intro",
+            type="statictext",
+            choices="lead|highlight",
+        )
+        form.fields.create(
+            ordering=2,
+            title="Paragraph",
+            name="para",
+            type="statictext",
+            default_value="p",
+            is_required=True,
+        )
+
+        form_instance = form.form_class()(data={"subject": "Hi"})
+        self.assertTrue(form_instance.is_valid())
+        self.assertFalse(form_instance.fields["para"].required)
+        self.assertEqual(form_instance.fields["intro"].label, "")
+
+        self.assertHTMLEqual(
+            str(form_instance["intro"]),
+            '<div class="lead highlight">Hello <b>world</b></div>',
+        )
+        self.assertHTMLEqual(str(form_instance["para"]), '<p class="">Paragraph</p>')
+        self.assertIn(
+            '<div class="lead highlight">Hello <b>world</b></div>',
+            form_instance.as_p(),
+        )
+
+        submission = FormSubmission.objects.create(
+            form=form, data=form_instance.cleaned_data
+        )
+        self.assertEqual(
+            submission.data, {"subject": "Hi", "intro": None, "para": None}
+        )
+
+        # No-data fields are neither shown as current nor as removed fields
+        self.assertEqual(
+            [
+                field["name"]
+                for field in form.submissions_data(submissions=[submission])[0]["data"]
+            ],
+            ["subject"],
+        )
+        data = submission.formatted_data()
+        self.assertEqual(data, "Subject:\nHi\n")
+        self.assertNotIn("removed field", data)
+
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+        response = self.client.get(
+            f"/admin/form_designer/form/{form.id}/export_submissions/"
+        )
+        self.assertEqual(response.status_code, 200)
+        sheet = openpyxl.load_workbook(io.BytesIO(response.content)).active
+        rows = [[cell.value for cell in row] for row in sheet.iter_rows()]
+        self.assertEqual(rows[1][:1], ["subject"])
+        self.assertEqual(len(rows[1]), 3)  # + submitted at, URL

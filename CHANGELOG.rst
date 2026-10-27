@@ -8,6 +8,22 @@ Next version
   to add the form field AND activate the validation action in the admin, just
   adding the field doesn't actually do anything.
 * Added Catalan and Spanish translations.
+* XLS exports are generated with a datestamp in the file name.
+* **Behaviour change:** Omitted noisy fields from
+  ``FormSubmission.formatted_data`` (notification emails, admin) and the XLSX
+  export. Use ``FORM_DESIGNER_OMIT_FIELDS`` setting if you need to change
+  it from ``("captcha", "_*")``. Set it to ``()`` to restore the previous
+  behaviour.
+* Field types with ``"no-data": True`` are left out of the formatted data and
+  the XLSX export.
+* The email action accepts a configurable subject with ``%(fieldname)s``
+  placeholders for submitted values.
+* Added the ``FORCE_MAIL_RECIPIENT`` setting to redirect all submission mail.
+* (Mis)use the ``choices`` field for text fields as placeholder.
+* Added a ``number`` field type.
+* Added a ``statictext`` field type, it renders the title as raw HTML in a
+  ``div``. ``choices`` are used for CSS classes, ``default_value`` for other
+  wrapper tag.
 
 0.27
 ----

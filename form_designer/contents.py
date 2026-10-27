@@ -45,14 +45,13 @@ class FormContent(models.Model):
     def process(self, request, **kwargs):
         self.request = request
 
-        form_class = self.form.form_class()
         prefix = "fc%d" % self.id
         formcontent = self.request.POST.get("_formcontent")
 
         if self.request.method == "POST" and (
             not formcontent or formcontent == smart_str(self.id)
         ):
-            form_instance = form_class(self.request.POST, prefix=prefix)
+            form_instance = self.build_form(self.request.POST, prefix=prefix)
 
             if form_instance.is_valid():
                 self._rendered_content = self.process_valid_form(
@@ -60,9 +59,16 @@ class FormContent(models.Model):
                 )
                 return
         else:
-            form_instance = form_class(prefix=prefix)
+            form_instance = self.build_form(prefix=prefix)
 
-        self._rendered_content = render_to_string(
+        self._rendered_content = self.render_form(form_instance)
+
+    def build_form(self, *args, **kwargs):
+        form_class = self.form.form_class()
+        return form_class(*args, **kwargs)
+
+    def render_form(self, form_instance):
+        return render_to_string(
             self.template,
             {"content": self, "form": form_instance},
             request=self.request,

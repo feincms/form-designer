@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import re
 import warnings
+from collections.abc import Collection, Iterable
+from fnmatch import fnmatchcase
 from functools import partial
+from itertools import chain
+from typing import Literal
 
 from django import forms
 from django.apps import apps
@@ -27,6 +32,30 @@ def create_form_submission(model_instance, form_instance, request, **kwargs):
     )
 
 
+class _EmptyDefaultDict(dict):
+    def __missing__(self, key):
+        return ""
+
+
+def _format_subject(template, data, default):
+    """
+    Interpolate ``%(field)s`` placeholders in ``template`` with submitted data.
+    Falls back to ``default`` if there is no template or it is malformed.
+    """
+    if not template:
+        return default
+    # Only %(name)s style placeholders are supported, treat other % as literal
+    template = re.sub(r"%[%(]?", lambda m: m[0] if len(m[0]) == 2 else "%%", template)
+    try:
+        subject = template % _EmptyDefaultDict(
+            (k, "" if v is None else v) for k, v in data.items()
+        )
+    except (TypeError, ValueError):
+        return default
+    # Newlines in headers are rejected by Django
+    return " ".join(subject.splitlines()).strip() or default
+
+
 def send_as_mail(model_instance, form_instance, request, config, **kwargs):
     submission = FormSubmission(
         form=model_instance,
@@ -34,23 +63,32 @@ def send_as_mail(model_instance, form_instance, request, config, **kwargs):
         url=request.build_absolute_uri(request.get_full_path()),
     )
 
-    recipients = {
-        "to": [email.strip() for email in config["email"].split(",")],
-    }
-    if (author_email_field := config.get("author_email_field")) and (
-        email := form_instance.cleaned_data.get(author_email_field)
-    ):
-        recipients["cc"] = [email]
+    subject = _format_subject(
+        config.get("subject"), form_instance.cleaned_data, model_instance.title
+    )
+
+    # For integration testing, force mails to defined recipients to avoid
+    # spamming production recipients (including the author's Cc)
+    if force_recipient := getattr(settings, "FORCE_MAIL_RECIPIENT", None):
+        if isinstance(force_recipient, str):
+            force_recipient = [force_recipient]
+        recipients: dict[Literal["to", "cc"], list[str]] = {"to": list(force_recipient)}
+    else:
+        recipients = {"to": [email.strip() for email in config["email"].split(",")]}
+        if (author_email_field := config.get("author_email_field")) and (
+            email := form_instance.cleaned_data.get(author_email_field)
+        ):
+            recipients["cc"] = [email]
 
     EmailMessage(
-        model_instance.title,
+        subject,
         submission.formatted_data(),
         **recipients,
     ).send(fail_silently=True)
     return _("Thank you, your input has been received.")
 
 
-def validate_comma_separated_emails(value):
+def validate_comma_separated_emails(value: str) -> None:
     for v in value.split(","):
         validate_email(v.strip())
 
@@ -99,6 +137,17 @@ class Form(models.Model):
                         ),
                     ),
                     (
+                        "subject",
+                        forms.CharField(
+                            label=capfirst(_("subject")),
+                            help_text=_(
+                                "Defaults to the form title. Use %(fieldname)s to insert submitted values."
+                            ),
+                            required=False,
+                            widget=widgets.AdminTextInputWidget,
+                        ),
+                    ),
+                    (
                         "author_email_field",
                         forms.ChoiceField(
                             label=capfirst(_("author's email field")),
@@ -122,7 +171,7 @@ class Form(models.Model):
         verbose_name = _("form")
         verbose_name_plural = _("forms")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     def form_class(self):
@@ -209,6 +258,7 @@ class Form(models.Model):
         def include_slugified_choices(choices):
             return dict(choices) | {slugify(value): label for value, label in choices}
 
+        fields = list(self.fields.all())
         fields_and_loaders = [
             (
                 {"name": field.name, "title": field.title},
@@ -218,9 +268,11 @@ class Form(models.Model):
                     choice_dict=include_slugified_choices(field.get_choices()),
                 ),
             )
-            for field in self.fields.all()
+            for field in fields
+            if field.has_data()
         ]
-        known = {field["name"] for field, loader in fields_and_loaders}
+        # Also count no-data fields as known, they must not show up as removed
+        known = {field.name for field in fields}
 
         # Construct the superset of all all submissions' data fields
         for submission in submissions:
@@ -332,7 +384,12 @@ class FormField(models.Model):
         choices=[(type["type"], type["verbose_name"]) for type in FIELD_TYPES],
     )
     choices = models.CharField(
-        _("choices"), max_length=1024, blank=True, help_text=_("Comma-separated")
+        _("choices"),
+        max_length=1024,
+        blank=True,
+        help_text=_(
+            "Comma- or pipe-separated choices list for selection fields; placeholder for text input fields"
+        ),
     )
     help_text = models.CharField(
         _("help text"),
@@ -367,11 +424,16 @@ class FormField(models.Model):
         for fn in cfg.get("clean_field", ()):
             fn(self)
 
+    def has_data(self):
+        types = {type["type"]: type for type in FIELD_TYPES}
+        return not types.get(self.type, {}).get("no-data", False)
+
     def get_choices(self):
         def get_tuple(value):
             return (value.strip(), value.strip())
 
-        choices = [get_tuple(value) for value in self.choices.split(",")]
+        sep = "|" if "|" in self.choices else ","
+        choices = [get_tuple(value) for value in self.choices.split(sep)]
         if not self.is_required and self.type == "select":
             choices = BLANK_CHOICE_DASH + choices
         return tuple(choices)
@@ -379,6 +441,9 @@ class FormField(models.Model):
     def get_type(self, **kwargs):
         types = {type["type"]: type["field"] for type in FIELD_TYPES}
         return types[self.type](**kwargs)
+
+    def is_choicefield(self):
+        return hasattr(self.get_type(), "choices")
 
     def add_formfield(self, fields, form):
         fields[slugify(self.name)] = self.formfield()
@@ -390,10 +455,20 @@ class FormField(models.Model):
             "initial": self.default_value,
             "help_text": self.help_text,
         }
-        if self.choices:
+        if self.choices and self.is_choicefield():
             kwargs["choices"] = self.get_choices()
-            kwargs["initial"] = self.default_value
-        return self.get_type(**kwargs)
+
+        field_instance = self.get_type(**kwargs)
+
+        # Text field, misuse the `choices` config as placeholder text
+        if self.choices and not self.is_choicefield():
+            field_instance.widget.attrs["placeholder"] = self.choices
+        return field_instance
+
+
+# Glob patterns (fnmatch) of field names to leave out of the formatted data and
+# the XLSX export; override using the FORM_DESIGNER_OMIT_FIELDS setting.
+DEFAULT_OMIT_FIELDS: Collection[str] = ("captcha", "_*")
 
 
 class FormSubmission(models.Model):
@@ -415,7 +490,17 @@ class FormSubmission(models.Model):
     def __str__(self):
         return str(self.submitted_at)
 
-    def formatted_data(self, *, html=False, default="Ø"):
+    @classmethod
+    def is_omitted(cls, name: str, omit_fields: Collection[str] = ()) -> bool:
+        patterns = getattr(settings, "FORM_DESIGNER_OMIT_FIELDS", DEFAULT_OMIT_FIELDS)
+        return any(
+            fnmatchcase(name, pattern) for pattern in chain(patterns, omit_fields)
+        )
+
+    def formatted_data(
+        self, *, html=False, default="Ø", omit_fields: Iterable[str] = ()
+    ):
+        omit_fields = tuple(omit_fields)
         sd = self.form.submissions_data(submissions=[self])
         data = (
             (
@@ -425,6 +510,7 @@ class FormSubmission(models.Model):
                 else value,
             )
             for field in sd[0]["data"]
+            if not self.is_omitted(field["name"], omit_fields)
         )
         if html:
             return format_html(

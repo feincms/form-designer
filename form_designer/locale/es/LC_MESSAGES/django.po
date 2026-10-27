@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-02 19:36+0200\n"
+"POT-Creation-Date: 2026-10-27 14:04+0100\n"
 "PO-Revision-Date: 2026-02-28 14:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,32 +19,36 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: admin.py:49 admin.py:168
+#: admin.py:48 admin.py:157
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Configuración del formulario: %s"
 
-#: admin.py:58
+#: admin.py:57
 msgid "is active"
 msgstr "está activo"
 
-#: admin.py:178
+#: admin.py:167
 msgid "Configuration"
 msgstr "Configuración"
 
-#: admin.py:187
+#: admin.py:183
 msgid "No submissions yet."
 msgstr "Aún no hay registros."
 
-#: admin.py:200
-msgid "removed field"
-msgstr "campo eliminado"
+#: admin.py:191 models.py:468
+msgid "submitted at"
+msgstr "Enviado a"
+
+#: admin.py:191 models.py:476
+msgid "URL"
+msgstr "URL"
 
 #: apps.py:9
 msgid "Form Designer"
 msgstr "Form-Designer"
 
-#: contents.py:19 contents.py:33 models.py:108 models.py:236 models.py:318
+#: contents.py:19 contents.py:33 models.py:171 models.py:367 models.py:471
 msgid "form"
 msgstr "Formulario"
 
@@ -60,7 +64,7 @@ msgstr "Mensaje de éxito"
 msgid "Custom message to display after valid form is submitted"
 msgstr "Mensaje personalizado a mostrar después del registro del formulario"
 
-#: contents.py:34 models.py:109
+#: contents.py:34 models.py:172
 msgid "forms"
 msgstr "Formularios"
 
@@ -78,7 +82,7 @@ msgstr "Por favor, especifique opciones para los campos %s"
 msgid "text"
 msgstr "Texto"
 
-#: default_field_types.py:31 models.py:79
+#: default_field_types.py:31 models.py:131
 msgid "email address"
 msgstr "Dirección de correo electrónico"
 
@@ -118,141 +122,167 @@ msgstr "reCAPTCHA v2"
 msgid "reCAPTCHA v3"
 msgstr "reCAPTCHA v3"
 
-#: models.py:47
+#: default_field_types.py:117
+#, fuzzy
+#| msgid "reCAPTCHA v2"
+msgid "Simple CAPTCHA"
+msgstr "reCAPTCHA v2"
+
+#: default_field_types.py:131
+msgid "Mosparo Captcha"
+msgstr ""
+
+#: models.py:88
 msgid "Thank you, your input has been received."
 msgstr "Muchas gracias, su entrada ha sido recibido"
 
-#: models.py:60
+#: models.py:112
 msgid "Save form submission"
 msgstr "Guardar registro del formulario"
 
-#: models.py:62
-msgid "Save form submissions in the database so that they may be exported later."
-msgstr "Guardar registros del formulario en la base de datos para ser exportados posteriormente."
+#: models.py:114
+msgid ""
+"Save form submissions in the database so that they may be exported later."
+msgstr ""
+"Guardar registros del formulario en la base de datos para ser exportados "
+"posteriormente."
 
-#: models.py:71
+#: models.py:123
 msgid "Send email"
 msgstr "Enviar correo electrónico"
 
-#: models.py:73
+#: models.py:125
 msgid "Send the submitted form data to a list of email addresses."
-msgstr "Enviar los datos del registro del formulario a una lista de correos electrónicos"
+msgstr ""
+"Enviar los datos del registro del formulario a una lista de correos "
+"electrónicos"
 
-#: models.py:82
+#: models.py:134
 msgid "Separate multiple email addresses with commas."
 msgstr "Separe los múltiplos correos electrónicos con comas."
 
-#: models.py:90
+#: models.py:142
+msgid "subject"
+msgstr ""
+
+#: models.py:144
+#, python-format
+msgid ""
+"Defaults to the form title. Use %(fieldname)s to insert submitted values."
+msgstr ""
+
+#: models.py:153
 msgid "author's email field"
 msgstr "Campo del correo electrónico del autor"
 
-#: models.py:92
-msgid "The author of the submission will be added to the Cc: if this is set to an existing form field below."
-msgstr "El autor del registro será añadido a al CC si está especificado en un campo del formulario posteriormente."
+#: models.py:155
+msgid ""
+"The author of the submission will be added to the Cc: if this is set to an "
+"existing form field below."
+msgstr ""
+"El autor del registro será añadido a al CC si está especificado en un campo "
+"del formulario posteriormente."
 
-#: models.py:104
+#: models.py:167
 msgid "title"
 msgstr "Título"
 
-#: models.py:105
+#: models.py:168
 msgid "config"
 msgstr "Configuración"
 
-#: models.py:210
-msgid "Enter a value consisting only of lowercase letters, numbers, dashes and the underscore."
-msgstr "Introduzca un valor que solo consista de minúsculas, números, guiones y guiones bajos."
+#: models.py:283
+msgid "removed field"
+msgstr "campo eliminado"
 
-#: models.py:219
-msgid "Data is saved using this name. Changing it may result in data loss. This field only allows a-z, 0-9, - and _ as characters."
-msgstr "Los datos se guardan usando este nombre. Cambiarlo puede suponer pérdida de datos. Este campo solo permite minúsculas, números, guiones y guiones bajos en sus caracteres."
+#: models.py:341
+msgid ""
+"Enter a value consisting only of lowercase letters, numbers, dashes and the "
+"underscore."
+msgstr ""
+"Introduzca un valor que solo consista de minúsculas, números, guiones y "
+"guiones bajos."
 
-#: models.py:238
+#: models.py:350
+msgid ""
+"Data is saved using this name. Changing it may result in data loss. This "
+"field only allows a-z, 0-9, - and _ as characters."
+msgstr ""
+"Los datos se guardan usando este nombre. Cambiarlo puede suponer pérdida de "
+"datos. Este campo solo permite minúsculas, números, guiones y guiones bajos "
+"en sus caracteres."
+
+#: models.py:369
 msgid "ordering"
 msgstr "Orden"
 
-#: models.py:240
+#: models.py:371
 msgid "field title"
 msgstr "Título del campo"
 
-#: models.py:241
+#: models.py:372
 msgid "field name"
 msgstr "Nombre del campo"
 
-#: models.py:244
+#: models.py:379
 msgid "field type"
 msgstr "Tipo de campo"
 
-#: models.py:249
+#: models.py:384
 msgid "choices"
 msgstr "Opciones"
 
-#: models.py:249
-msgid "Comma-separated"
-msgstr "Separados por coma"
+#: models.py:388
+msgid ""
+"Comma- or pipe-separated choices list for selection fields; placeholder for "
+"text input fields"
+msgstr ""
+"Lista de opciones separadas por comas o barras verticales (|) para campos de "
+"selección; texto de marcador de posición para campos de texto"
 
-#: models.py:252
+#: models.py:392
 msgid "help text"
 msgstr "Texto de ayuda"
 
-#: models.py:255
+#: models.py:395
 msgid "Optional extra explanatory text beside the field"
 msgstr "Texto opcional explicativo debajo del campo"
 
-#: models.py:258
+#: models.py:398
 msgid "default value"
 msgstr "Valor por defecto"
 
-#: models.py:261
+#: models.py:401
 msgid "Optional default value of the field"
 msgstr "Valor por defecto opcional del campo"
 
-#: models.py:263
+#: models.py:403
 msgid "is required"
 msgstr "Obligatorio"
 
-#: models.py:268
+#: models.py:408
 msgid "form field"
 msgstr "Campo del formulario"
 
-#: models.py:269
+#: models.py:409
 msgid "form fields"
 msgstr "Campos del formulario"
 
-#: models.py:315
-msgid "submitted at"
-msgstr "Enviado a"
-
-#: models.py:322
+#: models.py:475
 msgid "data"
 msgstr "Datos"
 
-#: models.py:323
-msgid "URL"
-msgstr "URL"
-
-#: models.py:327
+#: models.py:480
 msgid "form submission"
 msgstr "Registro del formulario"
 
-#: models.py:328
+#: models.py:481
 msgid "form submissions"
 msgstr "Registros del formulario"
 
-#: models.py:362
-msgid "submitted"
-msgstr "Enviado"
-
-#: models.py:363
-msgid "date submitted"
-msgstr "fecha del registro"
-
-#: models.py:364
-msgid "time submitted"
-msgstr "hora del registro"
-
-#: models.py:365
-msgid "form URL"
-msgstr "URL del formulario"
+#: models.py:528
+msgid "Validate Mosparo captcha"
+msgstr ""
 
 #: templates/admin/form_designer/form/change_form.html:6
 msgid "Export submissions"
@@ -261,3 +291,18 @@ msgstr "Exportar registros"
 #: templates/content/form/form.html:13
 msgid "Submit"
 msgstr "Enviar"
+
+#~ msgid "Comma-separated"
+#~ msgstr "Separados por coma"
+
+#~ msgid "submitted"
+#~ msgstr "Enviado"
+
+#~ msgid "date submitted"
+#~ msgstr "fecha del registro"
+
+#~ msgid "time submitted"
+#~ msgstr "hora del registro"
+
+#~ msgid "form URL"
+#~ msgstr "URL del formulario"

@@ -2,6 +2,7 @@ import warnings
 
 from admin_ordering.admin import OrderableAdmin
 from django import forms
+from django.conf import settings
 from django.contrib import admin, messages
 from django.db.models import Model
 from django.forms.models import modelform_factory
@@ -9,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import re_path
 from django.utils.text import capfirst, slugify
+from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
 from xlsxdocument import XLSXDocument
 
@@ -167,6 +169,13 @@ class FormAdmin(admin.ModelAdmin):
         )
         return fieldsets
 
+    def filter_exported(self, data):
+        return [
+            field
+            for field in data
+            if not models.FormSubmission.is_omitted(field["name"])
+        ]
+
     def export_submissions(self, request, form_id):
         form = get_object_or_404(models.Form, pk=form_id)
         submissions = form.submissions.all()
@@ -177,11 +186,13 @@ class FormAdmin(admin.ModelAdmin):
 
         sd = form.submissions_data(submissions=submissions)
 
+        field_defs = self.filter_exported(sd[0]["data"])
+
         rows = [
-            [field["title"] for field in sd[0]["data"]] + [_("submitted at"), _("URL")],
-            [field["name"] for field in sd[0]["data"]],
+            [field["title"] for field in field_defs] + [_("submitted at"), _("URL")],
+            [field["name"] for field in field_defs],
         ] + [
-            [field["value"] for field in submission["data"]]
+            [field["value"] for field in self.filter_exported(submission["data"])]
             + [submission["submission"].submitted_at, submission["submission"].url]
             for submission in sd
         ]
@@ -189,7 +200,10 @@ class FormAdmin(admin.ModelAdmin):
         xlsx = XLSXDocument()
         xlsx.add_sheet(slugify(form.title))
         xlsx.table([], rows)
-        return xlsx.to_response("%s.xlsx" % slugify(form.title))
+        # localtime() raises on naive datetimes, i.e. with USE_TZ = False
+        timestamp = localtime() if settings.USE_TZ else now()
+        outfile_name = f"{slugify(form.title)}_{timestamp.strftime('%Y%m%d_%H%M')}.xlsx"
+        return xlsx.to_response(outfile_name)
 
     def get_urls(self):
         return [
