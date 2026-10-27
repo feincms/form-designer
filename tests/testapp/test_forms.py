@@ -10,7 +10,7 @@ from django.test import TestCase, override_settings
 from django.utils.text import slugify
 from feincms.module.page.models import Page
 
-from form_designer.models import FIELD_TYPES, Form, FormSubmission
+from form_designer.models import FIELD_TYPES, Form, FormField, FormSubmission
 
 
 def validate_honeypot(form, data, **kwargs):
@@ -530,6 +530,16 @@ class FormsTest(TestCase):
             },
         )
         self.assertIn("Multiple Choice:\nChoice A, Choice C", s2.formatted_data())
+
+    def test_is_choicefield(self):
+        self.assertEqual(
+            {
+                field_type["type"]
+                for field_type in FIELD_TYPES
+                if FormField(type=field_type["type"]).is_choicefield()
+            },
+            {"select", "radio", "multiple-select", "statictext"},
+        )
 
     def test_pipe_choices(self):
         """Choices are split on pipes if present, so they may contain commas"""

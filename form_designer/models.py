@@ -448,7 +448,12 @@ class FormField(models.Model):
         return types[self.type](**kwargs)
 
     def is_choicefield(self):
-        return hasattr(self.get_type(), "choices")
+        types = {type["type"]: type["field"] for type in FIELD_TYPES}
+        field = types[self.type]
+        while isinstance(field, partial):
+            field = field.func
+        # Pass choices to arbitrary callables, as before
+        return not isinstance(field, type) or hasattr(field, "choices")
 
     def add_formfield(self, fields, form):
         fields[slugify(self.name)] = self.formfield()
