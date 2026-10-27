@@ -569,14 +569,18 @@ class FormsTest(TestCase):
         form.fields.create(ordering=1, title="Secret", name="secret", type="text")
         form.fields.create(ordering=2, title="Captcha", name="captcha", type="text")
         form.fields.create(ordering=3, title="Private", name="_private", type="text")
-        submission = FormSubmission.objects.create(
-            form=form,
+        # Form field keys are slugified, "_private" is submitted as "private"
+        form_instance = form.form_class()(
             data={
                 "subject": "Hello",
                 "secret": "s3cr3t",
                 "captcha": "token",
-                "_private": "hidden",
-            },
+                "private": "hidden",
+            }
+        )
+        self.assertTrue(form_instance.is_valid())
+        submission = FormSubmission.objects.create(
+            form=form, data=form_instance.cleaned_data
         )
 
         data = submission.formatted_data()
@@ -584,6 +588,7 @@ class FormsTest(TestCase):
         self.assertIn("Secret:\ns3cr3t\n", data)
         self.assertNotIn("Captcha", data)
         self.assertNotIn("Private", data)
+        self.assertNotIn("private", data)
 
         data = submission.formatted_data(omit_fields=["secret"])
         self.assertIn("Subject:\nHello\n", data)

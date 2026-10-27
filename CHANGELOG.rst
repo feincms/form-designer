@@ -24,6 +24,8 @@ Next version
 * Added a ``statictext`` field type, it renders the title as raw HTML in a
   ``div``. ``choices`` are used for CSS classes, ``default_value`` for other
   wrapper tag.
+* Fixed submitted values of fields whose name changes when slugified (e.g.
+  ``_private``) showing up as removed fields.
 
 0.27
 ----

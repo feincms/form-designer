@@ -243,6 +243,9 @@ class Form(models.Model):
             value = None
             if field.name in submission.data:
                 value = submission.data[field.name]
+            elif (key := slugify(field.name)) in submission.data:
+                # Form field keys are slugified, e.g. "_name" becomes "name"
+                value = submission.data[key]
             elif (old := field._old_name) is not None and old in submission.data:
                 value = submission.data[old]
             try:
@@ -272,7 +275,9 @@ class Form(models.Model):
             if field.has_data()
         ]
         # Also count no-data fields as known, they must not show up as removed
-        known = {field.name for field in fields}
+        known = {field.name for field in fields} | {
+            slugify(field.name) for field in fields
+        }
 
         # Construct the superset of all all submissions' data fields
         for submission in submissions:
