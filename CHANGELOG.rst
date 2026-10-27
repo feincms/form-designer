@@ -4,7 +4,7 @@ Change log
 Next version
 ------------
 
-* Dropped Python 3.9.
+* Dropped Python 3.9 and Django 5.1. Django 3.2 and 4.2 are still tested.
 * Added Python 3.14, 3.15 and Django 6.0, 6.1.
 * Added out of the box support for ``mosparo-django``. Note that you need both
   to add the form field AND activate the validation action in the admin, just
