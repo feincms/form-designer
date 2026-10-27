@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 14:04+0100\n"
+"POT-Creation-Date: 2026-10-27 16:59+0100\n"
 "PO-Revision-Date: 2026-02-28 14:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,28 +19,28 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: admin.py:48 admin.py:157
+#: admin.py:49 admin.py:158
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Configuración del formulario: %s"
 
-#: admin.py:57
+#: admin.py:58
 msgid "is active"
 msgstr "está activo"
 
-#: admin.py:167
+#: admin.py:168
 msgid "Configuration"
 msgstr "Configuración"
 
-#: admin.py:183
+#: admin.py:184
 msgid "No submissions yet."
 msgstr "Aún no hay registros."
 
-#: admin.py:191 models.py:468
+#: admin.py:192 models.py:480
 msgid "submitted at"
 msgstr "Enviado a"
 
-#: admin.py:191 models.py:476
+#: admin.py:192 models.py:488
 msgid "URL"
 msgstr "URL"
 
@@ -48,7 +48,7 @@ msgstr "URL"
 msgid "Form Designer"
 msgstr "Form-Designer"
 
-#: contents.py:19 contents.py:33 models.py:171 models.py:367 models.py:471
+#: contents.py:19 contents.py:33 models.py:171 models.py:375 models.py:483
 msgid "form"
 msgstr "Formulario"
 
@@ -68,67 +68,73 @@ msgstr "Mensaje personalizado a mostrar después del registro del formulario"
 msgid "forms"
 msgstr "Formularios"
 
-#: default_field_types.py:11
+#: default_field_types.py:12
 #, python-format
 msgid "You can't specify choices for %s fields"
 msgstr "No se pueden especificar opciones para los campos %s"
 
-#: default_field_types.py:18
+#: default_field_types.py:19
 #, python-format
 msgid "Please specify choices for %s fields"
 msgstr "Por favor, especifique opciones para los campos %s"
 
-#: default_field_types.py:25
+#: default_field_types.py:62
 msgid "text"
 msgstr "Texto"
 
-#: default_field_types.py:31 models.py:131
+#: default_field_types.py:67 models.py:131
 msgid "email address"
 msgstr "Dirección de correo electrónico"
 
-#: default_field_types.py:37
+#: default_field_types.py:72
 msgid "long text"
 msgstr "Texto largo"
 
-#: default_field_types.py:43
+#: default_field_types.py:77
 msgid "checkbox"
 msgstr "Casilla"
 
-#: default_field_types.py:49
+#: default_field_types.py:83
 msgid "select"
 msgstr "Selector"
 
-#: default_field_types.py:55
+#: default_field_types.py:89
 msgid "radio"
 msgstr "Botón de selección"
 
-#: default_field_types.py:61
+#: default_field_types.py:95
 msgid "multiple select"
 msgstr "Selector múltiple"
 
-#: default_field_types.py:69
+#: default_field_types.py:103
 msgid "date"
 msgstr "Fecha"
 
-#: default_field_types.py:77
+#: default_field_types.py:111
 msgid "hidden"
 msgstr "oculto"
 
-#: default_field_types.py:94
+#: default_field_types.py:117
+msgid "number"
+msgstr ""
+
+#: default_field_types.py:122
+msgid "static text"
+msgstr ""
+
+#: default_field_types.py:139
 msgid "reCAPTCHA v2"
 msgstr "reCAPTCHA v2"
 
-#: default_field_types.py:101
+#: default_field_types.py:146
 msgid "reCAPTCHA v3"
 msgstr "reCAPTCHA v3"
 
-#: default_field_types.py:117
-#, fuzzy
-#| msgid "reCAPTCHA v2"
+#: default_field_types.py:162
 msgid "Simple CAPTCHA"
-msgstr "reCAPTCHA v2"
+msgstr "Simple CAPTCHA"
 
-#: default_field_types.py:131
+#: default_field_types.py:176
 msgid "Mosparo Captcha"
 msgstr ""
 
@@ -191,11 +197,11 @@ msgstr "Título"
 msgid "config"
 msgstr "Configuración"
 
-#: models.py:283
+#: models.py:291
 msgid "removed field"
 msgstr "campo eliminado"
 
-#: models.py:341
+#: models.py:349
 msgid ""
 "Enter a value consisting only of lowercase letters, numbers, dashes and the "
 "underscore."
@@ -203,7 +209,7 @@ msgstr ""
 "Introduzca un valor que solo consista de minúsculas, números, guiones y "
 "guiones bajos."
 
-#: models.py:350
+#: models.py:358
 msgid ""
 "Data is saved using this name. Changing it may result in data loss. This "
 "field only allows a-z, 0-9, - and _ as characters."
@@ -212,27 +218,27 @@ msgstr ""
 "datos. Este campo solo permite minúsculas, números, guiones y guiones bajos "
 "en sus caracteres."
 
-#: models.py:369
+#: models.py:377
 msgid "ordering"
 msgstr "Orden"
 
-#: models.py:371
+#: models.py:379
 msgid "field title"
 msgstr "Título del campo"
 
-#: models.py:372
+#: models.py:380
 msgid "field name"
 msgstr "Nombre del campo"
 
-#: models.py:379
+#: models.py:387
 msgid "field type"
 msgstr "Tipo de campo"
 
-#: models.py:384
+#: models.py:392
 msgid "choices"
 msgstr "Opciones"
 
-#: models.py:388
+#: models.py:396
 msgid ""
 "Comma- or pipe-separated choices list for selection fields; placeholder for "
 "text input fields"
@@ -240,47 +246,47 @@ msgstr ""
 "Lista de opciones separadas por comas o barras verticales (|) para campos de "
 "selección; texto de marcador de posición para campos de texto"
 
-#: models.py:392
+#: models.py:400
 msgid "help text"
 msgstr "Texto de ayuda"
 
-#: models.py:395
+#: models.py:403
 msgid "Optional extra explanatory text beside the field"
 msgstr "Texto opcional explicativo debajo del campo"
 
-#: models.py:398
+#: models.py:406
 msgid "default value"
 msgstr "Valor por defecto"
 
-#: models.py:401
+#: models.py:409
 msgid "Optional default value of the field"
 msgstr "Valor por defecto opcional del campo"
 
-#: models.py:403
+#: models.py:411
 msgid "is required"
 msgstr "Obligatorio"
 
-#: models.py:408
+#: models.py:416
 msgid "form field"
 msgstr "Campo del formulario"
 
-#: models.py:409
+#: models.py:417
 msgid "form fields"
 msgstr "Campos del formulario"
 
-#: models.py:475
+#: models.py:487
 msgid "data"
 msgstr "Datos"
 
-#: models.py:480
+#: models.py:492
 msgid "form submission"
 msgstr "Registro del formulario"
 
-#: models.py:481
+#: models.py:493
 msgid "form submissions"
 msgstr "Registros del formulario"
 
-#: models.py:528
+#: models.py:540
 msgid "Validate Mosparo captcha"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 14:04+0100\n"
+"POT-Creation-Date: 2026-10-27 16:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,30 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: admin.py:48 admin.py:157
+#: admin.py:49 admin.py:158
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Konfigurace formuláře: %s"
 
-#: admin.py:57
+#: admin.py:58
 msgid "is active"
 msgstr ""
 
-#: admin.py:167
+#: admin.py:168
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: admin.py:183
+#: admin.py:184
 #, fuzzy
 #| msgid "form submissions"
 msgid "No submissions yet."
 msgstr "uložené formuláře"
 
-#: admin.py:191 models.py:468
+#: admin.py:192 models.py:480
 msgid "submitted at"
 msgstr ""
 
-#: admin.py:191 models.py:476
+#: admin.py:192 models.py:488
 msgid "URL"
 msgstr ""
 
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Form Designer"
 msgstr "Formuláře"
 
-#: contents.py:19 contents.py:33 models.py:171 models.py:367 models.py:471
+#: contents.py:19 contents.py:33 models.py:171 models.py:375 models.py:483
 msgid "form"
 msgstr "formulář"
 
@@ -69,67 +69,74 @@ msgstr "Vlastní zpráva, která se zobrazí po úspěšném vyplnení"
 msgid "forms"
 msgstr "formuláře"
 
-#: default_field_types.py:11
+#: default_field_types.py:12
 #, python-format
 msgid "You can't specify choices for %s fields"
 msgstr "Nemůžete specifikovat možnosti pro %s pole"
 
-#: default_field_types.py:18
+#: default_field_types.py:19
 #, fuzzy, python-format
 #| msgid "You can't specify choices for %s fields"
 msgid "Please specify choices for %s fields"
 msgstr "Nemůžete specifikovat možnosti pro %s pole"
 
-#: default_field_types.py:25
+#: default_field_types.py:62
 msgid "text"
 msgstr "text"
 
-#: default_field_types.py:31 models.py:131
-#| msgid "e-mail address"
+#: default_field_types.py:67 models.py:131
 msgid "email address"
 msgstr "emailová adresa"
 
-#: default_field_types.py:37
+#: default_field_types.py:72
 msgid "long text"
 msgstr "dlouhý text"
 
-#: default_field_types.py:43
+#: default_field_types.py:77
 msgid "checkbox"
 msgstr "checkbox"
 
-#: default_field_types.py:49
+#: default_field_types.py:83
 msgid "select"
 msgstr "výběr"
 
-#: default_field_types.py:55
+#: default_field_types.py:89
 msgid "radio"
 msgstr ""
 
-#: default_field_types.py:61
+#: default_field_types.py:95
 msgid "multiple select"
 msgstr ""
 
-#: default_field_types.py:69
+#: default_field_types.py:103
 msgid "date"
 msgstr ""
 
-#: default_field_types.py:77
+#: default_field_types.py:111
 msgid "hidden"
 msgstr ""
 
-#: default_field_types.py:94
+#: default_field_types.py:117
+msgid "number"
+msgstr ""
+
+#: default_field_types.py:122
+msgid "static text"
+msgstr ""
+
+#: default_field_types.py:139
 msgid "reCAPTCHA v2"
 msgstr ""
 
-#: default_field_types.py:101
+#: default_field_types.py:146
 msgid "reCAPTCHA v3"
 msgstr ""
 
-#: default_field_types.py:117
+#: default_field_types.py:162
 msgid "Simple CAPTCHA"
 msgstr ""
 
-#: default_field_types.py:131
+#: default_field_types.py:176
 msgid "Mosparo Captcha"
 msgstr ""
 
@@ -147,7 +154,6 @@ msgid ""
 msgstr ""
 
 #: models.py:123
-#| msgid "Send e-mail"
 msgid "Send email"
 msgstr "Poslat email"
 
@@ -156,7 +162,6 @@ msgid "Send the submitted form data to a list of email addresses."
 msgstr ""
 
 #: models.py:134
-#| msgid "Separate multiple e-mail addresses with commas."
 msgid "Separate multiple email addresses with commas."
 msgstr "Více emailových adres oddělte čárkou."
 
@@ -190,47 +195,47 @@ msgstr "titulek"
 msgid "config"
 msgstr "konfigurace"
 
-#: models.py:283
+#: models.py:291
 #, fuzzy
 #| msgid "form field"
 msgid "removed field"
 msgstr "pole formuláře"
 
-#: models.py:341
+#: models.py:349
 msgid ""
 "Enter a value consisting only of lowercase letters, numbers, dashes and the "
 "underscore."
 msgstr ""
 
-#: models.py:350
+#: models.py:358
 msgid ""
 "Data is saved using this name. Changing it may result in data loss. This "
 "field only allows a-z, 0-9, - and _ as characters."
 msgstr ""
 
-#: models.py:369
+#: models.py:377
 msgid "ordering"
 msgstr "řazení"
 
-#: models.py:371
+#: models.py:379
 #, fuzzy
 #| msgid "title"
 msgid "field title"
 msgstr "titulek"
 
-#: models.py:372
+#: models.py:380
 msgid "field name"
 msgstr ""
 
-#: models.py:379
+#: models.py:387
 msgid "field type"
 msgstr ""
 
-#: models.py:384
+#: models.py:392
 msgid "choices"
 msgstr "možnosti"
 
-#: models.py:388
+#: models.py:396
 msgid ""
 "Comma- or pipe-separated choices list for selection fields; placeholder for "
 "text input fields"
@@ -238,47 +243,47 @@ msgstr ""
 "Seznam možností oddělených čárkou nebo svislou čarou (|) pro výběrová pole; "
 "zástupný text pro textová pole"
 
-#: models.py:392
+#: models.py:400
 msgid "help text"
 msgstr "nápověda"
 
-#: models.py:395
+#: models.py:403
 msgid "Optional extra explanatory text beside the field"
 msgstr "Volitelně extra vysvětlující text"
 
-#: models.py:398
+#: models.py:406
 msgid "default value"
 msgstr "výchozí hodnota"
 
-#: models.py:401
+#: models.py:409
 msgid "Optional default value of the field"
 msgstr "Volitelně výchozí hodnota položky"
 
-#: models.py:403
+#: models.py:411
 msgid "is required"
 msgstr "je povinný"
 
-#: models.py:408
+#: models.py:416
 msgid "form field"
 msgstr "pole formuláře"
 
-#: models.py:409
+#: models.py:417
 msgid "form fields"
 msgstr "pole formuláře"
 
-#: models.py:475
+#: models.py:487
 msgid "data"
 msgstr ""
 
-#: models.py:480
+#: models.py:492
 msgid "form submission"
 msgstr "uložený formuláře"
 
-#: models.py:481
+#: models.py:493
 msgid "form submissions"
 msgstr "uložené formuláře"
 
-#: models.py:528
+#: models.py:540
 msgid "Validate Mosparo captcha"
 msgstr ""
 

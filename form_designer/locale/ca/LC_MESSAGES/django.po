@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-02 19:36+0200\n"
+"POT-Creation-Date: 2026-10-27 16:59+0100\n"
 "PO-Revision-Date: 2026-02-28 14:38+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: admin.py:49 admin.py:168
+#: admin.py:49 admin.py:158
 #, python-format
 msgid "Form configuration: %s"
 msgstr "Configuració del formulari: %s"
@@ -28,23 +28,27 @@ msgstr "Configuració del formulari: %s"
 msgid "is active"
 msgstr "està actiu"
 
-#: admin.py:178
+#: admin.py:168
 msgid "Configuration"
 msgstr "Configuració"
 
-#: admin.py:187
+#: admin.py:184
 msgid "No submissions yet."
 msgstr "Encara no hi ha registres."
 
-#: admin.py:200
-msgid "removed field"
-msgstr "camp eliminat"
+#: admin.py:192 models.py:480
+msgid "submitted at"
+msgstr "Registrat el"
+
+#: admin.py:192 models.py:488
+msgid "URL"
+msgstr "URL"
 
 #: apps.py:9
 msgid "Form Designer"
 msgstr "Form-Designer"
 
-#: contents.py:19 contents.py:33 models.py:108 models.py:236 models.py:318
+#: contents.py:19 contents.py:33 models.py:171 models.py:375 models.py:483
 msgid "form"
 msgstr "Formulari"
 
@@ -60,199 +64,229 @@ msgstr "Missatge d'èxit"
 msgid "Custom message to display after valid form is submitted"
 msgstr "Missatge personalitzat a mostrar després del registre del formulari"
 
-#: contents.py:34 models.py:109
+#: contents.py:34 models.py:172
 msgid "forms"
 msgstr "Formularis"
 
-#: default_field_types.py:11
+#: default_field_types.py:12
 #, python-format
 msgid "You can't specify choices for %s fields"
 msgstr "No es poden especificar opcions pels camps %s"
 
-#: default_field_types.py:18
+#: default_field_types.py:19
 #, python-format
 msgid "Please specify choices for %s fields"
 msgstr "Si us plau, especifiqueu opcions pels camps %s"
 
-#: default_field_types.py:25
+#: default_field_types.py:62
 msgid "text"
 msgstr "Text"
 
-#: default_field_types.py:31 models.py:79
+#: default_field_types.py:67 models.py:131
 msgid "email address"
 msgstr "Direcció de correu electrònic"
 
-#: default_field_types.py:37
+#: default_field_types.py:72
 msgid "long text"
 msgstr "Text llarg"
 
-#: default_field_types.py:43
+#: default_field_types.py:77
 msgid "checkbox"
 msgstr "Casella"
 
-#: default_field_types.py:49
+#: default_field_types.py:83
 msgid "select"
 msgstr "Selector"
 
-#: default_field_types.py:55
+#: default_field_types.py:89
 msgid "radio"
 msgstr "Botó de selecció"
 
-#: default_field_types.py:61
+#: default_field_types.py:95
 msgid "multiple select"
 msgstr "Selector múltiple"
 
-#: default_field_types.py:69
+#: default_field_types.py:103
 msgid "date"
 msgstr "Data"
 
-#: default_field_types.py:77
+#: default_field_types.py:111
 msgid "hidden"
 msgstr "amagat"
 
-#: default_field_types.py:94
+#: default_field_types.py:117
+msgid "number"
+msgstr ""
+
+#: default_field_types.py:122
+msgid "static text"
+msgstr ""
+
+#: default_field_types.py:139
 msgid "reCAPTCHA v2"
 msgstr "reCAPTCHA v2"
 
-#: default_field_types.py:101
+#: default_field_types.py:146
 msgid "reCAPTCHA v3"
 msgstr "reCAPTCHA v3"
 
-#: models.py:47
+#: default_field_types.py:162
+msgid "Simple CAPTCHA"
+msgstr "Simple CAPTCHA"
+
+#: default_field_types.py:176
+msgid "Mosparo Captcha"
+msgstr ""
+
+#: models.py:88
 msgid "Thank you, your input has been received."
 msgstr "Gràcies, s'ha rebut el teu registre."
 
-#: models.py:60
+#: models.py:112
 msgid "Save form submission"
 msgstr "Guardar registre del formulari"
 
-#: models.py:62
-msgid "Save form submissions in the database so that they may be exported later."
-msgstr "Guardar registres del formulari en la base de dades per ser exportats posteriorment."
+#: models.py:114
+msgid ""
+"Save form submissions in the database so that they may be exported later."
+msgstr ""
+"Guardar registres del formulari en la base de dades per ser exportats "
+"posteriorment."
 
-#: models.py:71
+#: models.py:123
 msgid "Send email"
 msgstr "Enviar correu electrònic"
 
-#: models.py:73
+#: models.py:125
 msgid "Send the submitted form data to a list of email addresses."
-msgstr "Enviar les dades del registre del formulari a una llista de correus electrònics"
+msgstr ""
+"Enviar les dades del registre del formulari a una llista de correus "
+"electrònics"
 
-#: models.py:82
+#: models.py:134
 msgid "Separate multiple email addresses with commas."
 msgstr "Separi els múltiples correus electrònics amb comes."
 
-#: models.py:90
+#: models.py:142
+msgid "subject"
+msgstr ""
+
+#: models.py:144
+#, python-format
+msgid ""
+"Defaults to the form title. Use %(fieldname)s to insert submitted values."
+msgstr ""
+
+#: models.py:153
 msgid "author's email field"
 msgstr "Camp del correu electrònic de l'autor"
 
-#: models.py:92
-msgid "The author of the submission will be added to the Cc: if this is set to an existing form field below."
-msgstr "L'autor del registre serà afegit al CC si està especificat en un camp del formulari posteriorment."
+#: models.py:155
+msgid ""
+"The author of the submission will be added to the Cc: if this is set to an "
+"existing form field below."
+msgstr ""
+"L'autor del registre serà afegit al CC si està especificat en un camp del "
+"formulari posteriorment."
 
-#: models.py:104
+#: models.py:167
 msgid "title"
 msgstr "Títol"
 
-#: models.py:105
+#: models.py:168
 msgid "config"
 msgstr "Configuració"
 
-#: models.py:210
-msgid "Enter a value consisting only of lowercase letters, numbers, dashes and the underscore."
-msgstr "Introdueixi un valor que només consti de minúscules, nombres, guions i guions baixos."
+#: models.py:291
+msgid "removed field"
+msgstr "camp eliminat"
 
-#: models.py:219
-msgid "Data is saved using this name. Changing it may result in data loss. This field only allows a-z, 0-9, - and _ as characters."
-msgstr "Les dades s'han guardat usant aquest nom. Canviar-lo pot suposar la pèrdua de dades. El camp només permet minúscules, números, guions y guions baixos en els seus caràcters."
+#: models.py:349
+msgid ""
+"Enter a value consisting only of lowercase letters, numbers, dashes and the "
+"underscore."
+msgstr ""
+"Introdueixi un valor que només consti de minúscules, nombres, guions i "
+"guions baixos."
 
-#: models.py:238
+#: models.py:358
+msgid ""
+"Data is saved using this name. Changing it may result in data loss. This "
+"field only allows a-z, 0-9, - and _ as characters."
+msgstr ""
+"Les dades s'han guardat usant aquest nom. Canviar-lo pot suposar la pèrdua "
+"de dades. El camp només permet minúscules, números, guions y guions baixos "
+"en els seus caràcters."
+
+#: models.py:377
 msgid "ordering"
 msgstr "Ordre"
 
-#: models.py:240
+#: models.py:379
 msgid "field title"
 msgstr "Títol del camp"
 
-#: models.py:241
+#: models.py:380
 msgid "field name"
 msgstr "Nom del camp"
 
-#: models.py:244
+#: models.py:387
 msgid "field type"
 msgstr "Tipus de camp"
 
-#: models.py:249
+#: models.py:392
 msgid "choices"
 msgstr "Opcions"
 
-#: models.py:249
-msgid "Comma-separated"
-msgstr "Separats per comes"
+#: models.py:396
+msgid ""
+"Comma- or pipe-separated choices list for selection fields; placeholder for "
+"text input fields"
+msgstr ""
 
-#: models.py:252
+#: models.py:400
 msgid "help text"
 msgstr "Text d'ajuda"
 
-#: models.py:255
+#: models.py:403
 msgid "Optional extra explanatory text beside the field"
 msgstr "Text opcional explicatiu davall del campo"
 
-#: models.py:258
+#: models.py:406
 msgid "default value"
 msgstr "Valor per defecte"
 
-#: models.py:261
+#: models.py:409
 msgid "Optional default value of the field"
 msgstr "Valor per defecte opcional del camp"
 
-#: models.py:263
+#: models.py:411
 msgid "is required"
 msgstr "Obligatori"
 
-#: models.py:268
+#: models.py:416
 msgid "form field"
 msgstr "Camp del formulari"
 
-#: models.py:269
+#: models.py:417
 msgid "form fields"
 msgstr "Camps del formulari"
 
-#: models.py:315
-msgid "submitted at"
-msgstr "Registrat el"
-
-#: models.py:322
+#: models.py:487
 msgid "data"
 msgstr "Dades"
 
-#: models.py:323
-msgid "URL"
-msgstr "URL"
-
-#: models.py:327
+#: models.py:492
 msgid "form submission"
 msgstr "Registre del formulari"
 
-#: models.py:328
+#: models.py:493
 msgid "form submissions"
 msgstr "Registres del formulari"
 
-#: models.py:362
-msgid "submitted"
-msgstr "Enviats"
-
-#: models.py:363
-msgid "date submitted"
-msgstr "data del registre"
-
-#: models.py:364
-msgid "time submitted"
-msgstr "hora del registre"
-
-#: models.py:365
-msgid "form URL"
-msgstr "URL del formulari"
+#: models.py:540
+msgid "Validate Mosparo captcha"
+msgstr ""
 
 #: templates/admin/form_designer/form/change_form.html:6
 msgid "Export submissions"
@@ -261,3 +295,18 @@ msgstr "Exportar registres"
 #: templates/content/form/form.html:13
 msgid "Submit"
 msgstr "Enviar"
+
+#~ msgid "Comma-separated"
+#~ msgstr "Separats per comes"
+
+#~ msgid "submitted"
+#~ msgstr "Enviats"
+
+#~ msgid "date submitted"
+#~ msgstr "data del registre"
+
+#~ msgid "time submitted"
+#~ msgstr "hora del registre"
+
+#~ msgid "form URL"
+#~ msgstr "URL del formulari"
