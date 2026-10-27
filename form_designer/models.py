@@ -381,7 +381,12 @@ class FormField(models.Model):
         choices=[(type["type"], type["verbose_name"]) for type in FIELD_TYPES],
     )
     choices = models.CharField(
-        _("choices"), max_length=1024, blank=True, help_text=_("Comma-separated")
+        _("choices"),
+        max_length=1024,
+        blank=True,
+        help_text=_(
+            "Comma- or pipe-separated choices list for selection fields; placeholder for text input fields"
+        ),
     )
     help_text = models.CharField(
         _("help text"),
@@ -420,7 +425,8 @@ class FormField(models.Model):
         def get_tuple(value):
             return (value.strip(), value.strip())
 
-        choices = [get_tuple(value) for value in self.choices.split(",")]
+        sep = "|" if "|" in self.choices else ","
+        choices = [get_tuple(value) for value in self.choices.split(sep)]
         if not self.is_required and self.type == "select":
             choices = BLANK_CHOICE_DASH + choices
         return tuple(choices)
@@ -428,6 +434,9 @@ class FormField(models.Model):
     def get_type(self, **kwargs):
         types = {type["type"]: type["field"] for type in FIELD_TYPES}
         return types[self.type](**kwargs)
+
+    def is_choicefield(self):
+        return hasattr(self.get_type(), "choices")
 
     def add_formfield(self, fields, form):
         fields[slugify(self.name)] = self.formfield()
@@ -439,10 +448,15 @@ class FormField(models.Model):
             "initial": self.default_value,
             "help_text": self.help_text,
         }
-        if self.choices:
+        if self.choices and self.is_choicefield():
             kwargs["choices"] = self.get_choices()
-            kwargs["initial"] = self.default_value
-        return self.get_type(**kwargs)
+
+        field_instance = self.get_type(**kwargs)
+
+        # Text field, misuse the `choices` config as placeholder text
+        if self.choices and not self.is_choicefield():
+            field_instance.widget.attrs["placeholder"] = self.choices
+        return field_instance
 
 
 # Glob patterns (fnmatch) of field names to leave out of the formatted data and

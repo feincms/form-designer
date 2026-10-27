@@ -24,19 +24,19 @@ FIELD_TYPES = [
         "type": "text",
         "verbose_name": _("text"),
         "field": forms.CharField,
-        "clean_field": [disallow_choices],
+        "clean_field": [],
     },
     {
         "type": "email",
         "verbose_name": _("email address"),
         "field": forms.EmailField,
-        "clean_field": [disallow_choices],
+        "clean_field": [],
     },
     {
         "type": "longtext",
         "verbose_name": _("long text"),
         "field": partial(forms.CharField, widget=forms.Textarea),
-        "clean_field": [disallow_choices],
+        "clean_field": [],
     },
     {
         "type": "checkbox",

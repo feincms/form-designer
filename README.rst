@@ -49,6 +49,9 @@ Setting up the form designer
   selectbox, most often you'd want to select both the "E-mail" and the
   "Save form submission" option and fill in one ore more email addresses.
 
+Choices for selection fields are split on ``,`` or alternatively ``|``;
+use pipe character when individual choices need to contain commas.
+
 If you're using the form designer with FeinCMS_, the content type can be
 imported from ``form_designer.contents.FormContent``. Otherwise, your
 code should use the following methods (the code would probably reside in

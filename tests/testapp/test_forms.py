@@ -272,12 +272,14 @@ class FormsTest(TestCase):
             if FIELD_TYPES[i]["type"] in {"select", "radio", "multiple-select"}:
                 data[f"fields-{i}-choices"] = "a,b,c,d"
 
-        data["fields-0-choices"] = "invalid"
+        data["fields-3-choices"] = "invalid"
         # Validation failure because of choices where there should be none
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertEqual(response.status_code, 200)
 
-        data["fields-0-choices"] = ""
+        data["fields-3-choices"] = ""
+        # Text fields accept choices, used as placeholder
+        data["fields-0-choices"] = "Placeholder"
         response = self.client.post("/admin/form_designer/form/add/", data)
         self.assertRedirects(response, "/admin/form_designer/form/")
 
@@ -292,6 +294,9 @@ class FormsTest(TestCase):
 
         self.assertEqual(form.title, "Test form")
         self.assertEqual(len(form_class().fields), 9)
+        self.assertEqual(
+            form_class().fields["name-0"].widget.attrs["placeholder"], "Placeholder"
+        )
 
         # The additional formsets exist
         response = self.client.get(f"/admin/form_designer/form/{form.id}/change/")
@@ -525,6 +530,38 @@ class FormsTest(TestCase):
             },
         )
         self.assertIn("Multiple Choice:\nChoice A, Choice C", s2.formatted_data())
+
+    def test_pipe_choices(self):
+        """Choices are split on pipes if present, so they may contain commas"""
+
+        form = Form.objects.create(title="Test pipe choices form")
+        comma = form.fields.create(
+            ordering=0,
+            title="Comma",
+            name="comma",
+            type="radio",
+            choices="A, B,C",
+        )
+        pipe = form.fields.create(
+            ordering=1,
+            title="Pipe",
+            name="pipe",
+            type="radio",
+            choices="Yes, please | No, thanks|Maybe",
+        )
+
+        self.assertEqual(comma.get_choices(), (("A", "A"), ("B", "B"), ("C", "C")))
+        self.assertEqual(
+            pipe.get_choices(),
+            (
+                ("Yes, please", "Yes, please"),
+                ("No, thanks", "No, thanks"),
+                ("Maybe", "Maybe"),
+            ),
+        )
+        self.assertEqual(
+            form.form_class()().fields["pipe"].choices, list(pipe.get_choices())
+        )
 
     def test_omitted_fields(self):
         form = Form.objects.create(title="Omit form", config={"save_fs": {}})

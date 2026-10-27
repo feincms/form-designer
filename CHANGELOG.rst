@@ -16,8 +16,8 @@ Next version
   behaviour.
 * The email action accepts a configurable subject with ``%(fieldname)s``
   placeholders for submitted values.
-* Added the ``FORCE_MAIL_RECIPIENT`` setting to redirect all submission mails
-  (no author Cc) for testing.
+* Added the ``FORCE_MAIL_RECIPIENT`` setting to redirect all submission mail.
+* (Mis)use the ``choices`` field for text fields as placeholder.
 
 0.27
 ----
