@@ -258,6 +258,7 @@ class Form(models.Model):
         def include_slugified_choices(choices):
             return dict(choices) | {slugify(value): label for value, label in choices}
 
+        fields = list(self.fields.all())
         fields_and_loaders = [
             (
                 {"name": field.name, "title": field.title},
@@ -267,9 +268,11 @@ class Form(models.Model):
                     choice_dict=include_slugified_choices(field.get_choices()),
                 ),
             )
-            for field in self.fields.all()
+            for field in fields
+            if field.has_data()
         ]
-        known = {field["name"] for field, loader in fields_and_loaders}
+        # Also count no-data fields as known, they must not show up as removed
+        known = {field.name for field in fields}
 
         # Construct the superset of all all submissions' data fields
         for submission in submissions:
@@ -420,6 +423,10 @@ class FormField(models.Model):
 
         for fn in cfg.get("clean_field", ()):
             fn(self)
+
+    def has_data(self):
+        types = {type["type"]: type for type in FIELD_TYPES}
+        return not types.get(self.type, {}).get("no-data", False)
 
     def get_choices(self):
         def get_tuple(value):

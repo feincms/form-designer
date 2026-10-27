@@ -2,6 +2,7 @@ from functools import partial
 
 from django import forms
 from django.apps import apps
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 
@@ -19,24 +20,57 @@ def require_choices(field):
         )
 
 
+class DivWidget(forms.Widget):
+    """Renders just a DIV"""
+
+    def __init__(self, classes=(), text="", tag="div", *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.classes = classes
+        self.text = text
+        self.tag = tag
+
+    def render(self, name, value, attrs=None, renderer=None):
+        classes = " ".join(value for value, label in self.classes)
+        return mark_safe(f'<{self.tag} class="{classes}">{self.text}</{self.tag}>')
+
+
+class DIVField(forms.Field):
+    """
+    Renders a DIV (or other tag) by totally misusing some of the fields.
+        `title` is the text content of the tag,
+        `choices` is a list of classes for the `class` attr,
+        `default_value`, if specified, overrides the tag of the field (default DIV),
+    """
+
+    choices = ()
+
+    def __init__(self, *args, **kwargs):
+        choices = kwargs.pop("choices", ())
+        kwargs["required"] = False
+        kwargs["widget"] = DivWidget(
+            text=kwargs.get("label"),  # Misuse `label` as text content
+            tag=kwargs.get("initial") or "div",  # Misuse `initial` as tag
+            classes=choices,  # Misuse `choices` for css classes
+        )
+        super().__init__(*args, **kwargs)
+        self.label = ""
+
+
 FIELD_TYPES = [
     {
         "type": "text",
         "verbose_name": _("text"),
         "field": forms.CharField,
-        "clean_field": [],
     },
     {
         "type": "email",
         "verbose_name": _("email address"),
         "field": forms.EmailField,
-        "clean_field": [],
     },
     {
         "type": "longtext",
         "verbose_name": _("long text"),
         "field": partial(forms.CharField, widget=forms.Textarea),
-        "clean_field": [],
     },
     {
         "type": "checkbox",
@@ -77,6 +111,17 @@ FIELD_TYPES = [
         "verbose_name": _("hidden"),
         "field": partial(forms.CharField, widget=forms.HiddenInput),
         "clean_field": [disallow_choices],
+    },
+    {
+        "type": "number",
+        "verbose_name": _("number"),
+        "field": partial(forms.CharField, widget=forms.NumberInput),
+    },
+    {
+        "type": "statictext",
+        "verbose_name": _("static text"),
+        "field": DIVField,
+        "no-data": True,
     },
 ]
 

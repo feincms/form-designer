@@ -625,3 +625,67 @@ class FormsTest(TestCase):
         self.assertEqual(len(rows[0]), 4)  # + submitted at, URL
         self.assertNotIn("captcha", rows[1])
         self.assertNotIn("_private", rows[1])
+
+    def test_statictext(self):
+        form = Form.objects.create(title="Static form", config={"save_fs": {}})
+        form.fields.create(ordering=0, title="Subject", name="subject", type="text")
+        form.fields.create(
+            ordering=1,
+            title="Hello <b>world</b>",
+            name="intro",
+            type="statictext",
+            choices="lead|highlight",
+        )
+        form.fields.create(
+            ordering=2,
+            title="Paragraph",
+            name="para",
+            type="statictext",
+            default_value="p",
+            is_required=True,
+        )
+
+        form_instance = form.form_class()(data={"subject": "Hi"})
+        self.assertTrue(form_instance.is_valid())
+        self.assertFalse(form_instance.fields["para"].required)
+        self.assertEqual(form_instance.fields["intro"].label, "")
+
+        self.assertHTMLEqual(
+            str(form_instance["intro"]),
+            '<div class="lead highlight">Hello <b>world</b></div>',
+        )
+        self.assertHTMLEqual(str(form_instance["para"]), '<p class="">Paragraph</p>')
+        self.assertIn(
+            '<div class="lead highlight">Hello <b>world</b></div>',
+            form_instance.as_p(),
+        )
+
+        submission = FormSubmission.objects.create(
+            form=form, data=form_instance.cleaned_data
+        )
+        self.assertEqual(
+            submission.data, {"subject": "Hi", "intro": None, "para": None}
+        )
+
+        # No-data fields are neither shown as current nor as removed fields
+        self.assertEqual(
+            [
+                field["name"]
+                for field in form.submissions_data(submissions=[submission])[0]["data"]
+            ],
+            ["subject"],
+        )
+        data = submission.formatted_data()
+        self.assertEqual(data, "Subject:\nHi\n")
+        self.assertNotIn("removed field", data)
+
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+        response = self.client.get(
+            f"/admin/form_designer/form/{form.id}/export_submissions/"
+        )
+        self.assertEqual(response.status_code, 200)
+        sheet = openpyxl.load_workbook(io.BytesIO(response.content)).active
+        rows = [[cell.value for cell in row] for row in sheet.iter_rows()]
+        self.assertEqual(rows[1][:1], ["subject"])
+        self.assertEqual(len(rows[1]), 3)  # + submitted at, URL
