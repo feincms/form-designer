@@ -36,7 +36,7 @@ dynamic = [
 ]
 dependencies = [
   "django-admin-ordering",
-  "xlsxdocument",
+  "xlsxdocument>=1.4",
 ]
 optional-dependencies.tests = [
   "coverage",

@@ -725,3 +725,18 @@ class FormsTest(TestCase):
         rows = [[cell.value for cell in row] for row in sheet.iter_rows()]
         self.assertEqual(rows[1][:1], ["subject"])
         self.assertEqual(len(rows[1]), 3)  # + submitted at, URL
+
+    def test_export_formulas(self):
+        form = Form.objects.create(title="Export", config={"save_fs": {}})
+        form.fields.create(ordering=0, title="Text", name="text", type="text")
+        FormSubmission.objects.create(form=form, data={"text": "=HYPERLINK(1)"})
+
+        User.objects.create_superuser("admin", "admin@example.com", "password")
+        self.client.login(username="admin", password="password")
+        response = self.client.get(
+            f"/admin/form_designer/form/{form.id}/export_submissions/"
+        )
+        self.assertEqual(response.status_code, 200)
+        sheet = openpyxl.load_workbook(io.BytesIO(response.content)).active
+        cell = sheet["A3"]
+        self.assertEqual((cell.value, cell.data_type), ("=HYPERLINK(1)", "s"))
