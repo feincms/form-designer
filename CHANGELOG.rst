@@ -4,6 +4,9 @@ Change log
 Next version
 ------------
 
+0.28.1 (2026-10-28)
+-------------------
+
 * **Security fix:** Required xlsxdocument 1.4 so that submitted values starting
   with ``=`` are exported as text, not as formulas.
 
