@@ -1,0 +1,304 @@
+# French translation of form-designer
+# Copyright (C) 2026 Listed translators
+# This file is distributed under the same license as the form-designer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: form-designer main\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 18:33+0100\n"
+"PO-Revision-Date: 2026-11-12 21:14+0100\n"
+"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+
+#: form_designer/admin.py:49 form_designer/admin.py:158
+#, python-format
+msgid "Form configuration: %s"
+msgstr "Configuration de formulaire : %s"
+
+#: form_designer/admin.py:58
+msgid "is active"
+msgstr "est actif"
+
+#: form_designer/admin.py:168
+msgid "Configuration"
+msgstr "Configuration"
+
+#: form_designer/admin.py:184
+msgid "No submissions yet."
+msgstr "Encore aucune donnée."
+
+#: form_designer/admin.py:192 form_designer/models.py:489
+msgid "submitted at"
+msgstr "envoyé le"
+
+#: form_designer/admin.py:192 form_designer/models.py:497
+msgid "URL"
+msgstr "URL"
+
+#: form_designer/apps.py:9
+msgid "Form Designer"
+msgstr "Concepteur de formulaire"
+
+#: form_designer/contents.py:19 form_designer/contents.py:33
+#: form_designer/models.py:171 form_designer/models.py:379
+#: form_designer/models.py:492
+msgid "form"
+msgstr "formulaire"
+
+#: form_designer/contents.py:23
+msgid "show form title"
+msgstr "afficher le titre du formulaire"
+
+#: form_designer/contents.py:25
+msgid "success message"
+msgstr "message de succès"
+
+#: form_designer/contents.py:26
+msgid "Custom message to display after valid form is submitted"
+msgstr ""
+"Message personnalisé à afficher après qu’un formulaire valable a été envoyé"
+
+#: form_designer/contents.py:34 form_designer/models.py:172
+msgid "forms"
+msgstr "formulaires"
+
+#: form_designer/default_field_types.py:17
+#, python-format
+msgid "You can't specify choices for %s fields"
+msgstr "Les choix ne sont pas autorisés pour les champs %s"
+
+#: form_designer/default_field_types.py:24
+#, python-format
+msgid "Please specify choices for %s fields"
+msgstr "Veuillez indiquer des choix pour les champs %s"
+
+#: form_designer/default_field_types.py:31
+#, python-format
+msgid "The default value of %s fields has to be an HTML tag name"
+msgstr "La valeur par défaut des champs %s doit être un nom de balise HTML"
+
+#: form_designer/default_field_types.py:80
+msgid "text"
+msgstr "texte"
+
+#: form_designer/default_field_types.py:85 form_designer/models.py:131
+msgid "email address"
+msgstr "adresse de courriel"
+
+#: form_designer/default_field_types.py:90
+msgid "long text"
+msgstr "texte long"
+
+#: form_designer/default_field_types.py:95
+msgid "checkbox"
+msgstr "case à cocher"
+
+#: form_designer/default_field_types.py:101
+msgid "select"
+msgstr "liste à choix"
+
+#: form_designer/default_field_types.py:107
+msgid "radio"
+msgstr "bouton radio"
+
+#: form_designer/default_field_types.py:113
+msgid "multiple select"
+msgstr "liste à choix multiples"
+
+#: form_designer/default_field_types.py:121
+msgid "date"
+msgstr "date"
+
+#: form_designer/default_field_types.py:129
+msgid "hidden"
+msgstr "masqué"
+
+#: form_designer/default_field_types.py:135
+msgid "number"
+msgstr "nombre"
+
+#: form_designer/default_field_types.py:140
+msgid "static text"
+msgstr "texte statique"
+
+#: form_designer/default_field_types.py:173
+msgid "reCAPTCHA v2"
+msgstr "reCAPTCHA v2"
+
+#: form_designer/default_field_types.py:181
+msgid "reCAPTCHA v3"
+msgstr "reCAPTCHA v3"
+
+#: form_designer/default_field_types.py:197
+msgid "Simple CAPTCHA"
+msgstr "CAPTCHA Simple"
+
+#: form_designer/default_field_types.py:211
+msgid "Mosparo Captcha"
+msgstr "Captcha Mosparo"
+
+#: form_designer/models.py:88
+msgid "Thank you, your input has been received."
+msgstr "Merci, vos données ont bien été reçues."
+
+#: form_designer/models.py:112
+msgid "Save form submission"
+msgstr "Enregistrer les données du formulaire"
+
+#: form_designer/models.py:114
+msgid ""
+"Save form submissions in the database so that they may be exported later."
+msgstr ""
+"Enregistrer les données des formulaires dans la base de données pour qu’elles "
+"puissent plus tard être exportées."
+
+#: form_designer/models.py:123
+msgid "Send email"
+msgstr "Envoyer un courriel"
+
+#: form_designer/models.py:125
+msgid "Send the submitted form data to a list of email addresses."
+msgstr "Envoyer les données des formulaires à une liste de courriels."
+
+#: form_designer/models.py:134
+msgid "Separate multiple email addresses with commas."
+msgstr "Séparer les adresses de courriel par des virgules."
+
+#: form_designer/models.py:142
+msgid "subject"
+msgstr "objet"
+
+#: form_designer/models.py:144
+#, python-format
+msgid ""
+"Defaults to the form title. Use %(fieldname)s to insert submitted values."
+msgstr ""
+"Par défaut, le titre du formulaire. Utilisez %(fieldname)s pour insérer les "
+"valeurs envoyées."
+
+#: form_designer/models.py:153
+msgid "author's email field"
+msgstr "champ courriel de l’auteur"
+
+#: form_designer/models.py:155
+msgid ""
+"The author of the submission will be added to the Cc: if this is set to an "
+"existing form field below."
+msgstr ""
+"L’auteur de l’envoi sera aouté au champ Cc: du courriel si cette valeur "
+"correspond à un champ de formulaire existant ci-dessous."
+
+#: form_designer/models.py:167
+msgid "title"
+msgstr "titre"
+
+#: form_designer/models.py:168
+msgid "config"
+msgstr "config"
+
+#: form_designer/models.py:295
+msgid "removed field"
+msgstr "champ supprimé"
+
+#: form_designer/models.py:353
+msgid ""
+"Enter a value consisting only of lowercase letters, numbers, dashes and the "
+"underscore."
+msgstr ""
+"Saisissez une valeur composée uniquement de lettres minuscules, de chiffres, "
+"de tirets et de soulignements."
+
+#: form_designer/models.py:362
+msgid ""
+"Data is saved using this name. Changing it may result in data loss. This "
+"field only allows a-z, 0-9, - and _ as characters."
+msgstr ""
+"Les données sont enregistrées avec ce nom. En le modifiant, des données "
+"pourraient être perdues. Ce champ n’autorise que les caractères a-z, 0-9, - "
+"et _."
+
+#: form_designer/models.py:381
+msgid "ordering"
+msgstr "tri"
+
+#: form_designer/models.py:383
+msgid "field title"
+msgstr "titre du champ"
+
+#: form_designer/models.py:384
+msgid "field name"
+msgstr "nom du champ"
+
+#: form_designer/models.py:391
+msgid "field type"
+msgstr "type du champ"
+
+#: form_designer/models.py:396
+msgid "choices"
+msgstr "choix"
+
+#: form_designer/models.py:400
+msgid ""
+"Comma- or pipe-separated choices list for selection fields; placeholder for "
+"text input fields"
+msgstr ""
+"Pour les champs à choix, liste des choix séparés par une virgule ou un pipe ; "
+"pour les champs de type texte, contenu du fond du champ"
+
+#: form_designer/models.py:404
+msgid "help text"
+msgstr "texte d’aide"
+
+#: form_designer/models.py:407
+msgid "Optional extra explanatory text beside the field"
+msgstr "Texte d’explication supplémentaire facultatif à côté du champ"
+
+#: form_designer/models.py:410
+msgid "default value"
+msgstr "valeur par défaut"
+
+#: form_designer/models.py:413
+msgid "Optional default value of the field"
+msgstr "Valeur par défaut facultative du champ"
+
+#: form_designer/models.py:415
+msgid "is required"
+msgstr "est obligatoire"
+
+#: form_designer/models.py:420
+msgid "form field"
+msgstr "champ de formulaire"
+
+#: form_designer/models.py:421
+msgid "form fields"
+msgstr "champs de formulaire"
+
+#: form_designer/models.py:496
+msgid "data"
+msgstr "données"
+
+#: form_designer/models.py:501
+msgid "form submission"
+msgstr "envoi de formulaire"
+
+#: form_designer/models.py:502
+msgid "form submissions"
+msgstr "envois de formulaire"
+
+#: form_designer/models.py:549
+msgid "Validate Mosparo captcha"
+msgstr "Valider le captcha Mosparo"
+
+#: form_designer/templates/admin/form_designer/form/change_form.html:6
+msgid "Export submissions"
+msgstr "Exporter les contenus reçus"
+
+#: form_designer/templates/content/form/form.html:13
+msgid "Submit"
+msgstr "Envoyer"
